@@ -120,7 +120,7 @@ var sneaker_kill = new Achievement('Sneaker!','You killed an invisible pussy!', 
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
     }
-},['Low Profile.ogg']);
+},['Low Profile.ogg','invisibleman.mp3']);
 
 var headshot_ach = new Achievement('Headshot!','You got a headshot kill!', function (event) {
     if (is_kill(event) && !tk(event)) {
@@ -192,9 +192,25 @@ var blinder = new Achievement('Stevie Wonder Creator!','You blinded someone by k
     if (event.payload.event_name=="GainExperience") {
         // 293 motion detect, 370 kill motion spotter, 294 squad motion detect
         if ( (event.payload.experience_id=='370')) {
+            console.log(event);
             console.log ('Triggered stevie wonder:');
             var msg = "You blinded ";
-            msg += print_character(event.character_id);
+            msg += print_character(event.other_id);
+            insert_row (event, msg);
+            return true;
+        }
+    }
+    return false;
+},['Noop.ogg']);
+
+var hatebombs = new Achievement('Bomb Disposal!','You killed someones explosive device!', function (event) {
+    if (event.payload.event_name=="GainExperience") {
+        // 293 motion detect, 370 kill motion spotter, 294 squad motion detect
+        if ( (event.payload.experience_id=='86')) {
+            console.log(event);
+            console.log ('Triggered bomb disposal:');
+            var msg = "You defused ";
+            msg += print_character(event.other_id);
             insert_row (event, msg);
             return true;
         }
@@ -357,7 +373,7 @@ function display_event(data) {
             else if (data.payload.experience_id=='2' && is_player(data.payload.character_id)) {
                 assist_streak++;
             }
-            else if ( (data.payload.experience_id=='370' || data.payload.experience_id=='293' || data.payload.experience_id=='294') && data.payload.character_id==window.char_id) {
+            else if ( (data.payload.experience_id=='370' || data.payload.experience_id=='293' || data.payload.experience_id=='294') && is_player(data.payload.character_id)) {
                 console.log('motion sensor kill');
                 motion_sensor_kills++;
             }
@@ -367,7 +383,8 @@ function display_event(data) {
             //console.log ('Comparing ' + data.payload.attacker_character_id + ' to ' + window.char);
             if (is_player(data.payload.attacker_character_id)) {
                 msg+='You killed ';
-                if (data.payload.character_id==window.char) {
+                if (is_player(data.payload.character_id)) {
+                //if (data.payload.character_id==window.char) {
                     // suicide
                     cls+=' death ';
                     msg+=' yourself ';
@@ -418,7 +435,8 @@ function display_event(data) {
             }
         }
         if (data.payload.event_name=='VehicleDestroy') {
-            if (data.payload.character_id==window.char) {
+            if (is_player(data.payload.character_id)) {
+            //if (data.payload.character_id==window.char) {
                 msg+='Your <span>'+vehicles[data.payload.vehicle_id].item_list[0].name.en+'</span> was destroyed by ';
                 msg+=print_character(data.payload.attacker_character_id);
             }
@@ -717,6 +735,7 @@ function add_player_to_list(player) {
 // https://census.daybreakgames.com/s:iridar/get/ps2/item?c:lang=en&c:join=item_to_weapon(weapon)
 window.onload = function() {
     window.allevents = [];
+    window.gainexperienceevents = [];
     
     var messagesList = document.getElementById('messages');
     var socketStatus = document.getElementById('status');
@@ -804,6 +823,9 @@ window.onload = function() {
             if (data.payload.event_name!="GainExperience") {
                 // don't push exp gain events onto stack - not needed, we can handle global counters in the event processing
                 window.allevents.push(data);
+            }
+            else {
+                window.gainexperienceevents.push(data); // push onto experience stack for debugging
             }
             if (data.payload.event_name=='Death') {
                 //console.log(data);
