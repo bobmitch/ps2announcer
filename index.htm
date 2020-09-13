@@ -1,0 +1,119 @@
+<html>
+	<head>
+
+		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css" integrity="sha256-oSsWW/ca1ll8OVu2t4EKkyb9lmH0Pkd8CXKXnYP4QvA=" crossorigin="anonymous">
+		<!-- <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css"> -->
+	</head>
+	<body>
+		<div id='splash'>
+			<div class='contain'>
+				<button onclick='document.querySelector("#splash").classList.add("hide");allow_voicepack();' class='button btn is-primary is-large'>Enable Audio / Start</button>
+			</div>
+		</div>
+		<div class='container' id="page-wrapper">
+			<nav class="navbar" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+				  <a class="navbar-item" href="https://bulma.io">
+					<h5 class='title is-5'>Announcer</h5>
+				  </a>
+			  
+				  <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+				  </a>
+				</div>
+			  
+				<div id="navbarBasicExample" class="navbar-menu">
+				  
+			  
+				  <div class="navbar-end">
+					<div class="navbar-item">
+					  <div class="buttons">
+						<a id='show_player_modal' class="button is-primary">
+						  <strong>Manage Players</strong>
+						</a>
+						<a id='show_achievements_modal' class="button is-info">
+							<strong>List Audio Triggers</strong>
+						  </a>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </nav>
+
+			
+
+
+			<p>Killstreak: <span class='autoupdate' data-variable='killstreak'>0</span></p>
+			<p>Assist Streak: <span class='autoupdate' data-variable='assist_streak'>0</span></p>
+
+			<ul id="messages"></ul>
+
+			<table class='table is-fullwidth' id='events'>
+				<thead>
+					<tr>
+						<th>Time</th>
+						<th>Event</th>
+						<th>Special</th>
+					</tr>
+				</thead>
+				<tbody id='events_body'>
+				</tbody>
+			</table>
+
+			
+		</div>
+
+		<div id='playermodal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Manage Players</p>
+				<button class="delete" aria-label="close"></button>
+			  </header>
+			  <section class="modal-card-body">
+				<div class="field has-addons">
+					<div class="control">
+					  <input id='playersearch' class="input" type="text" placeholder="Find player">
+					</div>
+					<div class="control">
+					  <a id='playersearch_btn' class="button is-info">
+						Search
+					  </a>
+					</div>
+				  </div>
+				<div id='playersearchresults'></div>
+				<hr>
+				<div id='player_list_wrap' class="field is-grouped is-grouped-multiline">
+					
+				</div>
+			  </section>
+			  <footer class="modal-card-foot">
+				
+			  </footer>
+			</div>
+		  </div>
+
+		  <div id='achievement_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Achievements</p>
+				<button class="delete" aria-label="close"></button>
+			  </header>
+			  <section class="modal-card-body">
+					
+				<div id='achievments_list'></div>
+			  </section>
+			  <footer class="modal-card-foot">
+				
+			  </footer>
+			</div>
+		  </div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script src='script.js'></script>
+	</body>
+</html>
