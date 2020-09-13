@@ -129,7 +129,7 @@ var headshot_ach = new Achievement('Headshot!','You got a headshot kill!', funct
         }
     }
     return false;
-},['ting.mp3'],20);
+},['ting.mp3','pew.mp3'],20);
 
 var killed_by_shotgun = new Achievement('Red Mist!','You got killed by a shotgun!', function (event) {
     if (!is_kill(event) && event.payload.event_name=="Death") {
@@ -154,7 +154,7 @@ var reviver = new Achievement('Revive!','You revived someone!', function (event)
 
 var repeat = new Achievement('Repeat Customer!','You killed the same person multiple times!', function (event) {
     var l = window.allevents.length;
-    if (l<2) {
+    if (l<3) {
         return false;
         // cannot be repeat at start of tracking :)
     }
@@ -195,7 +195,7 @@ var blinder = new Achievement('Stevie Wonder Creator!','You blinded someone by k
             console.log(event);
             console.log ('Triggered stevie wonder:');
             var msg = "You blinded ";
-            msg += print_character(event.other_id);
+            msg += print_character(event.payload.other_id);
             insert_row (event, msg);
             return true;
         }
@@ -210,7 +210,7 @@ var hatebombs = new Achievement('Bomb Disposal!','You killed someones explosive 
             console.log(event);
             console.log ('Triggered bomb disposal:');
             var msg = "You defused ";
-            msg += print_character(event.other_id);
+            msg += print_character(event.payload.other_id);
             insert_row (event, msg);
             return true;
         }
@@ -288,6 +288,10 @@ function nice_date(timestamp) {
 
 function print_character(character_id) {
     var char = '';
+    if (!characters[character_id].hasOwnProperty('character_list')) {
+        console.log ('Character ', character_id, ' has no character list array');
+        return '[unknown]';
+    }
     char+='<span class="char faction'+characters[character_id].character_list[0].faction_id+'"> ';
         char+='<span class="charname">';
         if (characters[character_id].character_list[0].hasOwnProperty('outfit')) {
@@ -342,7 +346,7 @@ function display_event(data) {
     if (data.payload.hasOwnProperty('other_id')) {
         other_id = data.payload.other_id;
     }
-    jQuery.when(get_vehicle(data.payload.vehicle_id),get_vehicle(data.payload.attacker_vehicle_id),get_character(data.payload.character_id), get_character(other_id), get_character(data.payload.attacker_character_id), get_weapon(data.payload.attacker_weapon_id) ).then(function(){
+    jQuery.when(get_vehicle(data.payload.vehicle_id),get_vehicle(data.payload.attacker_vehicle_id),get_character(data.payload.character_id), get_character(data.payload.other_id), get_character(data.payload.attacker_character_id), get_weapon(data.payload.attacker_weapon_id) ).then(function(){
         // all promised data available, show event
         //console.log ('All promises handled, doing logic now');
 
@@ -437,7 +441,7 @@ function display_event(data) {
         if (data.payload.event_name=='VehicleDestroy') {
             if (is_player(data.payload.character_id)) {
             //if (data.payload.character_id==window.char) {
-                msg+='Your <span>'+vehicles[data.payload.vehicle_id].item_list[0].name.en+'</span> was destroyed by ';
+                msg+='Your <span>'+vehicles[data.payload.vehicle_id].vehicle_list[0].name.en+'</span> was destroyed by ';
                 msg+=print_character(data.payload.attacker_character_id);
             }
             else {
