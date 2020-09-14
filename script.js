@@ -26,13 +26,13 @@ var synth = window.speechSynthesis;
 var achievements = {};
 var new_achievements = [];
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
+window.playerlist = [];
 
 
 
 function insert_row (data, msg) {         
     var events_table = document.getElementById('events');
     var cls='';
-    var msg='';
     var pills='';
 
     if (msg) {
@@ -41,7 +41,12 @@ function insert_row (data, msg) {
         var time = row.insertCell();
         var event = row.insertCell();
         var special = row.insertCell();
-        time.innerHTML = nice_date(data.payload.timestamp);
+        if (data) {
+            time.innerHTML = nice_date(data.payload.timestamp);
+        }
+        else {
+            time.innerHTML = Date();
+        }
         event.innerHTML = msg;
 
         cur_achievements.forEach(achievement_on_stack => {
@@ -172,7 +177,7 @@ var reviver = new Achievement('Revive!','You revived someone!', function (event)
         }
     }
     return false;
-},['Bwup!.ogg'],['To a Zone... one of Danger.ogg'],20);
+},['xp.mp3','Bwup!.ogg'],['To a Zone... one of Danger.ogg'],20);
 
 var repeat = new Achievement('Repeat Customer!','You killed the same person multiple times!', function (event) {
     var l = window.allevents.length;
@@ -213,7 +218,7 @@ var assister = new Achievement('Santas Little Helper!','You assisted killing som
 var blinder = new Achievement('Stevie Wonder Creator!','You blinded someone by killing their motion spotter!', function (event) {
     if (event.payload.event_name=="GainExperience") {
         // 293 motion detect, 370 kill motion spotter, 294 squad motion detect
-        if ( (event.payload.experience_id=='370')) {
+        if ( (event.payload.experience_id=='370') || (event.payload.experience_id=='293') || (event.payload.experience_id=='294')) {
             console.log(event);
             console.log ('Triggered stevie wonder:');
             var msg = "You blinded ";
@@ -312,6 +317,10 @@ function print_character(character_id) {
     var char = '';
     if (!characters[character_id].hasOwnProperty('character_list')) {
         console.log ('Character ', character_id, ' has no character list array');
+        return '[unknown]';
+    }
+    if (characters[character_id].character_list.length==0) {
+        console.log ('Character ', character_id, ' has empty character list array');
         return '[unknown]';
     }
     char+='<span class="char faction'+characters[character_id].character_list[0].faction_id+'"> ';
@@ -507,7 +516,9 @@ function get_character (character_id) {
     if (window.characters.hasOwnProperty(character_id)) {
         // have local
         //return dfd.resolve(window.characters[character_id]);
-        return window.characters[character_id];
+        if (window.characters[character_id].character_list.length>0) {
+            return window.characters[character_id];
+        }
     }
     else {
         // handle as promise
@@ -580,12 +591,16 @@ function get_vehicle (vehicle_id) {
 
 function player_search(){
     var playername=jQuery('#playersearch').val();
+    playername = playername.toLowerCase();
     //var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:join=characters_online_status&name.first_lower=%5E" + playername + "&c:limit=10&c:sort=name.first_lower&callback=?";
     var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:resolve=online_status&name.first_lower=%5E" + playername + "&c:limit=10&c:sort=name.first_lower&callback=?";
     jQuery('#playersearchresults').html('<p>Searching...</p>');
     jQuery.getJSON(url,function(json){
         var search = json;
         console.log(search);
+        if (search.character_list.length==0) {
+            alert('No matching players found');
+        }
         html='<ul id="search_results_wrap">';
         for (n=0;n<search.character_list.length;n++) {
             if (search.character_list[n].online_status=='0') {
@@ -803,8 +818,8 @@ window.onload = function() {
         subscribe_to_character(char_id);
         // save in localstorage
         found_char = {'char_id':char_id,'name':name}
-        if (!playerlist) {
-            playerlist = [];
+        if (!window.playerlist) {
+            window.playerlist = [];
         }
         playerlist.push(found_char);
         var playerlist_json = JSON.stringify(playerlist);
@@ -827,7 +842,7 @@ window.onload = function() {
         //socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
         //socketStatus.className = 'open';
         // get player ids from localstorage
-        playerlist.forEach(player => {
+        window.playerlist.forEach(player => {
             add_player_to_list(player);
             subscribe_to_character(player.char_id);
         });
