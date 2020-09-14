@@ -132,9 +132,9 @@ var headshot_ach = new Achievement('Headshot!','You got a headshot kill!', funct
 },['pew.mp3'],20);
 
 var nocar = new Achievement("Dude, where's my car?",'You killed a harasser!', function (event) {
-    if (data.payload.event_name=='VehicleDestroy') {
-        if (is_player(data.payload.character_id)) {
-            if (vehicles[data.payload.vehicle_id].vehicle_list[0].name.en=="Harasser") {
+    if (event.payload.event_name=='VehicleDestroy') {
+        if (is_player(event.payload.character_id)) {
+            if (vehicles[event.payload.vehicle_id].vehicle_list[0].name.en=="Harasser") {
                 return (true);
             }
         }
