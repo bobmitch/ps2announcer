@@ -129,12 +129,34 @@ var headshot_ach = new Achievement('Headshot!','You got a headshot kill!', funct
         }
     }
     return false;
-},['ting.mp3','pew.mp3'],20);
+},['pew.mp3'],20);
+
+var nocar = new Achievement("Dude, where's my car?",'You killed a harasser!', function (event) {
+    if (data.payload.event_name=='VehicleDestroy') {
+        if (is_player(data.payload.character_id)) {
+            if (vehicles[data.payload.vehicle_id].vehicle_list[0].name.en=="Harasser") {
+                return (true);
+            }
+        }
+    }
+    return false;
+},['VOLUME_Dude wheres my car.wav'],20);
 
 var killed_by_shotgun = new Achievement('Red Mist!','You got killed by a shotgun!', function (event) {
     if (!is_kill(event) && event.payload.event_name=="Death") {
-        if (weapons[event.payload.attacker_weapon_id].item_list[0].item_category_id_join_item_category.name.en=='Shotgun') {
-            return (true);
+        weapon = weapons[event.payload.attacker_weapon_id];
+        if (weapon) {
+            if (weapon.hasOwnProperty('item_list')) {
+                if (weapons[event.payload.attacker_weapon_id].item_list[0].item_category_id_join_item_category.name.en=='Shotgun') {
+                    return (true);
+                }
+            }
+            else {
+                console.log('weapon has no item list:',weapon);
+            }
+        }
+        else {
+            console.log('no weapon found for ',event.payload.attacker_weapon_id, ' in event: ', event);
         }
     }
     return false;
