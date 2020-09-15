@@ -1,6 +1,31 @@
+window.playerlist = [];
 var playerlist = JSON.parse(localStorage.getItem('ps2_players'));
+var can_upload = false;
+var storage = null;
 
+navigator.webkitPersistentStorage.requestQuota(1024*1024*50, function() {
+    window.webkitRequestFileSystem(window.PERSISTENT , 1024*1024*50, storage_available);
+});
+function storage_available(e) {
+    console.log('Offline storage available');
+    console.log(e);
+    can_upload = true;
+    storage = e;
+}
+if (!localStorage.hasOwnProperty('offline_audio')) {
+    localStorage.setItem('offline_audio','[]');
+    //filesystem:https://bobmitch.com/persistent/helper.mp3
+}
 
+function add_audio(name) {
+    audio_array = JSON.parse(localStorage.getItem('offline_audio'));
+    foo = {};
+    foo.name=name;
+    foo.path="filesystem:https://bobmitch.com/persistent/" + name;
+    audio_array.push (foo);
+    foo_json = JSON.stringify(audio_array);
+    localStorage.setItem('offline_audio',foo_json);
+}
 
 
 var killstreak=0; // reset by death
@@ -26,7 +51,7 @@ var synth = window.speechSynthesis;
 var achievements = {};
 var new_achievements = [];
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
-window.playerlist = [];
+
 
 
 
@@ -218,7 +243,7 @@ var assister = new Achievement('Santas Little Helper!','You assisted killing som
 var blinder = new Achievement('Stevie Wonder Creator!','You blinded someone by killing their motion spotter!', function (event) {
     if (event.payload.event_name=="GainExperience") {
         // 293 motion detect, 370 kill motion spotter, 294 squad motion detect
-        if ( (event.payload.experience_id=='370') || (event.payload.experience_id=='293') || (event.payload.experience_id=='294')) {
+        if ( (event.payload.experience_id=='370') ) {
             console.log(event);
             console.log ('Triggered stevie wonder:');
             var msg = "You blinded ";
@@ -516,8 +541,10 @@ function get_character (character_id) {
     if (window.characters.hasOwnProperty(character_id)) {
         // have local
         //return dfd.resolve(window.characters[character_id]);
-        if (window.characters[character_id].character_list.length>0) {
-            return window.characters[character_id];
+        if (window.characters[character_id].hasOwnProperty('character_list')) {
+            if (window.characters[character_id].character_list.length>0) {
+                return window.characters[character_id];
+            }
         }
     }
     else {
@@ -938,4 +965,25 @@ new_achievements.forEach(a => {
 </div>
     `;
     list.innerHTML = list.innerHTML + markup;
+});
+
+// uploads
+
+function upload_mp3 (e) {
+    console.log(e);
+}
+
+const fileSelector = document.getElementById('uploadfiles');
+fileSelector.addEventListener('change', (event) => {
+    const fileList = event.target.files;
+    for (const file of fileList) {
+        console.log(file);
+        storage.root.getFile(file.name, {create: true}, function(DatFile) {
+            DatFile.createWriter(function(DatContent) {
+                //var blob = new Blob(["Lorem Ipsum"], {type: file.type});
+                DatContent.write(file); // file is already blob
+            });
+        });
+        add_audio(file.name); // store filename and path in localStorage object
+    }
 });
