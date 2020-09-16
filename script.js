@@ -75,6 +75,7 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.sounds = [];
     this.priority=priority;
     this.interruptable = interruptable;
+    this.enabled = true;
     if (trigger) {
         this.triggered = trigger;
     }
@@ -716,10 +717,13 @@ function process_event(event) {
         
     });
     // sort by priority
-    // and trigger top
+    // and trigger top enabled 
     window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
-    if (window.cur_achievements.length>0) {
-        window.cur_achievements[0].trigger();
+    for (n=0; n<window.cur_achievements.length; n++) {
+        if (window.cur_achievements[n].enabled) {
+            window.cur_achievements[n].trigger();
+            break;
+        }
     }
 
     auto_updaters = document.querySelectorAll('.autoupdate');
@@ -983,20 +987,25 @@ new_achievements.forEach(a => {
         card_footer_markup += card_footer_entry;
     };
     card_footer_markup += '</div>';
-
+    if (a.enabled) {
+        yes_checked='checked'; no_checked='';
+    }
+    else {
+        yes_checked=''; no_checked='checked';
+    }
     markup = `
-    <div class="card" data-id="${friendly_name}">
+    <div class="card" data-id="${a.id}">
         <header class="card-header">
             <p class="card-header-title">
             ${a.name}
             </p>
             <div class="control">
-                <label class="radio">
-                    <input checked type="radio" name="enabled_${friendly_name}">
+                <label class="radio ">
+                    <input ${yes_checked} value="on" type="radio" class="audio_enabled_radio" name="enabled_${friendly_name}">
                     On
                 </label>
                 <label class="radio">
-                    <input type="radio" name="enabled_${friendly_name}">
+                    <input ${no_checked} value="off" type="radio" class="audio_enabled_radio" name="enabled_${friendly_name}">
                     Off
                 </label>
             </div>
@@ -1015,6 +1024,8 @@ new_achievements.forEach(a => {
     `;
     list.innerHTML = list.innerHTML + markup;
 });
+
+
 
 function save_config() {
     // strip name/desc and jsonify into localstorage
@@ -1059,6 +1070,15 @@ function load_config() {
                         console.log('Inserting new audio ',sf,' into ach: ',ach);
                     }
                 }
+                // set enabled state
+                if (config[i].hasOwnProperty('enabled')) {
+                    if (config[i].enabled) {
+                        ach.enabled=true;
+                    }
+                    else {
+                        ach.enabled=false;
+                    }
+                }
             }
         }
     }
@@ -1077,6 +1097,26 @@ function get_achievement(id) {
 document.querySelector('body').addEventListener('click',function(e){
 
     //console.log(e.target);
+
+    if (e.target.classList.contains('audio_enabled_radio')) {
+        var val=null;
+        var name = e.target.name;
+        var all_radios = document.getElementsByName(name);
+        for(i = 0; i < all_radios.length; i++) { 
+            if(all_radios[i].checked) 
+            val = all_radios[i].value;
+        }
+        ach_id = e.target.closest('.card').dataset.id;
+        //console.log(ach_id);
+        ach = get_achievement(ach_id);
+        if (val=='on') {
+            ach.enabled=true;
+        }
+        else {
+            ach.enabled=false;
+        }
+        save_config();
+    }
 
     if (e.target.classList.contains('is-delete') && e.target.classList.contains('remove-audio')) {
         resp = confirm('Are you sure?');
