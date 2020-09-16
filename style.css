@@ -16,6 +16,8 @@ body {
     justify-content: center;
     z-index:52;
     transition:all 1s ease;
+    background-image:url(/ps2/ba-sm.jpg);
+    background-size:cover;
 }
 #splash.hide {
     pointer-events: none;
@@ -85,4 +87,32 @@ span.outfit {
 }
 #achievments_list .card {
     margin-bottom:1em;
+}
+
+.card-header .control {
+    transform: scale(0.8);
+}
+
+.card-footer {
+    padding: 1em;
+}
+#achievments_list .control {
+    padding: 0.5em;
+}
+.field.is-grouped.is-grouped-multiline > .control:last-child, .field.is-grouped.is-grouped-multiline > .control:not(:last-child) {
+    margin-bottom:0 !important;
+}
+.modal-card-body p {
+    font-size:80%;
+    margin:0.5em;
+}
+
+.add_audio.button {
+        position: absolute;
+        top: 3.5em;
+        right: 0;
+}
+.card-header {
+    background:aliceblue !important;
+    font-size:130%;
 }

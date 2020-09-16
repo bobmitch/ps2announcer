@@ -1,32 +1,13 @@
-window.playerlist = [];
+
+
 var playerlist = JSON.parse(localStorage.getItem('ps2_players'));
-var can_upload = false;
-var storage = null;
-
-navigator.webkitPersistentStorage.requestQuota(1024*1024*50, function() {
-    window.webkitRequestFileSystem(window.PERSISTENT , 1024*1024*50, storage_available);
-});
-function storage_available(e) {
-    console.log('Offline storage available');
-    console.log(e);
-    can_upload = true;
-    storage = e;
+if (playerlist===null) {
+    playerlist = [];
 }
-if (!localStorage.hasOwnProperty('offline_audio')) {
-    localStorage.setItem('offline_audio','[]');
-    //filesystem:https://bobmitch.com/persistent/helper.mp3
+var ps2_extraaudio = JSON.parse(localStorage.getItem('ps2_extraaudio'));
+if (ps2_extraaudio===null) {
+    ps2_extraaudio = [];
 }
-
-function add_audio(name) {
-    audio_array = JSON.parse(localStorage.getItem('offline_audio'));
-    foo = {};
-    foo.name=name;
-    foo.path="filesystem:https://bobmitch.com/persistent/" + name;
-    audio_array.push (foo);
-    foo_json = JSON.stringify(audio_array);
-    localStorage.setItem('offline_audio',foo_json);
-}
-
 
 var killstreak=0; // reset by death
 var max_killstreak=0;
@@ -51,6 +32,7 @@ var synth = window.speechSynthesis;
 var achievements = {};
 var new_achievements = [];
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
+
 
 
 
@@ -85,10 +67,12 @@ function insert_row (data, msg) {
     }
 }
 
-function Achievement(name, description, trigger, sounds=['ting.mp3'], priority=10, interruptable=false) {
+function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], priority=10, interruptable=false) {
+    this.id = id;
     this.name = name;
     this.description = description;
-    this.sounds = sounds;
+    this.soundfiles = soundfiles;
+    this.sounds = [];
     this.priority=priority;
     this.interruptable = interruptable;
     if (trigger) {
@@ -110,7 +94,7 @@ Achievement.prototype.trigger = function() {
 };
 
 // define achievments
-var revenge = new Achievement('Revenge!','Killed someone who killed you before!', function (event) {
+var revenge = new Achievement('revenge','Revenge!','Killed someone who killed you before!', function (event) {
     // latest event is current
     var l = window.allevents.length;
     if (is_kill(event)) {
@@ -125,9 +109,11 @@ var revenge = new Achievement('Revenge!','Killed someone who killed you before!'
         }
     }
     return false;
-},['Sorry, I was laughing at your Name.ogg']);
+},['Just Pout.ogg']);
 
-var decikills = new Achievement('DecaKill!','10 unanswered kills in a row!', function (event) {
+// https://dl.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3
+
+var decikills = new Achievement('decakill','DecaKill!','10 unanswered kills in a row!', function (event) {
     if (is_kill(event) && !tk(event)) {
         if (killstreak%10==0 && killstreak>9) {
             return (true);
@@ -138,7 +124,7 @@ var decikills = new Achievement('DecaKill!','10 unanswered kills in a row!', fun
 
 
 
-var sneaker_kill = new Achievement('Sneaker!','You killed an invisible pussy!', function (event) {
+var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible pussy!', function (event) {
     if (!is_kill(event)) {
         return false;
     }
@@ -152,7 +138,7 @@ var sneaker_kill = new Achievement('Sneaker!','You killed an invisible pussy!', 
     }
 },['Low Profile.ogg','invisibleman.mp3']);
 
-var headshot_ach = new Achievement('Headshot!','You got a headshot kill!', function (event) {
+var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot kill!', function (event) {
     if (is_kill(event) && !tk(event)) {
         if (event.payload.is_headshot=='1') {
             return (true);
@@ -161,7 +147,7 @@ var headshot_ach = new Achievement('Headshot!','You got a headshot kill!', funct
     return false;
 },['pew.mp3'],20);
 
-var nocar = new Achievement("Dude, where's my car?",'You killed a harasser!', function (event) {
+var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
         if (is_player(event.payload.character_id)) {
             if (vehicles[event.payload.vehicle_id].vehicle_list[0].name.en=="Harasser") {
@@ -172,27 +158,37 @@ var nocar = new Achievement("Dude, where's my car?",'You killed a harasser!', fu
     return false;
 },['VOLUME_Dude wheres my car.wav'],20);
 
-var killed_by_shotgun = new Achievement('Red Mist!','You got killed by a shotgun!', function (event) {
+var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     if (!is_kill(event) && event.payload.event_name=="Death") {
         weapon = weapons[event.payload.attacker_weapon_id];
         if (weapon) {
             if (weapon.hasOwnProperty('item_list')) {
-                if (weapons[event.payload.attacker_weapon_id].item_list[0].item_category_id_join_item_category.name.en=='Shotgun') {
-                    return (true);
+                if (weapon.item_list.length>0) {
+                    if (weapon.item_list[0].hasOwnProperty('item_category_id_join_item_category')) {
+                        if (weapon.item_list[0].item_category_id_join_item_category.name.en=='Shotgun') {
+                            return (true);
+                        }
+                    }
+                    else {
+                        console.log('weapon has no item_category_id_join_item_category',weapon,event);
+                    }
+                }
+                else {
+                    console.log('weapon has empty item list:',weapon,event);
                 }
             }
             else {
-                console.log('weapon has no item list:',weapon);
+                console.log('weapon has no item list:',weapon,event);
             }
         }
         else {
-            console.log('no weapon found for ',event.payload.attacker_weapon_id, ' in event: ', event);
+            console.log('no weapon found for ',event.payload.attacker_weapon_id, ' in event: ', event,event);
         }
     }
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
 
-var reviver = new Achievement('Revive!','You revived someone!', function (event) {
+var reviver = new Achievement('revive','Revive!','You revived someone!', function (event) {
     if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
         // 7 = revive, 57 = squad revive
         if (event.payload.experience_id=='7' || event.payload.experience_id=='57' ) {
@@ -204,7 +200,7 @@ var reviver = new Achievement('Revive!','You revived someone!', function (event)
     return false;
 },['xp.mp3','Bwup!.ogg'],['To a Zone... one of Danger.ogg'],20);
 
-var repeat = new Achievement('Repeat Customer!','You killed the same person multiple times!', function (event) {
+var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person multiple times!', function (event) {
     var l = window.allevents.length;
     if (l<3) {
         return false;
@@ -223,13 +219,12 @@ var repeat = new Achievement('Repeat Customer!','You killed the same person mult
     return false;
 },['Whats Up_ Whattya been doin_.ogg'],20);
 
-var assister = new Achievement('Santas Little Helper!','You assisted killing someone 5 times in a row without killing anybody yourself!', function (event) {
+var assister = new Achievement('helper','Santas Little Helper!','You assisted killing someone 5 times in a row without killing anybody yourself!', function (event) {
     if (event.payload.event_name=="GainExperience") {
         // 2 assist, 371 priority assist
         if (event.payload.experience_id=='2' || event.payload.experience_id=='371') {
             assist_streak++;
-            if (assist_streak>=5) {
-                assist_streak=0;
+            if (assist_streak%5==0 && assist_streak>0) {
                 var msg = "You are Santa's Little Helper! 5 assists in a row without any kills yourself!";
                 //msg += print_character(event.character_id);
                 insert_row (event, msg);
@@ -240,7 +235,7 @@ var assister = new Achievement('Santas Little Helper!','You assisted killing som
     return false;
 },['helper.mp3'],5);
 
-var blinder = new Achievement('Stevie Wonder Creator!','You blinded someone by killing their motion spotter!', function (event) {
+var blinder = new Achievement('blinder','Stevie Wonder Creator!','You blinded someone by killing their motion spotter!', function (event) {
     if (event.payload.event_name=="GainExperience") {
         // 293 motion detect, 370 kill motion spotter, 294 squad motion detect
         if ( (event.payload.experience_id=='370') ) {
@@ -255,7 +250,7 @@ var blinder = new Achievement('Stevie Wonder Creator!','You blinded someone by k
     return false;
 },['Noop.ogg']);
 
-var hatebombs = new Achievement('Bomb Disposal!','You killed someones explosive device!', function (event) {
+var hatebombs = new Achievement('hatebombs','Bomb Disposal!','You killed someones explosive device!', function (event) {
     if (event.payload.event_name=="GainExperience") {
         // 293 motion detect, 370 kill motion spotter, 294 squad motion detect
         if ( (event.payload.experience_id=='86')) {
@@ -270,7 +265,7 @@ var hatebombs = new Achievement('Bomb Disposal!','You killed someones explosive 
     return false;
 },['Noop.ogg']);
 
-var tk_sound = new Achievement('Teamkill!','You killed a friendly!', function (event) {
+var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', function (event) {
     if (event.payload.event_name=="Death") {
         if (is_kill(event) && tk(event)) {
             return true;
@@ -279,7 +274,7 @@ var tk_sound = new Achievement('Teamkill!','You killed a friendly!', function (e
     return false;
 },['My Bad! Thats on me.ogg']);
 
-var welcome = new Achievement('Welcome To Planetside!','You killed someone new to the game!', function (event) {
+var welcome = new Achievement('welcome','Welcome To Planetside!','You killed someone new to the game!', function (event) {
     if (event.payload.event_name=="Death") {
         if (is_kill(event) && !tk(event)) {
             if (characters[event.payload.character_id].character_list[0].battle_rank.value < 6) {
@@ -291,7 +286,7 @@ var welcome = new Achievement('Welcome To Planetside!','You killed someone new t
 },['Prospective Investor.ogg']);
 
 
-var welcome = new Achievement('Shitter Dunk!','You killed someone with a good KDR!', function (event) {
+var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with a good KDR!', function (event) {
     if (event.payload.event_name=="Death") {
         if (is_kill(event) && !tk(event)) {
             stats_history = characters[event.payload.character_id].character_list[0].stats.stat_history;
@@ -308,13 +303,21 @@ var welcome = new Achievement('Shitter Dunk!','You killed someone with a good KD
 
 // replace sound filenames in achievements with actual audio elements
 new_achievements.forEach(achievement => {
-    if (achievement.hasOwnProperty('sounds')) {
-        for (n=0; n<achievement.sounds.length; n++) {
-            achievement.sounds[n] = new Audio('https://bobmitch.com/ps2/audio/' + achievement.sounds[n]);
+    if (achievement.hasOwnProperty('soundfiles')) {
+        for (n=0; n<achievement.soundfiles.length; n++) {
+            if (achievement.soundfiles[n].toLowerCase().startsWith('http')) {
+                // external mp3
+                achievement.sounds[n] = new Audio(achievement.soundfiles[n]);
+            }
+            else {
+                achievement.sounds[n] = new Audio('https://bobmitch.com/ps2/audio/' + achievement.soundfiles[n]);
+            }
             achievement.sounds[n].crossOrigin = 'anonymous';
         }
     }
 });
+
+load_config(); // important - do this after previous built-in hardcoded achievements have been created :)
 
 function reset_streaks() {
     revive_count_streak=0;
@@ -710,13 +713,14 @@ function process_event(event) {
         if (achievement.triggered(event)) {
             window.cur_achievements.push(achievement);
         }
-        // sort by priority
-        // and trigger top
-        window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
-        if (window.cur_achievements.length>0) {
-            window.cur_achievements[0].trigger();
-        }
+        
     });
+    // sort by priority
+    // and trigger top
+    window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
+    if (window.cur_achievements.length>0) {
+        window.cur_achievements[0].trigger();
+    }
 
     auto_updaters = document.querySelectorAll('.autoupdate');
     auto_updaters.forEach(auto => {
@@ -915,6 +919,16 @@ document.querySelector('#show_player_modal').addEventListener('click',function(e
     document.querySelector('#playermodal').classList.toggle('is-active');
 });
 
+document.querySelector('#show_feedback_modal').addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelector('#feedback_modal').classList.toggle('is-active');
+});
+
+document.querySelector('#show_about_modal').addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelector('#about_modal').classList.toggle('is-active');
+});
+
 document.querySelector('#show_achievements_modal').addEventListener('click',function(e){
     e.preventDefault();
     document.querySelector('#achievement_modal').classList.toggle('is-active');
@@ -939,51 +953,200 @@ close_modals.forEach(close_modal => {
 // gen achi list
 list = document.getElementById('achievments_list');
 new_achievements.forEach(a => {
-    friendly_name = encodeURI(a.name);
+    friendly_name = encodeURI(a.id);
+    card_footer_markup = '<div class="field is-grouped is-grouped-multiline">';
+    
+    for (let [index, val] of a.soundfiles.entries()) {
+        if (val.startsWith('http')) {
+            card_footer_entry = `
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag">${val}</span>
+                        <a data-id='${a.id}' data-index='${index}' class="tag is-light is-primary play_sound">></span>
+                        <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
+                    </div>
+                </div>
+            `;
+        }
+        else {
+            // built in audio
+            card_footer_entry = `
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag is-light">${val}</span>
+                        <a data-id='${a.id}' data-index='${index}' class="tag is-light is-primary play_sound">></a>
+                        <a data-id='${a.id}' data-index='${index}' class="tag is-light is-info disable_default">on</a>
+                    </div>
+                </div>
+            `;
+        }
+        card_footer_markup += card_footer_entry;
+    };
+    card_footer_markup += '</div>';
+
     markup = `
-    <div class="card">
-  <header class="card-header">
-    <p class="card-header-title">
-    ${a.name}
-    </p>
-    <div class="control">
-        <label class="radio">
-            <input checked type="radio" name="enabled_${friendly_name}">
-            Yes
-        </label>
-        <label class="radio">
-            <input type="radio" name="enabled_${friendly_name}">
-            No
-        </label>
+    <div class="card" data-id="${friendly_name}">
+        <header class="card-header">
+            <p class="card-header-title">
+            ${a.name}
+            </p>
+            <div class="control">
+                <label class="radio">
+                    <input checked type="radio" name="enabled_${friendly_name}">
+                    On
+                </label>
+                <label class="radio">
+                    <input type="radio" name="enabled_${friendly_name}">
+                    Off
+                </label>
+            </div>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                ${a.description}
+                
+            </div>
+        </div>
+        <footer class='card-footer'>
+            ${card_footer_markup}
+            <button style='margin:1em' class='add_audio button is-small is-light is-success'>+</button>
+        </footer>
     </div>
-  </header>
-  <div class="card-content">
-    <div class="content">
-        ${a.description}
-    </div>
-  </div>
-</div>
     `;
     list.innerHTML = list.innerHTML + markup;
 });
 
-// uploads
-
-function upload_mp3 (e) {
-    console.log(e);
+function save_config() {
+    // strip name/desc and jsonify into localstorage
+    ach_json = JSON.stringify(new_achievements);
+    window.temp_config = JSON.parse(ach_json);
+    for (n=0;n<temp_config.length;n++) {
+        delete temp_config[n].name;
+        delete temp_config[n].description;
+        delete temp_config[n].sounds;
+        delete temp_config[n].priority;
+        delete temp_config[n].interruptable;
+    }
+    final_config_string = JSON.stringify(temp_config);
+    localStorage.setItem('ps2_achievements',final_config_string);
 }
 
-const fileSelector = document.getElementById('uploadfiles');
-fileSelector.addEventListener('change', (event) => {
-    const fileList = event.target.files;
-    for (const file of fileList) {
-        console.log(file);
-        storage.root.getFile(file.name, {create: true}, function(DatFile) {
-            DatFile.createWriter(function(DatContent) {
-                //var blob = new Blob(["Lorem Ipsum"], {type: file.type});
-                DatContent.write(file); // file is already blob
-            });
-        });
-        add_audio(file.name); // store filename and path in localStorage object
+function load_config() {
+    config = JSON.parse(localStorage.getItem('ps2_achievements'));
+    if (config) {
+        // find achievements in config and match to hard coded
+        for (i=0; i<config.length; i++) {
+            ach = null;
+            for (n=0; n<new_achievements.length; n++) {
+                if (new_achievements[n].id==config[i].id) {
+                    ach = new_achievements[n];
+                    break;
+                }
+            };
+            if (!ach) {
+                console.log('No matching achievement found during config load for: ',config[i]);
+            }
+            else {
+                // found config for an achievement
+                // loop through sounds and add
+                for (x=0; x<config[i].soundfiles.length; x++) {
+                    sf = config[i].soundfiles[x];
+                    if (sf.startsWith('https')) {
+                        ach.soundfiles.push(config[i].soundfiles[x]);
+                        s = new Audio(sf);
+                        s.crossOrigin = 'anonymous';
+                        ach.sounds.push(s); 
+                        console.log('Inserting new audio ',sf,' into ach: ',ach);
+                    }
+                }
+            }
+        }
     }
-});
+}
+
+function get_achievement(id) {
+    for (n=0; n<new_achievements.length; n++) {
+        if (new_achievements[n].id==id) {
+            return new_achievements[n];
+        }
+    }
+    return null;
+}
+
+
+document.querySelector('body').addEventListener('click',function(e){
+
+    //console.log(e.target);
+
+    if (e.target.classList.contains('is-delete') && e.target.classList.contains('remove-audio')) {
+        resp = confirm('Are you sure?');
+        if (resp) {
+            // data-id='${a.id}' data-index='${index}'
+            id = e.target.dataset.id;
+            index = e.target.dataset.index;
+            console.log('removing audio id',id,' index ',index);
+            ach = get_achievement(id);
+            ach.sounds.splice(index,1);
+            ach.soundfiles.splice(index,1);
+            save_config();
+            e.target.closest('.control').remove();
+        }
+    }
+
+    if (e.target.classList.contains('play_sound')) {
+        // data-id='${a.id}' data-index='${index}'
+        id = e.target.dataset.id;
+        index = e.target.dataset.index;
+        console.log('playing audio id',id,' index ',index);
+        ach = get_achievement(id);
+        ach.sounds[index].play();
+    }
+    
+    if (e.target.classList.contains('add_audio')) {
+        card = e.target.closest('.card');
+        achievement_id = card.dataset.id;
+        //alert(achievement_id);
+        url = prompt('Enter full URL of mp3/ogg file:');
+        if (url!==""&&url!==null) {
+            if (!url.startsWith('https')) {
+                alert('Needs to be the full URL, and needs to be HTTPS');
+            }
+            else {
+                ach = null;
+                for (n=0; n<new_achievements.length; n++) {
+                    if (new_achievements[n].id==achievement_id) {
+                        ach = new_achievements[n];
+                        break;
+                    }
+                };
+                if (!ach) {
+                    alert('No matching achievement found');
+                }
+                else {
+                    console.log('Inserting new audio into ach: ',ach);
+                    ach.soundfiles.push(url);
+                    s = new Audio(url);
+                    s.crossOrigin = 'anonymous';
+                    ach.sounds.push(s);
+                    save_config();
+                    index = ach.sounds.length-1;
+                    id = ach.id;
+                    // update row of entries in card
+                    card_footer_entry = `
+                        <div class="control">
+                            <div class="tags has-addons">
+                                <span class="tag">${url}</span>
+                                <a data-id='${id}' data-index='${index}' class="tag is-light is-primary play_sound">></span>
+                                <a data-id='${id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
+                            </div>
+                        </div>
+                    `;
+                    html = card.querySelector('.is-grouped').innerHTML;
+                    html += card_footer_entry;
+                    card.querySelector('.is-grouped').innerHTML = html;
+                }
+            }
+        }
+    }
+})
+
