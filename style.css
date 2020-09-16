@@ -114,6 +114,7 @@ span.outfit {
 }
 .card-header {
     background:aliceblue !important;
+    background:#f0f0f0 !important;
     font-size:130%;
 }
 #splash .contain {

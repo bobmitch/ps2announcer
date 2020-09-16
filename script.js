@@ -830,8 +830,8 @@ function subscribe_to_character(id, logoutonly=false) {
     url = "https://census.daybreakgames.com/s:bax/get/ps2:v2/character?c:join=characters_online_status(character_id)&character_id=" + id;
     //url = "https://census.daybreakgames.com/s:bax/get/ps2:v2/character?c:join=characters_online_status(character_id)&character_id=" + window.char;
     jQuery.getJSON(url,function(json){
-        console.log('Subscribed to player char:');
-        console.log(json);
+        //console.log('Subscribed to player char:');
+        //console.log(json);
         //say('Subscribed to ' + json.character_list[0].name.first,'subscribed');
         var status=json;
         if (status.character_list[0].character_id_join_characters_online_status.online_status!="0") {
@@ -861,9 +861,6 @@ function add_player_to_list(player) {
 window.onload = function() {
     window.allevents = [];
     window.gainexperienceevents = [];
-    
-    var messagesList = document.getElementById('messages');
-    var socketStatus = document.getElementById('status');
 
     jQuery('#playersearch').keyup(function(e){
         var code = e.which;
@@ -1116,7 +1113,7 @@ function load_config() {
                         s = new Audio(sf);
                         s.crossOrigin = 'anonymous';
                         ach.sounds.push(s); 
-                        console.log('Inserting new audio ',sf,' into ach: ',ach);
+                        //console.log('Inserting new audio ',sf,' into ach: ',ach);
                     }
                 }
                 // set enabled state
