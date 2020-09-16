@@ -10,6 +10,7 @@ if (ps2_extraaudio===null) {
 }
 
 var killstreak=0; // reset by death
+var spamstreak=0;
 var max_killstreak=0;
 var assist_streak=0;
 var revive_count_streak=0; // reset by death
@@ -90,8 +91,25 @@ Achievement.prototype.triggered = function() {
 Achievement.prototype.trigger = function() {
     /* console.log ('Triggered achievement:');
     console.log (this); */
-    random_sound_index = Math.floor(Math.random() * this.sounds.length);
-    this.sounds[random_sound_index].play();
+    has_external = false;
+    for (n=0; n<this.sounds.length; n++) {
+        if (!this.sounds[n].src.includes('bobmitch.com')) {
+            has_external=true;
+        }
+    }
+    if (!has_external) {
+        // default only
+        random_sound_index = Math.floor(Math.random() * this.sounds.length);
+        this.sounds[random_sound_index].play();
+    }
+    else {
+        // pick random until external found
+        random_sound_index = Math.floor(Math.random() * this.sounds.length);
+        while (this.sounds[random_sound_index].src.includes('bobmitch.com')) {
+            random_sound_index = Math.floor(Math.random() * this.sounds.length);
+        }
+        this.sounds[random_sound_index].play();
+    }
 };
 
 // define achievments
@@ -188,6 +206,30 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
     }
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
+
+var badspam = new Achievement('badspam',"I Don't Like Spam!",'You got killed by a Lasher!', function (event) {
+    if (!is_kill(event) && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=='7540') {
+            return true;
+        }
+    }
+    return false;
+},['spam1.mp3','spam2.mp3','spam3.mp3']);
+
+var goodspam = new Achievement('goodspam','Good Spam!','You spammed 5 people to death with the Lasher!', function (event) {
+    if (is_kill(event) && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=='7540') {
+            spamstreak++;
+            if (spamstreak>0 && spamstreak%5==0) {
+                return true;
+            }
+        }
+        else {
+            spamstreak=0;
+        }
+    }
+    return false;
+},['goodspam.mp3']);
 
 var reviver = new Achievement('revive','Revive!','You revived someone!', function (event) {
     if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
@@ -292,13 +334,13 @@ var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with
         if (is_kill(event) && !tk(event)) {
             stats_history = characters[event.payload.character_id].character_list[0].stats.stat_history;
             victim_kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
-            if (victim_kdr>2) {
+            if (victim_kdr>2.5) {
                 return true;
             }
         }
     }
     return false;
-},['fanofcock.ogg', 'Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],6);
+},['fanofcock.ogg', 'Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],5);
 
 // end of define achievments
 
@@ -572,9 +614,14 @@ function get_character (character_id) {
 function get_weapon (weapon_id) {
     // check if weapon_id already in local cache
     // no local, so need to get then update
-    if (1==0) {
+    /* if (1==0) {
         // have local
         return weapon;
+    } */
+    if (window.weapons.hasOwnProperty(weapon_id)) {
+        // have local
+        //return dfd.resolve(window.characters[character_id]);
+         return window.weapons[weapon_id];
     }
     else {
         // handle as promise
@@ -598,9 +645,10 @@ function get_weapon (weapon_id) {
 function get_vehicle (vehicle_id) {
     // check if weapon_id already in local cache
     // no local, so need to get then update
-    if (1==0) {
+    if (window.vehicles.hasOwnProperty(vehicle_id)) {
         // have local
-        return vehicle;
+        //return dfd.resolve(window.characters[character_id]);
+         return window.vehicles[vehicle_id];
     }
     else {
         // handle as promise
@@ -693,6 +741,7 @@ function process_event(event) {
         if (is_player(event.payload.character_id)) {
             // you died
             window.killstreak=0;
+            window.spamstreak=0;
         }
         else {
             if (!tk(event)) {
@@ -718,7 +767,7 @@ function process_event(event) {
     });
     // sort by priority
     // and trigger top enabled 
-    window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
+    window.cur_achievements.sort((a, b) => (a.priority < b.priority) ? 1 : -1)
     for (n=0; n<window.cur_achievements.length; n++) {
         if (window.cur_achievements[n].enabled) {
             window.cur_achievements[n].trigger();
@@ -979,7 +1028,7 @@ new_achievements.forEach(a => {
                     <div class="tags has-addons">
                         <span class="tag is-light">${val}</span>
                         <a data-id='${a.id}' data-index='${index}' class="tag is-light is-primary play_sound">></a>
-                        <a data-id='${a.id}' data-index='${index}' class="tag is-light is-info disable_default">on</a>
+                        <!--<a data-id='${a.id}' data-index='${index}' class="tag is-light is-info disable_default">on</a>-->
                     </div>
                 </div>
             `;
