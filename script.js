@@ -436,10 +436,6 @@ function display_event(data) {
             else if (data.payload.experience_id=='2' && is_player(data.payload.character_id)) {
                 assist_streak++;
             }
-            else if ( (data.payload.experience_id=='370' || data.payload.experience_id=='293' || data.payload.experience_id=='294') && is_player(data.payload.character_id)) {
-                console.log('motion sensor kill');
-                motion_sensor_kills++;
-            }
         }		
         if (data.payload.event_name=='Death') {
 
@@ -487,6 +483,10 @@ function display_event(data) {
                 // get weapon
                 if (data.payload.attacker_weapon_id!='0') {
                     msg+= ' using <span>'+weapons[data.payload.attacker_weapon_id].item_list[0].name.en+'</span> <span class="weapon_type"> ('+weapons[data.payload.attacker_weapon_id].item_list[0].item_category_id_join_item_category.name.en+')</span> ';
+                }
+                else if (data.payload.attacker_vehicle_id!='0') {
+                    // maybe got squished
+                    msg+= ' in their ' + vehicles[data.payload.attacker_vehicle_id].vehicle_list[0].name.en + '</span>';
                 }
                 else {
                     msg+=' with nothing at all!';

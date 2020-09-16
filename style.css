@@ -116,3 +116,22 @@ span.outfit {
     background:aliceblue !important;
     font-size:130%;
 }
+#splash .contain {
+    text-align:center;
+}
+.splashtitle {
+    font-weight:900;
+    font-size:8vmax;
+    line-height:0.8;
+    margin-bottom:1em;
+    color:#222;
+    text-shadow:0 0 20px white;
+    padding:1em;
+}
+.splashabout {
+    color:#333;
+    font-size:1rem;
+    font-weight:bold;
+    opacity:0.6;
+    margin-top:6vmax;
+}
