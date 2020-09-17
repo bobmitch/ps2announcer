@@ -1166,9 +1166,20 @@ document.querySelector('#show_about_modal').addEventListener('click',function(e)
     document.querySelector('#about_modal').classList.toggle('is-active');
 });
 
+
+document.querySelector('#show_export_modal').addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelector('#export_modal').classList.toggle('is-active');
+    document.getElementById('config_export').select();
+    if (document.execCommand('copy')) {
+        alert('Current config is in your copy buffer ready to be pasted somewhere!');
+    }
+});
+
 document.querySelector('#show_achievements_modal').addEventListener('click',function(e){
     e.preventDefault();
     document.querySelector('#achievement_modal').classList.toggle('is-active');
+    
 });
 
 modal_backgrounds = document.querySelectorAll('.modal-background');
@@ -1275,6 +1286,22 @@ function save_config() {
     localStorage.setItem('ps2_achievements',final_config_string);
 }
 
+document.getElementById('apply_config').addEventListener('click',function(e){
+    config_string = document.getElementById('config_export').value;
+    console.log('Applying:');
+    console.log(config_string);
+    config = JSON.parse(config_string);
+    if (config) {
+        // save string and reload config
+        localStorage.setItem('ps2_achievments',config_string);
+        load_config();
+        alert('Sound Pack Loaded');
+    }
+    else {
+        alert('Error applying sound pack!');
+    }
+});
+
 function load_config() {
     config = JSON.parse(localStorage.getItem('ps2_achievements'));
     if (config) {
@@ -1315,6 +1342,8 @@ function load_config() {
             }
         }
     }
+    config_textarea = document.getElementById('config_export');
+    config_textarea.innerText = JSON.stringify(config);
 }
 
 function get_achievement(id) {
@@ -1329,12 +1358,19 @@ function get_achievement(id) {
 document.querySelector('#volume').addEventListener('change',function(e){
     volume = e.target.value;
     console.log('volume is now ',volume);
+    localStorage.setItem('ps2_volume',volume);
     new_achievements.forEach(achievement => {
         achievement.sounds.forEach(sound => {
             sound.volume = volume/100;
         });
     });
 });
+saved_volume = localStorage.getItem('ps2_volume');
+if (saved_volume) {
+    volume_slider = document.querySelector('#volume')
+    volume_slider.value = saved_volume;
+    volume_slider.dispatchEvent(new Event('change'));
+}
 
 document.querySelector('body').addEventListener('click',function(e){
 

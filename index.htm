@@ -48,6 +48,9 @@
 							<a id='show_feedback_modal' class="navbar-item">
 							  Feedback
 							</a>
+							<a id='show_export_modal' class="navbar-item">
+								Export/Import Soundpack
+							  </a>
 						</div>
 					</div>
 					<div class="navbar-item">
@@ -178,6 +181,27 @@
 			  </header>
 			  <section class="modal-card-body">
 				<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScsWiI1_GUhgXrBiK4fN7JqBZpHCzOfmbL4VvC2S8m_BnHnpA/viewform?embedded=true" width="640" height="737" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+			  </section>
+			  
+			</div>
+		  </div>
+
+		  <div id='export_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Import/Export Soundpack</p>
+				<button class="delete" aria-label="close"></button>
+				
+			  </header>
+			  <section class="modal-card-body">
+				<textarea id='config_export'>
+
+				</textarea>
+				<br>
+					<button type='button' href='#' id='apply_config' class="button is-info">
+						<strong>Apply Config</strong>
+					</button>
 			  </section>
 			  
 			</div>
