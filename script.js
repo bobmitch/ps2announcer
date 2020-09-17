@@ -30,11 +30,14 @@ var characters={};
 var weapons={}; 
 var vehicles={};
 var synth = window.speechSynthesis;
-var achievements = {};
+//var achievements = {};
 var new_achievements = [];
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
 
-
+var last_kill_timestamp = 0;
+var multikills = 0;
+var multikill_window = 10; // secs to multikill reset
+var ragequit_watchlist = {};
 
 
 
@@ -128,18 +131,122 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
         }
     }
     return false;
-},['Just Pout.ogg']);
+},['Just Pout.ogg'],15);
 
 // https://dl.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3
 
-var decikills = new Achievement('decakill','DecaKill!','10 unanswered kills in a row!', function (event) {
+
+
+var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who left almost straight away!', function (event) {
+    if (event.payload.event_name=="PlayerLogout") {
+        if (ragequit_watchlist.hasOwnProperty(event.payload.character_id)) {
+            time_since_added_to_list = parseInt(event.payload.timestamp) - parseInt(ragequit_watchlist[event.payload.character_id]);
+            if (time_since_added_to_list>15) {
+                // they were on the list, but they are still playing, so remove from list
+                unsubscribe(event.payload.character_id);
+                delete ragequit_watchlist[event.payload.character_id];
+            }
+            else {
+                return true;
+            }
+        }
+        // clear all old ragequit subscriptions and watches
+        for (const potential_rager in ragequit_watchlist) {
+            console.log(`${potential_rager}: ${ragequit_watchlist[potential_rager]}`);
+            time_since_added_to_list = parseInt(event.payload.timestamp) - parseInt(ragequit_watchlist[potential_rager]);
+            if (time_since_added_to_list>15) {
+                unsubscribe(potential_rager);
+                delete ragequit_watchlist[potential_rager];
+            }
+        }
+    }
+    return false;
+},['solong.mp3'],5);
+
+var decikills = new Achievement('pentakill','PentaKill!','5 unanswered kills in a row!', function (event) {
     if (is_kill(event) && !tk(event)) {
-        if (killstreak%10==0 && killstreak>9) {
+        if (killstreak==5) {
             return (true);
         }
     }
     return false;
-},['No One Could have Survived.ogg'],5);
+},['five_long.mp3'],4);
+
+var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a row!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (killstreak==10) {
+            return (true);
+        }
+    }
+    return false;
+},['No One Could have Survived.ogg'],4);
+
+var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick succession!', function (event) {
+    //console.log('checking for double kill - current multikills = ',multikills);
+    if (is_kill(event) && !tk(event)) {
+        //console.log('...you got a kill... checking multikills count==2....');
+        if (multikills==1) {
+            return (true);
+        }
+    }
+    return false;
+},['two.mp3'],3);
+var triplekill = new Achievement('triplekill','Triple Kill!','3 kills in quick succession!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (multikills==2) {
+            return (true);
+        }
+    }
+    return false;
+},['three.mp3'],3);
+var multikill = new Achievement('multikill','Multi Kill!','4 kills in quick succession!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (multikills==3) {
+            return (true);
+        }
+    }
+    return false;
+},['four.mp3'],3);
+var megakill = new Achievement('megakill','Mega Kill!','5 kills in quick succession!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (multikills==4) {
+            return (true);
+        }
+    }
+    return false;
+},['five.mp3'],3);
+var ultrakill = new Achievement('ultrakill','Ultra Kill!','6 kills in quick succession!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (multikills==5) {
+            return (true);
+        }
+    }
+    return false;
+},['six.mp3'],3);
+var monsterkill = new Achievement('monsterkill','Monster Kill!','7 kills in quick succession!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (multikills==6) {
+            return (true);
+        }
+    }
+    return false;
+},['count_laughing.mp3'],3);
+var ludicrous = new Achievement('ludicrous','Ludicrous Kill!','7 kills in quick succession!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (multikills==7) {
+            return (true);
+        }
+    }
+    return false;
+},['count_laughing.mp3'],3);
+var holyshit = new Achievement('holyshit','Holy Shit!','9 kills in quick succession!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (multikills==8) {
+            return (true);
+        }
+    }
+    return false;
+},['nine.mp3'],3);
 
 
 
@@ -155,7 +262,7 @@ var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
     }
-},['Low Profile.ogg','invisibleman.mp3']);
+},['Low Profile.ogg','invisibleman.mp3'],20);
 
 var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot kill!', function (event) {
     if (is_kill(event) && !tk(event)) {
@@ -164,7 +271,7 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
         }
     }
     return false;
-},['pew.mp3'],20);
+},['pew.mp3'],10);
 
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
@@ -315,7 +422,7 @@ var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', 
         }
     }
     return false;
-},['My Bad! Thats on me.ogg']);
+},['My Bad! Thats on me.ogg','count_sorry.mp3','no_friends_count.mp3']);
 
 var welcome = new Achievement('welcome','Welcome To Planetside!','You killed someone new to the game!', function (event) {
     if (event.payload.event_name=="Death") {
@@ -341,6 +448,42 @@ var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with
     }
     return false;
 },['fanofcock.ogg', 'Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],5);
+
+var mutual = new Achievement('mutual','Mutually Assured Destruction!','You killed another player at the same time as he killed you!', function (event) {
+    if (event.payload.event_name=="Death") {
+        if (is_kill(event) && !tk(event) && allevents.length>=2) {
+            // your kill, check previous event for death at same time
+            prev = allevents[allevents.length-2];
+            if (prev.payload.timestamp==event.payload.timestamp) {
+                // same time
+                if (prev.payload.event_name=="Death" && is_player (prev.payload.character_id)) {
+                    // you died prev
+                    if (prev.attacker_character_id==event.payload.character_id) {
+                        // to the same guy you killed
+                        return true;
+                    }
+                }
+            }
+        }
+        if (!is_kill(event) && !tk(event) && allevents.length>=2) {
+            // you died, check for a kill prev event
+            prev = allevents[allevents.length-2];
+            if (prev.payload.timestamp==event.payload.timestamp) {
+                // same time
+                if (prev.payload.event_name=="Death" && !is_player (prev.payload.character_id)) {
+                    // you killed in prev
+                    if (is_kill(prev) && !tk(prev)) {
+                        if (prev.character_id==event.payload.attacker_character_id) {
+                            // and it was the same dude that killed you...
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false;
+},['aallrighty.mp3'],10);
 
 // end of define achievments
 
@@ -426,6 +569,26 @@ function tk(event) {
     }
 }
 
+
+function get_vehicle_name(vehicle_id) {
+    if (vehicles.hasOwnProperty(vehicle_id)) {
+        if (vehicles[vehicle_id].hasOwnProperty('vehicle_list')) {
+            if (vehicles[vehicle_id].vehicle_list.length>0) {
+                return vehicles[vehicle_id].vehicle_list[0].name.en;
+            }
+            else {
+                console.log('empty vehicle list for: ',vehicle_id); 
+            }
+        }
+        else {
+            console.log('no vehicle list for: ',vehicle_id);    
+        }
+    }
+    else {
+        console.log('unknown vehice id: ',vehicle_id);
+    }
+    return '[Unknown]';
+}
 
 
 function display_event(data) {
@@ -529,15 +692,12 @@ function display_event(data) {
                 }
                 else if (data.payload.attacker_vehicle_id!='0') {
                     // maybe got squished
-                    msg+= ' in their ' + vehicles[data.payload.attacker_vehicle_id].vehicle_list[0].name.en + '</span>';
+                    vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
+                    msg+= ' in their ' + vehicle_name + '</span>';
                 }
                 else {
                     msg+=' with nothing at all!';
                 }
-            }
-            if (data.payload.attacker_vehicle_id!="0") {
-                //msg+= ' <span class="pill">Vehicle: ' + vehicles[data.payload.attacker_vehicle_id].vehicle_list[0].name.en + '</span>';
-                console.log(vehicles[data.payload.attacker_vehicle_id])
             }
         }
         if (data.payload.event_name=='VehicleDestroy') {
@@ -547,7 +707,10 @@ function display_event(data) {
                 msg+=print_character(data.payload.attacker_character_id);
             }
             else {
-                msg+='You destroyed a <span>'+vehicles[data.payload.vehicle_id].vehicle_list[0].name.en+'</span> with ';
+                msg+='You destroyed ';
+                msg+=print_character(data.payload.character_id);
+                vehicle_name = get_vehicle_name(data.payload.vehicle_id);
+                msg+="'s<span> "+vehicle_name+'</span> with ';
                 
                 if (data.payload.attacker_weapon_id!="0") {
                     msg+= ' using <span>'+weapons[data.payload.attacker_weapon_id].item_list[0].name.en+'</span> <span class="weapon_type">('+weapons[data.payload.attacker_weapon_id].item_list[0].item_category_id_join_item_category.name.en+')</span> ';
@@ -734,7 +897,9 @@ function process_event(event) {
         say('Player logged in');
     }
     if (event.payload.event_name=="PlayerLogout") {
-        say('Player logged out');
+        if (is_player(event.payload.character_id)) {
+            say('Player logged out');
+        }
     }
     // update global values based on event
     if (event.payload.event_name=='Death') {
@@ -742,12 +907,26 @@ function process_event(event) {
             // you died
             window.killstreak=0;
             window.spamstreak=0;
+            multikills=0;
         }
         else {
             if (!tk(event)) {
                 // genuine kill
                 window.killstreak++;
                 assist_streak=0; // end assist streak
+                time_since_last_kill = parseInt(event.payload.timestamp) - parseInt(last_kill_timestamp);
+                //console.log('time since last kill = ',time_since_last_kill);
+                if (time_since_last_kill <= multikill_window) {
+                    multikills++;
+                }
+                else {
+                    multikills=0;
+                }
+                last_kill_timestamp = event.payload.timestamp;
+                // subscribe to logout of player killed for ragequit
+                // and add timestamp to watchlist
+                subscribe_to_character_logout(event.payload.character_id);
+                ragequit_watchlist[event.payload.character_id] = event.payload.timestamp;
             }
             else {
                 say ('Teamkill');
@@ -767,7 +946,7 @@ function process_event(event) {
     });
     // sort by priority
     // and trigger top enabled 
-    window.cur_achievements.sort((a, b) => (a.priority < b.priority) ? 1 : -1)
+    window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
     for (n=0; n<window.cur_achievements.length; n++) {
         if (window.cur_achievements[n].enabled) {
             window.cur_achievements[n].trigger();
@@ -784,6 +963,17 @@ function process_event(event) {
     
 }
 
+function unsubscribe(id) {
+    var subscription_data = {
+    "action":"clearSubscribe",
+		"characters":[id],
+		"eventNames":[
+			"PlayerLogout"
+        ]
+    };
+    window.logoutsocket.send (JSON.stringify(subscription_data));
+}
+
 function subscribe_to_character_logout(id) {
     // todo - monitor for rage quits
     subscribe_to_character(id,true);
@@ -792,15 +982,16 @@ function subscribe_to_character_logout(id) {
 function subscribe_to_character(id, logoutonly=false) {
 
     // clear existing subscription
-    var subscription_data = {
+    /* var subscription_data = {
         "action":"clearSubscribe",
         "all":"true",
         "service":"event"
     }
-    window.socket.send (JSON.stringify(subscription_data));
-    
+    window.socket.send (JSON.stringify(subscription_data)); */
+    console.log('logoutonly: ',logoutonly);
     // subscribe to new char events
     if (logoutonly) {
+        console.log('Subscribing to logout events only - for: ',id);
         var subscription_data = {
             "service":"event",
             "action":"subscribe",
@@ -809,6 +1000,7 @@ function subscribe_to_character(id, logoutonly=false) {
                 "PlayerLogout"
             ]
         }
+        window.logoutsocket.send (JSON.stringify(subscription_data));
     }
     else {
         var subscription_data = {
@@ -823,22 +1015,8 @@ function subscribe_to_character(id, logoutonly=false) {
                 "GainExperience"
             ]
         }
+        window.socket.send (JSON.stringify(subscription_data));
     }
-    window.socket.send (JSON.stringify(subscription_data));
-
-    // check if online
-    url = "https://census.daybreakgames.com/s:bax/get/ps2:v2/character?c:join=characters_online_status(character_id)&character_id=" + id;
-    //url = "https://census.daybreakgames.com/s:bax/get/ps2:v2/character?c:join=characters_online_status(character_id)&character_id=" + window.char;
-    jQuery.getJSON(url,function(json){
-        //console.log('Subscribed to player char:');
-        //console.log(json);
-        //say('Subscribed to ' + json.character_list[0].name.first,'subscribed');
-        var status=json;
-        if (status.character_list[0].character_id_join_characters_online_status.online_status!="0") {
-            jQuery('#online_status').text('Online');
-        }
-        jQuery('#playername').text(status.character_list[0].name.first);
-    });
 }
 
 
@@ -910,9 +1088,19 @@ window.onload = function() {
     
 
     window.socket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax');
+    window.logoutsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax');
 
 
-    
+    logoutsocket.onmessage = function(data) {
+        if (data.hasOwnProperty('payload')) {
+            if (data.payload.event_name!="PlayerLogout") {
+                // do ragequit tests/checks etc
+                console.log('Logout event');
+                console.log(data);
+                display_event(data);
+            }
+        }
+    }
 
 
     // handle dom changes and monitor unprocessed variables
@@ -949,12 +1137,8 @@ window.onload = function() {
             else {
                 window.gainexperienceevents.push(data); // push onto experience stack for debugging
             }
-            if (data.payload.event_name=='Death') {
-                //console.log(data);
-            }
             // display event nice, get english names first
             display_event(data);
-            
         }
         else {
             // probably heartbeat or similar, ignore for now
