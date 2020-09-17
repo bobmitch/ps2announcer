@@ -555,6 +555,9 @@ function print_character(character_id) {
 }
 
 function tk(event) {
+    if (!event.payload.event_name=='Death') {
+        return false;
+    }
     var attacker_id=event.payload.attacker_character_id;
     var victim_id=event.payload.character_id;
     //console.log('checking for tk between:',attacker_id,' and ',victim_id);

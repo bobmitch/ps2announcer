@@ -82,6 +82,12 @@
 						<span data-variable='assist_streak' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
+				<div class="control">
+					<div class="tags has-addons">
+						<span class="tag is-dark">Multi Kill Streak</span>
+						<span data-variable='multikills' class="autoupdate tag is-info">0</span>
+					</div>
+				</div>
 			</div>
 			
 			<ul id="messages"></ul>
@@ -135,13 +141,13 @@
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Audio Triggers</p>
+				<p class="modal-card-title">Manage Audio</p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>
 			  <section class="modal-card-body">
 				<div class='control flex'>
-					<label for='volume'>Glogal Volume: </label>
+					<label for='volume'>Global Volume: </label>
 					<div>
 						<input type="range" id="volume" name="volume" value="100" min="0" max="100"/> 
 					</div>
