@@ -447,7 +447,7 @@ var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with
         }
     }
     return false;
-},['fanofcock.ogg', 'Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],5);
+},['Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],5);
 
 var mutual = new Achievement('mutual','Mutually Assured Destruction!','You killed another player at the same time as he killed you!', function (event) {
     if (event.payload.event_name=="Death") {
@@ -1323,6 +1323,15 @@ function get_achievement(id) {
     return null;
 }
 
+document.querySelector('#volume').addEventListener('change',function(e){
+    volume = e.target.value;
+    console.log('volume is now ',volume);
+    new_achievements.forEach(achievement => {
+        achievement.sounds.forEach(sound => {
+            sound.volume = volume/100;
+        });
+    });
+});
 
 document.querySelector('body').addEventListener('click',function(e){
 

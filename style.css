@@ -23,7 +23,9 @@ body {
     pointer-events: none;
     opacity:0;
 }
-
+.flex {
+    display:flex;
+}
 .br, .weapon_type {
     font-size: 75%;
     opacity: 0.5;
@@ -46,6 +48,13 @@ body {
     font-weight:bold;
     padding:0.2em 0.5em;
     border-radius:0.2em;
+}
+
+#volume {
+    width: 100%;
+    width: 50ch;
+    /* display: inline-block; */
+    margin-left: 2rem;
 }
 
 tr.death {
