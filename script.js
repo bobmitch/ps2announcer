@@ -275,7 +275,7 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
 
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
-        if (is_player(event.payload.character_id)) {
+        if (is_player(event.payload.attacker_character_id)) {
             if (vehicles[event.payload.vehicle_id].vehicle_list[0].name.en=="Harasser") {
                 return (true);
             }
