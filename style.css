@@ -151,3 +151,22 @@ span.outfit {
     opacity:0.6;
     margin-top:6vmax;
 }
+
+#stats {
+    position:sticky;
+    z-index:2;
+    top:0;
+    background: white;
+    padding-bottom: 1rem;
+}
+
+#playername.offline {
+    opacity:0.5;
+    background:#aaa;
+}
+#playername {
+    opacity:1;
+    background:hsl(141, 53%, 53%);
+    color:white;
+    font-weight:bold;
+}

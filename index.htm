@@ -19,11 +19,15 @@
 			</div>
 		</div>
 		<div class='container' id="page-wrapper">
-			<nav class="navbar" role="navigation" aria-label="main navigation">
+			<nav id='nav' class="navbar" role="navigation" aria-label="main navigation">
 				<div class="navbar-brand">
 				  <a class="navbar-item" href="https://bulma.io">
 					<h3 class='title is-3'>Planetside Announcer</h5>
 				  </a>
+
+				  <div class='navbar-item' id="playerstatus">
+					  <span data-char_id="0" id='playername' class='tag offline'>Players Offline</span>
+				  </div>
 			  
 				  <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
 					<span aria-hidden="true"></span>
@@ -72,7 +76,7 @@
 
 			
 
-			<div class="field is-grouped is-grouped-multiline">
+			<div id='stats' class="field is-grouped is-grouped-multiline">
 				<div class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">Killstreak</span>
@@ -89,6 +93,12 @@
 					<div class="tags has-addons">
 						<span class="tag is-dark">Multi Kill Streak</span>
 						<span data-variable='multikills' class="autoupdate tag is-info">0</span>
+					</div>
+				</div>
+				<div class="control">
+					<div class="tags has-addons">
+						<span class="tag is-dark">K/D</span>
+						<span data-variable='kd' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
 			</div>

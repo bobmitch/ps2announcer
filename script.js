@@ -11,6 +11,9 @@ if (ps2_extraaudio===null) {
 
 var killstreak=0; // reset by death
 var spamstreak=0;
+var kills=0;
+var deaths=0;
+var kd=1;
 var max_killstreak=0;
 var assist_streak=0;
 var revive_count_streak=0; // reset by death
@@ -139,8 +142,10 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
 
 var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who left almost straight away!', function (event) {
     if (event.payload.event_name=="PlayerLogout") {
+        console.log('Potential ragequit - check against ragequit_watchlist list for ', event);
         if (ragequit_watchlist.hasOwnProperty(event.payload.character_id)) {
             time_since_added_to_list = parseInt(event.payload.timestamp) - parseInt(ragequit_watchlist[event.payload.character_id]);
+            console.log ('Watchlist - time since added is ',time_since_added_to_list);
             if (time_since_added_to_list>15) {
                 // they were on the list, but they are still playing, so remove from list
                 unsubscribe(event.payload.character_id);
@@ -341,7 +346,7 @@ var goodspam = new Achievement('goodspam','Good Spam!','You spammed 5 people to 
 var reviver = new Achievement('revive','Revive!','You revived someone!', function (event) {
     if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
         // 7 = revive, 57 = squad revive
-        if (event.payload.experience_id=='7' || event.payload.experience_id=='57' ) {
+        if (event.payload.experience_id=='7' || event.payload.experience_id=='53' ) {
             window.revive_count_streak++;
             console.log ('Triggered revive:');
             return true;
@@ -385,12 +390,12 @@ var assister = new Achievement('helper','Santas Little Helper!','You assisted ki
     return false;
 },['helper.mp3'],5);
 
-var blinder = new Achievement('blinder','Stevie Wonder Creator!','You blinded someone by killing their motion spotter!', function (event) {
+var blinder = new Achievement('blinder','Blinded, With Science!','You blinded someone by killing their motion spotter!', function (event) {
     if (event.payload.event_name=="GainExperience") {
         // 293 motion detect, 370 kill motion spotter, 294 squad motion detect
         if ( (event.payload.experience_id=='370') ) {
-            console.log(event);
-            console.log ('Triggered stevie wonder:');
+            //console.log(event);
+            //console.log ('Triggered stevie wonder:');
             var msg = "You blinded ";
             msg += print_character(event.payload.other_id);
             insert_row (event, msg);
@@ -398,7 +403,7 @@ var blinder = new Achievement('blinder','Stevie Wonder Creator!','You blinded so
         }
     }
     return false;
-},['Noop.ogg']);
+},['SheBlindedMe.mp3']);
 
 var hatebombs = new Achievement('hatebombs','Bomb Disposal!','You killed someones explosive device!', function (event) {
     if (event.payload.event_name=="GainExperience") {
@@ -413,7 +418,7 @@ var hatebombs = new Achievement('hatebombs','Bomb Disposal!','You killed someone
         }
     }
     return false;
-},['Noop.ogg']);
+},['mine_long.mp3']);
 
 var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', function (event) {
     if (event.payload.event_name=="Death") {
@@ -830,8 +835,63 @@ function get_vehicle (vehicle_id) {
             dfd.resolve(vehicle);
         });
         return dfd.promise();
+    } 
+}
+
+function get_player(char_id) {
+    playerlist.forEach(player => {
+        if (player.char_id==char_id) {
+            return player;
+        }
+    });
+    return false;
+}
+
+function set_player_online (char_id, name="Unknown Player") {
+    console.log('setting ',char_id,' online');
+    player = get_player(char_id);
+    if (player) {
+        playername=player.name;
     }
-        
+    else {
+        playername=name;
+    }
+    playername_el = document.getElementById('playername');
+    console.log('setting player online:');
+    console.log(playername);
+    playername_el.innerText = playername;
+    playername_el.classList.remove('offline');
+    playername_el.dataset.char_id = char_id;
+}
+
+function set_player_offline (char_id) {
+    player = get_player(char_id);
+    playername_el = document.getElementById('playername');
+    if (player) {
+        playername_el.innerText = "Players Offline";
+        playername_el.classList.add('offline');
+        playername_el.dataset.char_id = "0";
+    }
+}
+
+function get_player_online_state(char_id) {
+    var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:resolve=online_status&character_id="+char_id+"&c:limit=1&callback=?";
+    jQuery.getJSON(url,function(json){
+        var search = json;
+        console.log('player online state results:');
+        console.log(search);
+        if (search.character_list.length==0) {
+            console.log('Character ID not found - online status cannot be determined');
+        }
+        else {
+            if (search.character_list[0].online_status=='0') {
+                // do nothing
+            }
+            else {
+                set_player_online(char_id, search.character_list[0].name.first);
+            }
+        }
+    });
 }
 
 function player_search(){
@@ -865,9 +925,7 @@ function player_search(){
     });
 }
 
-function update_character_display(character_id) {
 
-}
 
 function is_player(char_id) {
     var found = false;
@@ -894,6 +952,21 @@ function is_kill(event) {
 // backwards loop function (like those above) to set flags for ANY historical comparison
 // so we only do one complete loop backwards and not many short and potentially long ones per test
 
+function update_kd() {
+    if (kills>0) {
+        if (deaths==0) {
+            kd=kills;
+        }
+        else {
+            kd = (kills/deaths).toFixed(2);;
+        }
+    }
+    else {
+        kd=0;
+    }
+
+}
+
 function process_event(event) {
     
     if (event.payload.event_name=="PlayerLogin") {
@@ -911,11 +984,15 @@ function process_event(event) {
             window.killstreak=0;
             window.spamstreak=0;
             multikills=0;
+            window.deaths++;
+            update_kd();
         }
         else {
             if (!tk(event)) {
                 // genuine kill
                 window.killstreak++;
+                window.kills++;
+                update_kd();
                 assist_streak=0; // end assist streak
                 time_since_last_kill = parseInt(event.payload.timestamp) - parseInt(last_kill_timestamp);
                 //console.log('time since last kill = ',time_since_last_kill);
@@ -1078,6 +1155,7 @@ window.onload = function() {
         var player = {'char_id':char_id, 'name':name};
         add_player_to_list(player);
         subscribe_to_character(char_id);
+        get_player_online_state(char_id);
         // save in localstorage
         found_char = {'char_id':char_id,'name':name}
         if (!window.playerlist) {
@@ -1117,6 +1195,7 @@ window.onload = function() {
         window.playerlist.forEach(player => {
             add_player_to_list(player);
             subscribe_to_character(player.char_id);
+            get_player_online_state(player.char_id);
         });
     };
 
@@ -1131,6 +1210,12 @@ window.onload = function() {
         var message = event.data;
         var data = JSON.parse(message);
         if (data.hasOwnProperty('payload')) {
+            if (data.payload.event_name=="PlayerLogout") {
+                set_player_offline (data.payload.character_id);
+            }
+            if (data.payload.event_name=="PlayerLogin") {
+                set_player_online (data.payload.character_id);
+            }
             //messagesList.innerHTML += '<hr>';
             //messagesList.innerHTML += '<li class="received"><span>Received:</span>' + message + '</li>';
             if (data.payload.event_name!="GainExperience") {
