@@ -25,6 +25,14 @@ var loadouts = {};
 loadouts_raw.loadout_list.forEach(loadout => {
     loadouts[loadout.loadout_id] = loadout;
 });
+// add missing loadouts - may not be correct!
+loadouts['28'] = {'faction_id':'4','loadout_id':'28','profile_id':'190'};
+loadouts['29'] = {'faction_id':'4','loadout_id':'29','profile_id':'191'};
+loadouts['30'] = {'faction_id':'4','loadout_id':'30','profile_id':'192'};
+loadouts['31'] = {'faction_id':'4','loadout_id':'31','profile_id':'193'};
+loadouts['32'] = {'faction_id':'4','loadout_id':'32','profile_id':'194'};
+loadouts['33'] = {'faction_id':'4','loadout_id':'33','profile_id':'195'};
+
 
 // load options
 
@@ -630,15 +638,11 @@ function print_character(character_id) {
 }
 
 function tk(event) {
-    if (!event.payload.event_name=='Death') {
+    if (event.payload.event_name!='Death') {
         return false;
     }
     var attacker_loadout_id=event.payload.attacker_loadout_id;
     var victim_loadout_id=event.payload.character_loadout_id;
-    /* console.log('new tk event test');
-    console.log(event);
-    console.log(attacker_loadout_id);
-    console.log(victim_loadout_id); */
     if (loadouts[parseInt(attacker_loadout_id)].faction_id==loadouts[parseInt(victim_loadout_id)].faction_id) {
         return true;
     }
@@ -1080,6 +1084,17 @@ function process_event(event) {
     }
     // update global values based on event
     if (event.payload.event_name=='Death') {
+
+        // TK debug / loadout debug
+        var attacker_loadout_id=event.payload.attacker_loadout_id;
+        var victim_loadout_id=event.payload.character_loadout_id;
+        console.log('new tk event test');
+        console.log(event);
+        console.log(attacker_loadout_id);
+        console.log(victim_loadout_id);
+        // loadout 31 = profile 193 - 4th fac engie
+        // END TK DEBUG
+
         if (is_player(event.payload.character_id)) {
             // you died
             window.killstreak=0;
