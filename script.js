@@ -1,4 +1,27 @@
 
+// pre load vehicles, item categories and profiles
+
+var profiles = {};
+profiles_raw.profile_list.forEach(profile => {
+    profiles[profile.profile_id] = profile;
+});
+
+var vehicles = {};
+vehicles_raw.vehicle_list.forEach(vehicle => {
+    vehicles[vehicle.vehicle_id] = vehicle;
+});
+
+var item_categories = {};
+item_categories_raw.item_category_list.forEach(cat => {
+    item_categories[cat.item_category_id] = cat;
+});
+
+var weapons = {};
+weapons_raw.item_list.forEach(item => {
+    weapons[item.item_id] = item;
+});
+
+// load options
 
 var playerlist = JSON.parse(localStorage.getItem('ps2_players'));
 if (playerlist===null) {
@@ -8,6 +31,8 @@ var ps2_extraaudio = JSON.parse(localStorage.getItem('ps2_extraaudio'));
 if (ps2_extraaudio===null) {
     ps2_extraaudio = [];
 }
+
+// setup global vars
 
 var killstreak=0; // reset by death
 var spamstreak=0;
@@ -30,8 +55,6 @@ var air_vs_ground;
 var spot_kill_count=0;
 var motion_sensor_kills=0;
 var characters={};
-var weapons={}; 
-var vehicles={};
 var synth = window.speechSynthesis;
 //var achievements = {};
 var new_achievements = [];
@@ -41,7 +64,6 @@ var last_kill_timestamp = 0;
 var multikills = 0;
 var multikill_window = 10; // secs to multikill reset
 var ragequit_watchlist = {};
-
 
 
 function insert_row (data, msg) {         
@@ -73,6 +95,22 @@ function insert_row (data, msg) {
         special.innerHTML = pills;
     }
 }
+
+
+function get_weapon_type (category_id) {
+    if (item_categories.hasOwnProperty(category_id)) {
+        return item_categories[category_id].name.en;
+    }
+    else {
+        return "[unknown]";
+    }
+}
+
+function is_esf (vehicle_id) {
+    // if faction esf or interceptor variant
+    return ["7","8","9","2122","2123","2124"].includes(vehicle_id);
+}
+
 
 function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], priority=10, interruptable=false) {
     this.id = id;
@@ -119,6 +157,27 @@ Achievement.prototype.trigger = function() {
 };
 
 // define achievments
+
+
+//
+var roadkill = new Achievement('roadkill','Roadkill!','Squished someone with a ground vehicle!', function (event) {
+    // latest event is current
+    var l = window.allevents.length;
+    if (is_kill(event)) {
+        if (!tk(event)) {
+            if (event.payload.attacker_weapon_id=="0") {
+                if (event.payload.attacker_vehicle_id!="0") {
+                    vh = get_local_vehicle (event.payload.attacker_vehicle_id);
+                    if (vh.type_name=="Four Wheeled Ground Vehicle") {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+},['roadkill.mp3'],15);
+
 var revenge = new Achievement('revenge','Revenge!','Killed someone who killed you before!', function (event) {
     // latest event is current
     var l = window.allevents.length;
@@ -138,7 +197,31 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
 
 // https://dl.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3
 
+var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', function (event) {
+    if (is_player(event.payload.attacker_character_id)) {
+        if (!tk(event) && (event.payload.event_name=='VehicleDestroy')) {
+            if (event.payload.attacker_vehicle_id=='')
+            var vh = get_local_vehicle(event.payload.vehice_id);
+            if (vh) {
+                if (vh.type_name=="Light Aircraft") {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+},['land_your_plane.mp3','crash_and_burn_mav.mp3','keep-the-skies-clear.mp3','flying_dying.mp3'],4);
 
+var topgun = new Achievement('topgun','Top Gun!','Destroyed an ESF with an ESF!', function (event) {
+    if (is_player(event.payload.attacker_character_id)) {
+        if (!tk(event) && (event.payload.event_name=='VehicleDestroy')) {
+            if (is_esf(event.payload.vehicle_id) && is_esf(event.payload.attacker_vehicle_id)) {
+                return true;
+            }
+        }
+    }
+    return false;
+},['congrats_top_gun.mp3','im_a_pilot.mp3','planes_no_place_for_boys.mp3'],4);
 
 var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who left almost straight away!', function (event) {
     if (event.payload.event_name=="PlayerLogout") {
@@ -157,7 +240,7 @@ var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who le
         }
         // clear all old ragequit subscriptions and watches
         for (const potential_rager in ragequit_watchlist) {
-            console.log(`${potential_rager}: ${ragequit_watchlist[potential_rager]}`);
+            //console.log(`${potential_rager}: ${ragequit_watchlist[potential_rager]}`);
             time_since_added_to_list = parseInt(event.payload.timestamp) - parseInt(ragequit_watchlist[potential_rager]);
             if (time_since_added_to_list>15) {
                 unsubscribe(potential_rager);
@@ -262,8 +345,8 @@ var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible
     if (tk(event)) {
         return false;
     }
-    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15') {
-        // 1,8.15 = infil loadouts
+    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='190') {
+        // 1,8.15,190 = infil loadouts - 190 = ns
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
     }
@@ -281,7 +364,7 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
         if (is_player(event.payload.attacker_character_id)) {
-            if (vehicles[event.payload.vehicle_id].vehicle_list[0].name.en=="Harasser") {
+            if (vehicles[event.payload.vehicle_id].name.en=="Harasser") {
                 return (true);
             }
         }
@@ -291,29 +374,9 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
 
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     if (!is_kill(event) && event.payload.event_name=="Death") {
-        weapon = weapons[event.payload.attacker_weapon_id];
-        if (weapon) {
-            if (weapon.hasOwnProperty('item_list')) {
-                if (weapon.item_list.length>0) {
-                    if (weapon.item_list[0].hasOwnProperty('item_category_id_join_item_category')) {
-                        if (weapon.item_list[0].item_category_id_join_item_category.name.en=='Shotgun') {
-                            return (true);
-                        }
-                    }
-                    else {
-                        console.log('weapon has no item_category_id_join_item_category',weapon,event);
-                    }
-                }
-                else {
-                    console.log('weapon has empty item list:',weapon,event);
-                }
-            }
-            else {
-                console.log('weapon has no item list:',weapon,event);
-            }
-        }
-        else {
-            console.log('no weapon found for ',event.payload.attacker_weapon_id, ' in event: ', event,event);
+        type = get_weapon_type(event.payload.attacker_weapon_id);
+        if (type=="Shotgun") {
+            return true;
         }
     }
     return false;
@@ -542,6 +605,8 @@ function print_character(character_id) {
         console.log ('Character ', character_id, ' has empty character list array');
         return '[unknown]';
     }
+    char_profile = profiles[ characters[character_id].character_list[0].profile_id ].name.en;
+    char+="<span class='"+char_profile+"'>" + char_profile + "</span>";
     char+='<span class="char faction'+characters[character_id].character_list[0].faction_id+'"> ';
         char+='<span class="charname">';
         if (characters[character_id].character_list[0].hasOwnProperty('outfit')) {
@@ -569,6 +634,9 @@ function tk(event) {
     if (window.characters[attacker_id]===undefined || window.characters[victim_id]===undefined) {
         return false;
     }
+    if (!window.characters[attacker_id].hasOwnProperty('character_list') || !window.characters[victim_id].hasOwnProperty('character_list')) {
+        return false;
+    }
     if (window.characters[attacker_id].character_list[0].faction_id==window.characters[victim_id].character_list[0].faction_id) {
         return true;
     }
@@ -578,19 +646,18 @@ function tk(event) {
 }
 
 
+function get_local_vehicle(vehicle_id) {
+    if (vehicles.hasOwnProperty(vehicle_id)) {
+        return vehicles[vehicle_id];
+    }
+    else {
+        return false;
+    }
+}
+
 function get_vehicle_name(vehicle_id) {
     if (vehicles.hasOwnProperty(vehicle_id)) {
-        if (vehicles[vehicle_id].hasOwnProperty('vehicle_list')) {
-            if (vehicles[vehicle_id].vehicle_list.length>0) {
-                return vehicles[vehicle_id].vehicle_list[0].name.en;
-            }
-            else {
-                console.log('empty vehicle list for: ',vehicle_id); 
-            }
-        }
-        else {
-            console.log('no vehicle list for: ',vehicle_id);    
-        }
+        return vehicles[vehicle_id].name.en;
     }
     else {
         console.log('unknown vehice id: ',vehicle_id);
@@ -677,7 +744,14 @@ function display_event(data) {
                     }
                     // get weapon
                     if (data.payload.attacker_weapon_id!="0") {
-                        msg+= ' <span>'+weapons[data.payload.attacker_weapon_id].item_list[0].name.en+' <span class="weapon_type">('+weapons[data.payload.attacker_weapon_id].item_list[0].item_category_id_join_item_category.name.en+')</span></span> ';
+                        weapon = weapons[data.payload.attacker_weapon_id];
+                        type = get_weapon_type (weapon.item_category_id);
+                        msg+= ' <span>'+weapons[data.payload.attacker_weapon_id].name.en+' <span class="weapon_type">('+type+')</span></span> ';
+                    }
+                    else if (data.payload.attacker_vehicle_id!='0') {
+                        // maybe got squished
+                        vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
+                        msg+= ' with your ' + vehicle_name + '</span>';
                     }
                     else {
                         msg+= ' using just your mind!</span> ';
@@ -696,7 +770,9 @@ function display_event(data) {
                 msg+=print_character(data.payload.attacker_character_id);
                 // get weapon
                 if (data.payload.attacker_weapon_id!='0') {
-                    msg+= ' using <span>'+weapons[data.payload.attacker_weapon_id].item_list[0].name.en+'</span> <span class="weapon_type"> ('+weapons[data.payload.attacker_weapon_id].item_list[0].item_category_id_join_item_category.name.en+')</span> ';
+                    weapon = weapons[data.payload.attacker_weapon_id];
+                    type = get_weapon_type (weapon.item_category_id);
+                    msg+= ' using <span>'+weapons[data.payload.attacker_weapon_id].name.en+'</span> <span class="weapon_type"> ('+type+')</span> ';
                 }
                 else if (data.payload.attacker_vehicle_id!='0') {
                     // maybe got squished
@@ -711,17 +787,24 @@ function display_event(data) {
         if (data.payload.event_name=='VehicleDestroy') {
             if (is_player(data.payload.character_id)) {
             //if (data.payload.character_id==window.char) {
-                msg+='Your <span>'+vehicles[data.payload.vehicle_id].vehicle_list[0].name.en+'</span> was destroyed by ';
+                msg+='Your <span>'+vehicles[data.payload.vehicle_id].name.en+'</span> was destroyed by ';
                 msg+=print_character(data.payload.attacker_character_id);
             }
             else {
                 msg+='You destroyed ';
                 msg+=print_character(data.payload.character_id);
                 vehicle_name = get_vehicle_name(data.payload.vehicle_id);
-                msg+="'s<span> "+vehicle_name+'</span> with ';
+                msg+="'s<span> "+vehicle_name+'</span> ';
                 
                 if (data.payload.attacker_weapon_id!="0") {
-                    msg+= ' using <span>'+weapons[data.payload.attacker_weapon_id].item_list[0].name.en+'</span> <span class="weapon_type">('+weapons[data.payload.attacker_weapon_id].item_list[0].item_category_id_join_item_category.name.en+')</span> ';
+                    weapon = weapons[data.payload.attacker_weapon_id];
+                    type = get_weapon_type (weapon.item_category_id);
+                    msg+= ' using <span>'+weapons[data.payload.attacker_weapon_id].name.en+'</span> <span class="weapon_type">('+type+')</span> ';
+                }
+                else if (data.payload.attacker_vehicle_id!='0') {
+                    // maybe got squished
+                    vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
+                    msg+= ' with your ' + vehicle_name + '</span>';
                 }
                 else {
                     msg+= ' using just your mind.';
@@ -789,23 +872,31 @@ function get_weapon (weapon_id) {
         // have local
         return weapon;
     } */
+    if (!weapon_id) {
+        console.log('get_weapon called with:',weapon_id);
+        return false;
+    }
     if (window.weapons.hasOwnProperty(weapon_id)) {
         // have local
         //return dfd.resolve(window.characters[character_id]);
          return window.weapons[weapon_id];
     }
     else {
+        if (weapon_id=="0") {
+            return false;
+        }
         // handle as promise
+        console.log('no local weapon: ',weapon_id);
         var dfd = jQuery.Deferred();
         //https://census.daybreakgames.com/get/ps2:v2/item?c:lang=en&c:join=item_to_weapon(weapon)&c:limit=1&weapon_id=1
-        //var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/item?c:lang=en&c:join=item_to_weapon(weapon)&c:limit=1&item_id=" + weapon_id + '&callback=?';
-        var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/item?c:lang=en&c:join=item_category&c:join=item_to_weapon(weapon)&c:limit=1&item_id=" + weapon_id + '&callback=?';
+        var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/item?c:lang=en&c:join=item_to_weapon(weapon)&c:limit=1&item_id=" + weapon_id + '&callback=?';
+        //var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/item?c:lang=en&c:join=item_category&c:join=item_to_weapon(weapon)&c:limit=1&item_id=" + weapon_id + '&callback=?';
         //console.log('Getting char info from census for ' + character_id);
         jQuery.getJSON(url,function(json){
             var weapon = json;
-            //console.log('got weapon:');
-            //console.log(weapon);
-            window.weapons[weapon_id] = weapon;
+            console.log('got remote weapon:',weapon);
+            console.log(weapon);
+            window.weapons[weapon_id] = weapon.item_list[0];
             dfd.resolve(weapon);
         });
         return dfd.promise();
@@ -814,37 +905,44 @@ function get_weapon (weapon_id) {
 }
 
 function get_vehicle (vehicle_id) {
-    // check if weapon_id already in local cache
-    // no local, so need to get then update
+    if (!vehicle_id) {
+        console.log('get_vehicle called with:',vehicle_id);
+        return false;
+    }
     if (window.vehicles.hasOwnProperty(vehicle_id)) {
         // have local
         //return dfd.resolve(window.characters[character_id]);
          return window.vehicles[vehicle_id];
     }
     else {
+        if (vehicle_id=="0") {
+            return false;
+        }
         // handle as promise
+        console.log('no local vehicle: ',vehicle_id);
         var dfd = jQuery.Deferred();
         //https://census.daybreakgames.com/get/ps2:v2/item?c:lang=en&c:join=item_to_weapon(weapon)&c:limit=1&weapon_id=1
         var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/vehicle?c:limit=1&vehicle_id=" + vehicle_id + '&callback=?';
         //console.log('Getting char info from census for ' + character_id);
         jQuery.getJSON(url,function(json){
-            var vehicle = json;
-            //console.log('got weapon:');
-            //console.log(vehicle);
-            window.vehicles[vehicle_id] = vehicle;
-            dfd.resolve(vehicle);
+            var vehicle_returned = json;
+            console.log('got remote vehicle id ',vehicle_id);
+            console.log(vehicle_returned);
+            window.vehicles[vehicle_id] = vehicle_returned.vehicle_list[0];
+            dfd.resolve(vehicle_returned);
         });
         return dfd.promise();
     } 
 }
 
 function get_player(char_id) {
+    found = false;
     playerlist.forEach(player => {
         if (player.char_id==char_id) {
-            return player;
+            found = player;
         }
     });
-    return false;
+    return found;
 }
 
 function set_player_online (char_id, name="Unknown Player") {
@@ -868,7 +966,7 @@ function set_player_offline (char_id) {
     player = get_player(char_id);
     playername_el = document.getElementById('playername');
     if (player) {
-        playername_el.innerText = "Players Offline";
+        playername_el.innerText = "Player Offline";
         playername_el.classList.add('offline');
         playername_el.dataset.char_id = "0";
     }
@@ -975,6 +1073,7 @@ function process_event(event) {
     if (event.payload.event_name=="PlayerLogout") {
         if (is_player(event.payload.character_id)) {
             say('Player logged out');
+            set_player_offline(event.payload.character_id);
         }
     }
     // update global values based on event
