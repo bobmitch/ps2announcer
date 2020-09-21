@@ -21,6 +21,11 @@ weapons_raw.item_list.forEach(item => {
     weapons[item.item_id] = item;
 });
 
+var loadouts = {};
+loadouts_raw.loadout_list.forEach(loadout => {
+    loadouts[loadout.loadout_id] = loadout;
+});
+
 // load options
 
 var playerlist = JSON.parse(localStorage.getItem('ps2_players'));
@@ -628,16 +633,13 @@ function tk(event) {
     if (!event.payload.event_name=='Death') {
         return false;
     }
-    var attacker_id=event.payload.attacker_character_id;
-    var victim_id=event.payload.character_id;
-    //console.log('checking for tk between:',attacker_id,' and ',victim_id);
-    if (window.characters[attacker_id]===undefined || window.characters[victim_id]===undefined) {
-        return false;
-    }
-    if (!window.characters[attacker_id].hasOwnProperty('character_list') || !window.characters[victim_id].hasOwnProperty('character_list')) {
-        return false;
-    }
-    if (window.characters[attacker_id].character_list[0].faction_id==window.characters[victim_id].character_list[0].faction_id) {
+    var attacker_loadout_id=event.payload.attacker_loadout_id;
+    var victim_loadout_id=event.payload.character_loadout_id;
+    /* console.log('new tk event test');
+    console.log(event);
+    console.log(attacker_loadout_id);
+    console.log(victim_loadout_id); */
+    if (loadouts[parseInt(attacker_loadout_id)].faction_id==loadouts[parseInt(victim_loadout_id)].faction_id) {
         return true;
     }
     else {
