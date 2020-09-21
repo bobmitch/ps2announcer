@@ -598,6 +598,8 @@ function allow_voicepack() {
 
 function say(txt) {
     var utterThis = new SpeechSynthesisUtterance(txt);
+    volume = document.querySelector('#volume').value;
+    utterThis.volume = volume/100.0;
     window.synth.speak(utterThis);
 }
 
@@ -1086,13 +1088,13 @@ function process_event(event) {
     if (event.payload.event_name=='Death') {
 
         // TK debug / loadout debug
-        var attacker_loadout_id=event.payload.attacker_loadout_id;
+        /* var attacker_loadout_id=event.payload.attacker_loadout_id;
         var victim_loadout_id=event.payload.character_loadout_id;
         console.log('new tk event test');
         console.log(event);
         console.log(attacker_loadout_id);
         console.log(victim_loadout_id);
-        // loadout 31 = profile 193 - 4th fac engie
+        // loadout 31 = profile 193 - 4th fac engie */
         // END TK DEBUG
 
         if (is_player(event.payload.character_id)) {
@@ -1572,6 +1574,51 @@ if (saved_volume) {
     volume_slider.value = saved_volume;
     volume_slider.dispatchEvent(new Event('change'));
 }
+else {
+    saved_volume = 100;
+}
+
+// hamburger
+
+// Get all "navbar-burger" elements
+const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+// Check if there are any navbar burgers
+if ($navbarBurgers.length > 0) {
+
+  // Add a click event on each of them
+  $navbarBurgers.forEach( el => {
+    el.addEventListener('click', () => {
+
+      // Get the target from the "data-target" attribute
+      const target = el.dataset.target;
+      const $target = document.getElementById(target);
+
+      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+      el.classList.toggle('is-active');
+      $target.classList.toggle('is-active');
+
+    });
+  });
+}
+
+$(".navbar-item.has-dropdown").click(function(e) {
+    if ($(".navbar-burger").is(':visible')) {
+      $(this).toggleClass("is-active");
+    }
+});
+$(".navbar-item > .navbar-link").click(function(e) {
+    if ($(".navbar-burger").is(':visible')) {
+      e.preventDefault();
+    }
+});
+$(window).resize(function(e) {
+  if (!$(".navbar-burger").is(':visible') && $(".navbar-item.has-dropdown.is-active").length) {
+    $(".navbar-item.has-dropdown.is-active").removeClass('is-active');
+  }
+});
+
+// live click events
 
 document.querySelector('body').addEventListener('click',function(e){
 
