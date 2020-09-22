@@ -569,7 +569,12 @@ var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with
     if (event.payload.event_name=="Death") {
         if (is_kill(event) && !tk(event)) {
             stats_history = characters[event.payload.character_id].character_list[0].stats.stat_history;
-            victim_kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
+            if (stats_history) {
+                victim_kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
+            }
+            else {
+                victim_kdr = 0;
+            }
             if (victim_kdr>2.5) {
                 return true;
             }
@@ -682,7 +687,13 @@ function print_character(character_id) {
         //char+='</span>';
 
         stats_history = characters[character_id].character_list[0].stats.stat_history;
-        kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
+        if (stats_history) {
+            kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
+        }
+        else {
+            kdr = "?";
+        }
+        
         char+='<span class="br kdr">KDR: ' + kdr + '</span>'
     char+='</span>';
     //console.log(char);
