@@ -182,3 +182,18 @@ span.outfit {
        
      }
   
+@media screen and (min-width: 900px) {
+    #achievement_modal .modal-card {
+        width:80% !important;
+        max-width:1400px !important;
+    }
+    div#achievments_list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap:wrap;
+    }
+    div#achievments_list .card {
+        width:48%;
+        margin:1%;
+    }
+}

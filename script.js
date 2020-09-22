@@ -46,7 +46,7 @@ if (ps2_extraaudio===null) {
 }
 
 // setup global vars
-
+var event_counter = 0;
 var killstreak=0; // reset by death
 var spamstreak=0;
 var kills=0;
@@ -388,9 +388,14 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     if (!is_kill(event) && event.payload.event_name=="Death") {
         weapon = weapons[event.payload.attacker_weapon_id];
-        type = get_weapon_type (weapon.item_category_id);
-        if (type=="Shotgun") {
-            return true;
+        if (weapon) {
+            type = get_weapon_type (weapon.item_category_id);
+            if (type=="Shotgun") {
+                return true;
+            }
+        }
+        else {
+            console.log('unknown weapon for event',event);
         }
     }
     return false;
@@ -546,6 +551,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
             // your kill, check previous event for death at same time
             prev = allevents[allevents.length-2];
             if (prev.payload.timestamp==event.payload.timestamp) {
+                console.log('mutual test - same timestamp for ',event, ' and ',prev);
                 // same time
                 if (prev.payload.event_name=="Death" && is_player (prev.payload.character_id)) {
                     // you died prev
@@ -560,10 +566,11 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
             // you died, check for a kill prev event
             prev = allevents[allevents.length-2];
             if (prev.payload.timestamp==event.payload.timestamp) {
+                console.log('mutual test - same timestamp for ',event, ' and ',prev);
                 // same time
-                if (prev.payload.event_name=="Death" && !is_player (prev.payload.character_id)) {
+                if (prev.payload.event_name=="Death" && is_player (prev.payload.attacker_character_id)) {
                     // you killed in prev
-                    if (is_kill(prev) && !tk(prev)) {
+                    if (!tk(prev)) {
                         if (prev.character_id==event.payload.attacker_character_id) {
                             // and it was the same dude that killed you...
                             return true;
@@ -1344,6 +1351,8 @@ window.onload = function() {
     socket.onmessage = function(event) {
         var message = event.data;
         var data = JSON.parse(message);
+        data.event_id = event_counter;
+        event_counter++;
         if (data.hasOwnProperty('payload')) {
             if (data.payload.event_name=="PlayerLogout") {
                 set_player_offline (data.payload.character_id);
