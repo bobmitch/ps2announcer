@@ -391,7 +391,11 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
 },['VOLUME_Dude wheres my car.wav'],20);
 
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
+    
     if (!is_kill(event) && event.payload.event_name=="Death") {
+        if (event.attacker_weapon_id=="0") {
+            return false;
+        }
         weapon = weapons[event.payload.attacker_weapon_id];
         if (weapon) {
             type = get_weapon_type (weapon.item_category_id);
@@ -460,6 +464,15 @@ var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the
     }
     return false;
 },['Whats Up_ Whattya been doin_.ogg'],20);
+
+var spraypray = new Achievement('spraypray','Spray & Pray!','You killed 5 people in a row with body shots!', function (event) {
+    if (is_kill(event) && !tk(event)) {
+        if (window.bodyshotkillstreak>0 && window.bodyshotkillstreak%5==0) {
+            return true;
+        }
+    }
+    return false;
+},["that's-not-entirely-accurate.mp3"],5);
 
 var assister = new Achievement('helper','Santas Little Helper!','You assisted killing someone 5 times in a row without killing anybody yourself!', function (event) {
     if (event.payload.event_name=="GainExperience") {
@@ -897,7 +910,7 @@ function get_character (character_id) {
             //console.log(character);
             window.characters[character_id] = character;
             dfd.resolve(character);
-        });
+        }).error(function() { data={}; data.payload={}; data.payload.timestamp = Math.floor(Date.now() / 1000); insert_row (data, 'Error getting character '+character_id+' from API'); });
         return dfd.promise();
     }
 }
@@ -935,7 +948,7 @@ function get_weapon (weapon_id) {
             console.log(weapon);
             window.weapons[weapon_id] = weapon.item_list[0];
             dfd.resolve(weapon);
-        });
+        }).error(function() { data={}; data.payload={}; data.payload.timestamp = Math.floor(Date.now() / 1000); insert_row (data, 'Error getting weapon '+weapon_id+' from API'); });
         return dfd.promise();
     }
         
@@ -967,7 +980,7 @@ function get_vehicle (vehicle_id) {
             console.log(vehicle_returned);
             window.vehicles[vehicle_id] = vehicle_returned.vehicle_list[0];
             dfd.resolve(vehicle_returned);
-        });
+        }).error(function() { data={}; data.payload={}; data.payload.timestamp = Math.floor(Date.now() / 1000); insert_row (data, 'Error getting vehicle '+vehicle_id+' from API'); });
         return dfd.promise();
     } 
 }
@@ -1138,6 +1151,12 @@ function process_event(event) {
             if (!tk(event)) {
                 // genuine kill
                 window.killstreak++;
+                if (event.payload.is_headhot=="0") {
+                    window.bodyshotkillstreak++;
+                }
+                else {
+                    window.bodyshotkillstreak=0;
+                }
                 window.kills++;
                 update_kd();
                 assist_streak=0; // end assist streak
@@ -1444,7 +1463,7 @@ new_achievements.forEach(a => {
                 <div class="control">
                     <div class="tags has-addons">
                         <span class="tag">${val}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag is-light is-primary play_sound">></span>
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></span>
                         <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
                     </div>
                 </div>
@@ -1456,8 +1475,8 @@ new_achievements.forEach(a => {
                 <div class="control">
                     <div class="tags has-addons">
                         <span class="tag is-light">${val}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag is-light is-primary play_sound">></a>
-                        <!--<a data-id='${a.id}' data-index='${index}' class="tag is-light is-info disable_default">on</a>-->
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></a>
+                        <!--<a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info disable_default">on</a>-->
                     </div>
                 </div>
             `;
@@ -1496,7 +1515,7 @@ new_achievements.forEach(a => {
         </div>
         <footer class='card-footer'>
             ${card_footer_markup}
-            <button style='margin:1em' class='add_audio button is-small is-light is-success'>+</button>
+            <button style='margin:1em' class='add_audio button is-small iss-light is-success'>+</button>
         </footer>
     </div>
     `;
