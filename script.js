@@ -556,6 +556,14 @@ var tk_sound = new Achievement('badteamkill','Blue on blue!','You were killed by
 var welcome = new Achievement('welcome','Welcome To Planetside!','You killed someone new to the game!', function (event) {
     if (event.payload.event_name=="Death") {
         if (is_kill(event) && !tk(event)) {
+            if (!characters[event.payload.character_id].hasOwnProperty('character_list')) {
+                console.log ('Character ', character_id, ' has no character list array');
+                return '[unknown]';
+            }
+            if (characters[event.payload.character_id].character_list.length==0) {
+                console.log ('Character ', character_id, ' has empty character list array');
+                return '[unknown]';
+            }
             if (characters[event.payload.character_id].character_list[0].battle_rank.value < 6) {
                 return true;
             }
