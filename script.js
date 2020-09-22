@@ -29,7 +29,7 @@ loadouts_raw.loadout_list.forEach(loadout => {
 loadouts['28'] = {'faction_id':'4','loadout_id':'28','profile_id':'190'};
 loadouts['29'] = {'faction_id':'4','loadout_id':'29','profile_id':'191'};
 loadouts['30'] = {'faction_id':'4','loadout_id':'30','profile_id':'192'};
-loadouts['31'] = {'faction_id':'4','loadout_id':'31','profile_id':'193'};
+loadouts['31'] = {'faction_id':'4','loadout_id':'31','profile_id':'193'}; // engie
 loadouts['32'] = {'faction_id':'4','loadout_id':'32','profile_id':'194'};
 loadouts['33'] = {'faction_id':'4','loadout_id':'33','profile_id':'195'};
 
@@ -363,12 +363,27 @@ var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible
     if (tk(event)) {
         return false;
     }
-    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='190') {
-        // 1,8.15,190 = infil loadouts - 190 = ns
+    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='22') {
+        // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
     }
 },['Low Profile.ogg','invisibleman.mp3'],20);
+
+
+var max_kill = new Achievement('minmax','Min Max!','You killed a tiny brain person in a really big suit!', function (event) {
+    if (!is_kill(event)) {
+        return false;
+    }
+    if (tk(event)) {
+        return false;
+    }
+    if (event.payload.character_loadout_id=='7' || event.payload.character_loadout_id=='14' || event.payload.character_loadout_id=='21'|| event.payload.character_loadout_id=='33') {
+        // max loadouts - THINK 33 is ns max, not 100% sure - could be 28
+        // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
+        return true;
+    }
+},['max-here-boy.mp3','embarass-max.mp3'],20);
 
 var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot kill!', function (event) {
     if (is_kill(event) && !tk(event)) {
