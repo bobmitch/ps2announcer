@@ -223,7 +223,7 @@ var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', fu
         }
     }
     return false;
-},['land_your_plane.mp3','crash_and_burn_mav.mp3','keep-the-skies-clear.mp3','flying_dying.mp3'],4);
+},['land_your_plane.mp3','crash_and_burn_mav.mp3','keep-the-skies-clear.mp3','flying_dying.mp3'],10);
 
 var topgun = new Achievement('topgun','Top Gun!','Destroyed an ESF with an ESF!', function (event) {
     if (is_player(event.payload.attacker_character_id)) {
@@ -332,7 +332,7 @@ var monsterkill = new Achievement('monsterkill','Monster Kill!','7 kills in quic
     }
     return false;
 },['count_laughing.mp3'],3);
-var ludicrous = new Achievement('ludicrous','Ludicrous Kill!','7 kills in quick succession!', function (event) {
+var ludicrous = new Achievement('ludicrous','Ludicrous Kill!','8 kills in quick succession!', function (event) {
     if (is_kill(event) && !tk(event)) {
         if (multikills==7) {
             return (true);
@@ -387,7 +387,8 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
 
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     if (!is_kill(event) && event.payload.event_name=="Death") {
-        type = get_weapon_type(event.payload.attacker_weapon_id);
+        weapon = weapons[event.payload.attacker_weapon_id];
+        type = get_weapon_type (weapon.item_category_id);
         if (type=="Shotgun") {
             return true;
         }
@@ -472,8 +473,8 @@ var blinder = new Achievement('blinder','Blinded, With Science!','You blinded so
         if ( (event.payload.experience_id=='370') ) {
             //console.log(event);
             //console.log ('Triggered stevie wonder:');
-            var msg = "You blinded ";
-            msg += print_character(event.payload.other_id);
+            var msg = "You blinded the enemy!";
+            //msg += print_character(event.payload.other_id);
             insert_row (event, msg);
             return true;
         }
@@ -485,10 +486,10 @@ var hatebombs = new Achievement('hatebombs','Bomb Disposal!','You killed someone
     if (event.payload.event_name=="GainExperience") {
         // 293 motion detect, 370 kill motion spotter, 294 squad motion detect
         if ( (event.payload.experience_id=='86')) {
-            console.log(event);
-            console.log ('Triggered bomb disposal:');
-            var msg = "You defused ";
-            msg += print_character(event.payload.other_id);
+            //console.log(event);
+            //console.log ('Triggered bomb disposal:');
+            var msg = "You defused the situation!";
+            //msg += print_character(event.payload.other_id);
             insert_row (event, msg);
             return true;
         }
@@ -504,6 +505,15 @@ var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', 
     }
     return false;
 },['My Bad! Thats on me.ogg','count_sorry.mp3','no_friends_count.mp3']);
+
+var tk_sound = new Achievement('badteamkill','Blue on blue!','You were killed by a friendly!', function (event) {
+    if (event.payload.event_name=="Death") {
+        if (!is_kill(event) && tk(event)) {
+            return true;
+        }
+    }
+    return false;
+},['To a Zone... one of Danger.ogg']);
 
 var welcome = new Achievement('welcome','Welcome To Planetside!','You killed someone new to the game!', function (event) {
     if (event.payload.event_name=="Death") {
@@ -774,7 +784,14 @@ function display_event(data) {
             else {
             
                 cls+=' death ';
-                msg += 'You were killed by ';
+                
+                if (tk(data)) {
+                    msg += "You were teamkilled by "
+                    cls+=' tk ';
+                }
+                else {
+                    msg += 'You were killed by ';
+                }
                 msg+=print_character(data.payload.attacker_character_id);
                 // get weapon
                 if (data.payload.attacker_weapon_id!='0') {
@@ -1186,10 +1203,10 @@ function subscribe_to_character(id, logoutonly=false) {
         "service":"event"
     }
     window.socket.send (JSON.stringify(subscription_data)); */
-    console.log('logoutonly: ',logoutonly);
+    //console.log('logoutonly: ',logoutonly);
     // subscribe to new char events
     if (logoutonly) {
-        console.log('Subscribing to logout events only - for: ',id);
+        //console.log('Subscribing to logout events only - for: ',id);
         var subscription_data = {
             "service":"event",
             "action":"subscribe",
@@ -1663,7 +1680,7 @@ document.querySelector('body').addEventListener('click',function(e){
         // data-id='${a.id}' data-index='${index}'
         id = e.target.dataset.id;
         index = e.target.dataset.index;
-        console.log('playing audio id',id,' index ',index);
+        //console.log('playing audio id',id,' index ',index);
         ach = get_achievement(id);
         ach.sounds[index].play();
     }
