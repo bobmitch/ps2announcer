@@ -182,10 +182,9 @@ span.outfit {
        
      }
   
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 800px) {
     #achievement_modal .modal-card {
         width:80% !important;
-        max-width:1400px !important;
     }
     div#achievments_list {
         display: flex;
@@ -194,6 +193,22 @@ span.outfit {
     }
     div#achievments_list .card {
         width:48%;
+        margin:1%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    #achievement_modal .modal-card {
+        width:80% !important;
+        max-width:1600px !important;
+    }
+    div#achievments_list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap:wrap;
+    }
+    div#achievments_list .card {
+        width:31%;
         margin:1%;
     }
 }

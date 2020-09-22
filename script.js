@@ -226,10 +226,15 @@ var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', fu
 },['land_your_plane.mp3','crash_and_burn_mav.mp3','keep-the-skies-clear.mp3','flying_dying.mp3'],10);
 
 var topgun = new Achievement('topgun','Top Gun!','Destroyed an ESF with an ESF!', function (event) {
-    if (is_player(event.payload.attacker_character_id)) {
-        if (!tk(event) && (event.payload.event_name=='VehicleDestroy')) {
-            if (is_esf(event.payload.vehicle_id) && is_esf(event.payload.attacker_vehicle_id)) {
-                return true;
+    if (event.payload.event_name=='VehicleDestroy') {
+        if (is_player(event.payload.attacker_character_id) && !is_player(event.payload.character_id)) {
+            // killed a vehicle, not your own
+            if (!tk(event)) {
+                // ...or a friendly vehicle
+                if (is_esf(event.payload.vehicle_id) && is_esf(event.payload.attacker_vehicle_id)) {
+                    // killed an esf while in your esf
+                    return true;
+                }
             }
         }
     }
@@ -551,7 +556,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
             // your kill, check previous event for death at same time
             prev = allevents[allevents.length-2];
             if (prev.payload.timestamp==event.payload.timestamp) {
-                console.log('mutual test - same timestamp for ',event, ' and ',prev);
+                console.log('you killed - mutual test - same timestamp for ',event, ' and ',prev);
                 // same time
                 if (prev.payload.event_name=="Death" && is_player (prev.payload.character_id)) {
                     // you died prev
@@ -566,7 +571,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
             // you died, check for a kill prev event
             prev = allevents[allevents.length-2];
             if (prev.payload.timestamp==event.payload.timestamp) {
-                console.log('mutual test - same timestamp for ',event, ' and ',prev);
+                console.log('you died - mutual test - same timestamp for ',event, ' and ',prev);
                 // same time
                 if (prev.payload.event_name=="Death" && is_player (prev.payload.attacker_character_id)) {
                     // you killed in prev
