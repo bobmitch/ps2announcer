@@ -213,8 +213,11 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
 var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', function (event) {
     if (is_player(event.payload.attacker_character_id)) {
         if (!tk(event) && (event.payload.event_name=='VehicleDestroy')) {
-            if (event.payload.attacker_vehicle_id=='')
+            
             var vh = get_local_vehicle(event.payload.vehice_id);
+            console.log(event);
+            console.log('checking if you destroyed a light aircraft:');
+            console.log(vh);
             if (vh) {
                 if (vh.type_name=="Light Aircraft") {
                     return true;
@@ -397,8 +400,11 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
         if (is_player(event.payload.attacker_character_id)) {
-            if (vehicles[event.payload.vehicle_id].name.en=="Harasser") {
-                return (true);
+            vh = get_local_vehicle(event.payload.vehicle_id);
+            if (vh) {
+                if (vh.name.en=="Harasser") {
+                    return (true);
+                }
             }
         }
     }
@@ -871,7 +877,13 @@ function display_event(data) {
         if (data.payload.event_name=='VehicleDestroy') {
             if (is_player(data.payload.character_id)) {
             //if (data.payload.character_id==window.char) {
-                msg+='Your <span>'+vehicles[data.payload.vehicle_id].name.en+'</span> was destroyed by ';
+                vehicle_name = get_vehicle_name(data.payload.vehicle_id);
+                if (vehicle_name) {
+                    msg+='Your <span>'+vehicle_name+'</span> was destroyed by ';
+                }
+                else {
+                    msg+='Your <span>[unknown]</span> was destroyed by ';
+                }
                 msg+=print_character(data.payload.attacker_character_id);
             }
             else {
