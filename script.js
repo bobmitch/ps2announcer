@@ -607,7 +607,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
                 // same time
                 if (prev.payload.event_name=="Death" && is_player (prev.payload.character_id)) {
                     // you died prev
-                    if (prev.attacker_character_id==event.payload.character_id) {
+                    if (prev.payload.attacker_character_id==event.payload.character_id) {
                         // to the same guy you killed
                         return true;
                     }
@@ -623,7 +623,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
                 if (prev.payload.event_name=="Death" && is_player (prev.payload.attacker_character_id)) {
                     // you killed in prev
                     if (!tk(prev)) {
-                        if (prev.character_id==event.payload.attacker_character_id) {
+                        if (prev.payload.character_id==event.payload.attacker_character_id) {
                             // and it was the same dude that killed you...
                             return true;
                         }
