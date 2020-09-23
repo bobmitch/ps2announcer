@@ -214,7 +214,7 @@ var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', fu
     if (is_player(event.payload.attacker_character_id)) {
         if (!tk(event) && (event.payload.event_name=='VehicleDestroy')) {
             
-            var vh = get_local_vehicle(event.payload.vehice_id);
+            var vh = get_local_vehicle(event.payload.vehicle_id);
             console.log(event);
             console.log('checking if you destroyed a light aircraft:');
             console.log(vh);
