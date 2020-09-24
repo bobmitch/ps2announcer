@@ -199,7 +199,7 @@ function display_event(data) {
                 else {
                     // player kill
                     //say_or_play('ha','per_kill');
-                    if (tk(data)) {
+                    if (is_tk(data)) {
                         msg = "You teamkilled "
                         cls+=' tk ';
                     }
@@ -227,7 +227,7 @@ function display_event(data) {
             
                 cls+=' death ';
                 
-                if (tk(data)) {
+                if (is_tk(data)) {
                     msg += "You were teamkilled by "
                     cls+=' tk ';
                 }
@@ -263,9 +263,16 @@ function display_event(data) {
             }
             else {
                 msg+='You destroyed ';
-                msg+=print_character(data.payload.character_id);
                 vehicle_name = get_vehicle_name(data.payload.vehicle_id);
-                msg+="'s<span> "+vehicle_name+'</span> ';
+                if (data.payload.character_id=="0") {
+                    msg += " a " +vehicle_name+'</span> ';
+                }
+                else {
+                    msg+=print_character(data.payload.character_id);
+                    msg+="'s<span> "+vehicle_name+'</span> ';
+                }
+                
+                
                 
                 if (data.payload.attacker_weapon_id!="0") {
                     msg += display_weapon_and_type(data.payload.attacker_weapon_id);
@@ -460,7 +467,7 @@ function process_event(event) {
             update_kd();
         }
         else {
-            if (!tk(event)) {
+            if (!is_tk(event)) {
                 // genuine kill
                 window.killstreak++;
                 if (event.payload.is_headhot=="0") {
