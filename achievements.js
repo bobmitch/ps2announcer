@@ -480,7 +480,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
             // your kill, check previous event for death at same time
             prev = allevents[allevents.length-2];
             if (prev.payload.timestamp==event.payload.timestamp) {
-                console.log('you killed - mutual test - same timestamp for ',event, ' and ',prev);
+                //console.log('you killed - mutual test - same timestamp for ',event, ' and ',prev);
                 // same time
                 if (prev.payload.event_name=="Death" && is_player (prev.payload.character_id)) {
                     // you died prev
@@ -495,7 +495,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
             // you died, check for a kill prev event
             prev = allevents[allevents.length-2];
             if (prev.payload.timestamp==event.payload.timestamp) {
-                console.log('you died - mutual test - same timestamp for ',event, ' and ',prev);
+                //console.log('you died - mutual test - same timestamp for ',event, ' and ',prev);
                 // same time
                 if (prev.payload.event_name=="Death" && is_player (prev.payload.attacker_character_id)) {
                     // you killed in prev
