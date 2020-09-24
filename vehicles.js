@@ -58,5 +58,5 @@ function get_vehicle_name(vehicle_id) {
     else {
         console.log('unknown vehice id: ',vehicle_id);
     }
-    return '[Unknown]';
+    return '[unknown]';
 }

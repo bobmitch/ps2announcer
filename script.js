@@ -104,42 +104,37 @@ function nice_date(timestamp) {
 }
 
 function print_character(character_id) {
-    var char = '';
-    if (!characters[character_id].hasOwnProperty('character_list')) {
-        console.log ('Character ', character_id, ' has no character list array');
-        return '[unknown]';
+    character = get_local_character(character_id);
+    char = '';
+    if (!character) {
+        char = '[UNKNOWN]';
+        // todo: check if looks like valid character_id
+        // and run get_character on it for future events to work
     }
-    if (characters[character_id].character_list.length==0) {
-        console.log ('Character ', character_id, ' has empty character list array');
-        return '[unknown]';
-    }
-    char_profile = profiles[ characters[character_id].character_list[0].profile_id ].name.en;
-    char+="<span class='"+char_profile+"'>" + char_profile + "</span>";
-    char+='<span class="char faction'+characters[character_id].character_list[0].faction_id+'"> ';
-        char+='<span class="charname">';
-        if (characters[character_id].character_list[0].hasOwnProperty('outfit')) {
-            char+='<span class="outfit">'+characters[character_id].character_list[0].outfit.alias+'</span>&nbsp;';
-        }
-        char+= characters[character_id].character_list[0].name.first+'</span> ';
-        char+='<span class="br">BR:'+characters[character_id].character_list[0].battle_rank.value+'</span> ';
-        //char+='</span>';
+    else {
+        char_profile = profiles[ character.profile_id ].name.en;
+        char+="<span class='"+char_profile+"'>" + char_profile + "</span>";
+        char+='<span class="char faction'+character.faction_id+'"> ';
+            char+='<span class="charname">';
+            if (character.hasOwnProperty('outfit')) {
+                char+='<span class="outfit">'+characters[character_id].character_list[0].outfit.alias+'</span>&nbsp;';
+            }
+            char+= character.name.first+'</span> ';
+            char+='<span class="br">BR:'+character.battle_rank.value+'</span> ';
+            //char+='</span>';
 
-        stats_history = characters[character_id].character_list[0].stats.stat_history;
-        if (stats_history) {
-            kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
-        }
-        else {
-            kdr = "?";
-        }
-        
-        char+='<span class="br kdr">KDR: ' + kdr + '</span>'
-    char+='</span>';
-    //console.log(char);
+            stats_history = character.stats.stat_history;
+            if (stats_history) {
+                kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
+            }
+            else {
+                kdr = "?";
+            }
+            char+='<span class="br kdr">KDR: ' + kdr + '</span>'
+        char+='</span>';
+    }
     return char;
 }
-
-
-
 
 
 
@@ -179,13 +174,8 @@ function display_event(data) {
 
         
         if (data.payload.event_name=="GainExperience") {
-            // 34/55 - resupply
-            // 19 capture facility
-            // check for revive - id 7 + 57
-            // 557 objective pulse capture
+            // do messages for none-displayed achievements
             if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.character_id)) {
-                /* console.log('REVIVE EVENT:');
-                console.log(data.payload); */
                 msg+='You revived ';
                 cls+=' info ';
                 msg+=print_character(data.payload.other_id);
@@ -221,9 +211,7 @@ function display_event(data) {
                     }
                     // get weapon
                     if (data.payload.attacker_weapon_id!="0") {
-                        weapon = weapons[data.payload.attacker_weapon_id];
-                        type = get_weapon_type (weapon.item_category_id);
-                        msg+= ' <span>'+weapons[data.payload.attacker_weapon_id].name.en+' <span class="weapon_type">('+type+')</span></span> ';
+                        msg += display_weapon_and_type(data.payload.attacker_weapon_id);
                     }
                     else if (data.payload.attacker_vehicle_id!='0') {
                         // maybe got squished
@@ -232,11 +220,6 @@ function display_event(data) {
                     }
                     else {
                         msg+= ' using just your mind!</span> ';
-                    }
-                    if (data.payload.character_loadout_id=='1' || data.payload.character_loadout_id=='8' || data.payload.character_loadout_id=='15') {
-                        // 1,8.15 = infil loadouts
-                        // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
-                        //pills+='<span class="tag is-dark">sneaker</span>';
                     }
                 }
             }
@@ -254,9 +237,7 @@ function display_event(data) {
                 msg+=print_character(data.payload.attacker_character_id);
                 // get weapon
                 if (data.payload.attacker_weapon_id!='0') {
-                    weapon = weapons[data.payload.attacker_weapon_id];
-                    type = get_weapon_type (weapon.item_category_id);
-                    msg+= ' using <span>'+weapons[data.payload.attacker_weapon_id].name.en+'</span> <span class="weapon_type"> ('+type+')</span> ';
+                    msg += display_weapon_and_type(data.payload.attacker_weapon_id);
                 }
                 else if (data.payload.attacker_vehicle_id!='0') {
                     // maybe got squished
@@ -287,9 +268,7 @@ function display_event(data) {
                 msg+="'s<span> "+vehicle_name+'</span> ';
                 
                 if (data.payload.attacker_weapon_id!="0") {
-                    weapon = weapons[data.payload.attacker_weapon_id];
-                    type = get_weapon_type (weapon.item_category_id);
-                    msg+= ' using <span>'+weapons[data.payload.attacker_weapon_id].name.en+'</span> <span class="weapon_type">('+type+')</span> ';
+                    msg += display_weapon_and_type(data.payload.attacker_weapon_id);
                 }
                 else if (data.payload.attacker_vehicle_id!='0') {
                     // maybe got squished

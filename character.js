@@ -29,6 +29,18 @@ function get_character (character_id) {
     }
 }
 
+function get_local_character(character_id) {
+    if (!characters[character_id].hasOwnProperty('character_list')) {
+        console.log ('Character ', character_id, ' has no character list array');
+        return null;
+    }
+    if (characters[character_id].character_list.length==0) {
+        console.log ('Character ', character_id, ' has empty character list array');
+        return null;
+    }
+    return characters[character_id].character_list[0];
+}
+
 function unsubscribe(id) {
     var subscription_data = {
     "action":"clearSubscribe",

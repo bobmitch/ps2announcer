@@ -8,6 +8,31 @@ weapons_raw.item_list.forEach(item => {
     weapons[item.item_id] = item;
 });
 
+function get_local_weapon (weapon_id) {
+    if (weapons.hasOwnProperty(weapon_id)) {
+        return weapons[weapon_id];
+    }
+    else {
+        console.log('unknown weapon_id ',weapon_id);
+        // todo check if looks legit and get_weapon again for future calls
+        return false;
+    }
+}
+
+function display_weapon_and_type(weapon_id) {
+    weapon = get_local_weapon(weapon_id);
+    if (weapon) {
+        type = get_weapon_type (weapon.item_category_id);
+    }
+    else {
+        weapon = {};
+        weapon.name={};
+        weapon.name.en = "[unknown]";
+        type = '[unknown]';
+    }
+    return ' using <span>'+weapon.name.en+'</span> <span class="weapon_type"> ('+type+')</span> ';
+}
+
 function get_weapon (weapon_id) {
     // check if weapon_id already in local cache
     // no local, so need to get then update
