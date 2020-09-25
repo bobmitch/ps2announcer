@@ -113,20 +113,11 @@ span.outfit {
 }
 
 /* fix tag name overflow */
-.card .field.is-grouped.is-grouped-multiline {
-    max-width:100%;
-}
-.card .field.is-grouped.is-grouped-multiline .control {
-    max-width:100%;
-}    /* max-width: 100%; */
-.card .field.is-grouped.is-grouped-multiline .control span.tag {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 86%;
-    direction: rtl;
-    text-align: left;
-    display: inline-block;
+/* .card-footer {
+    overflow-x: auto;
+} */
+.field.is-grouped.is-grouped-multiline {
+    /* overflow-x: auto; */
 }
 
 
@@ -172,7 +163,7 @@ span.outfit {
 }
 
 span.code {
-    background: #444;
+    background: #333;
     color: lightgreen;
     font-family: monospace;
     padding: 0.2em 0.5em;
@@ -198,11 +189,6 @@ span.code {
     font-weight:bold;
 }
 
-span.code {
-    background:#888;
-    color:green;
-    font-family:monospace;
-}
 
 
     .navbar-item.has-dropdown .navbar-dropdown {
@@ -215,7 +201,7 @@ span.code {
        
      }
   
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 1400px) {
     #achievement_modal .modal-card {
         width:80% !important;
     }
@@ -230,7 +216,7 @@ span.code {
     }
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 1900px) {
     #achievement_modal .modal-card {
         width:80% !important;
         max-width:1600px !important;

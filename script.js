@@ -729,10 +729,11 @@ new_achievements.forEach(a => {
     
     for (let [index, val] of a.soundfiles.entries()) {
         if (val.startsWith('http')) {
+            filename = val.split('/').pop();
             card_footer_entry = `
                 <div class="control">
                     <div class="tags has-addons">
-                        <span class="tag">${val}</span>
+                        <span data-tooltip="${val}" title='${val}' class="tag">${filename}</span>
                         <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></span>
                         <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
                     </div>
@@ -744,7 +745,7 @@ new_achievements.forEach(a => {
             card_footer_entry = `
                 <div class="control">
                     <div class="tags has-addons">
-                        <span class="tag is-light">${val}</span>
+                        <span data-tooltip="Built In Audio" class="tag is-light">${val}</span>
                         <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></a>
                         <!--<a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info disable_default">on</a>-->
                     </div>
@@ -1025,11 +1026,12 @@ document.querySelector('body').addEventListener('click',function(e){
                     save_config();
                     index = ach.sounds.length-1;
                     id = ach.id;
+                    filename = url.split('/').pop();
                     // update row of entries in card
                     card_footer_entry = `
                         <div class="control">
                             <div class="tags has-addons">
-                                <span class="tag">${url}</span>
+                                <span data-tooltip="${url}" title='${url}' class="tag">${filename}</span>
                                 <a data-id='${id}' data-index='${index}' class="tag is-light is-primary play_sound">></span>
                                 <a data-id='${id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
                             </div>
