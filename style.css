@@ -111,6 +111,25 @@ span.outfit {
 .card-footer {
     padding: 1em;
 }
+
+/* fix tag name overflow */
+.card .field.is-grouped.is-grouped-multiline {
+    max-width:100%;
+}
+.card .field.is-grouped.is-grouped-multiline .control {
+    max-width:100%;
+}    /* max-width: 100%; */
+.card .field.is-grouped.is-grouped-multiline .control span.tag {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 86%;
+    direction: rtl;
+    text-align: left;
+    display: inline-block;
+}
+
+
 #achievments_list .control {
     padding: 0.5em;
 }
@@ -152,6 +171,14 @@ span.outfit {
     margin-top:6vmax;
 }
 
+span.code {
+    background: #444;
+    color: lightgreen;
+    font-family: monospace;
+    padding: 0.2em 0.5em;
+    opacity: 0.7;
+}
+
 #stats {
     position:sticky;
     z-index:2;
@@ -169,6 +196,12 @@ span.outfit {
     background:hsl(141, 53%, 53%);
     color:white;
     font-weight:bold;
+}
+
+span.code {
+    background:#888;
+    color:green;
+    font-family:monospace;
 }
 
 

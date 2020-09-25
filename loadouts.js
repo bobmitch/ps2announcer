@@ -12,3 +12,11 @@ loadouts['31'] = {'faction_id':'4','loadout_id':'31','profile_id':'193'}; // eng
 loadouts['32'] = {'faction_id':'4','loadout_id':'32','profile_id':'194'};
 loadouts['33'] = {'faction_id':'4','loadout_id':'33','profile_id':'195'};
 
+function get_loadout (loadout_id) {
+    if (loadouts.hasOwnProperty(loadout_id)) {
+        return loadouts[loadout_id];
+    }
+    else {
+        return false;
+    }
+}

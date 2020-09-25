@@ -103,7 +103,7 @@ function nice_date(timestamp) {
     return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 }
 
-function print_character(character_id) {
+function print_character(character_id, event) {
     character = get_local_character(character_id);
     char = '';
     if (!character) {
@@ -112,8 +112,16 @@ function print_character(character_id) {
         // and run get_character on it for future events to work
     }
     else {
-        char_profile = profiles[ character.profile_id ].name.en;
-        char+="<span class='"+char_profile+"'>" + char_profile + "</span>";
+        loadout_id = event.payload.character_loadout_id;
+        loadout = get_loadout(loadout_id);
+        profile_name = '[unknown]';
+        if (loadout) {
+            profile = get_profile (loadout.profile_id);
+            if (profile) {
+                profile_name = profile.description.en;
+            }
+        }
+        char+="<span class='"+profile_name+"'>" + profile_name + "</span>";
         char+='<span class="char faction'+character.faction_id+'"> ';
             char+='<span class="charname">';
             if (character.hasOwnProperty('outfit')) {
@@ -178,7 +186,7 @@ function display_event(data) {
             if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.character_id)) {
                 msg+='You revived ';
                 cls+=' info ';
-                msg+=print_character(data.payload.other_id);
+                msg+=print_character(data.payload.other_id, data);
                 revive_count_streak++;
             }
             else if (data.payload.experience_id=='2' && is_player(data.payload.character_id)) {
@@ -204,7 +212,7 @@ function display_event(data) {
                         cls+=' tk ';
                     }
                     cls+=' kill ';
-                    msg+= print_character(data.payload.character_id);
+                    msg+= print_character(data.payload.character_id, data);
                     if (data.payload.is_headshot=="1") {
                         cls+=' headshot ';
                         //pills+='<span class="tag is-dark">headshot</span> '; // should be populated by achievement tag
@@ -234,7 +242,7 @@ function display_event(data) {
                 else {
                     msg += 'You were killed by ';
                 }
-                msg+=print_character(data.payload.attacker_character_id);
+                msg+=print_character(data.payload.attacker_character_id, data);
                 // get weapon
                 if (data.payload.attacker_weapon_id!='0') {
                     msg += display_weapon_and_type(data.payload.attacker_weapon_id);
@@ -259,7 +267,7 @@ function display_event(data) {
                 else {
                     msg+='Your <span>[unknown]</span> was destroyed by ';
                 }
-                msg+=print_character(data.payload.attacker_character_id);
+                msg+=print_character(data.payload.attacker_character_id, data);
             }
             else {
                 msg+='You destroyed ';
@@ -268,7 +276,7 @@ function display_event(data) {
                     msg += " a " +vehicle_name+'</span> ';
                 }
                 else {
-                    msg+=print_character(data.payload.character_id);
+                    msg+=print_character(data.payload.character_id, data);
                     msg+="'s<span> "+vehicle_name+'</span> ';
                 }
                 
@@ -688,10 +696,7 @@ document.querySelector('#show_about_modal').addEventListener('click',function(e)
 document.querySelector('#show_export_modal').addEventListener('click',function(e){
     e.preventDefault();
     document.querySelector('#export_modal').classList.toggle('is-active');
-    document.getElementById('config_export').select();
-    if (document.execCommand('copy')) {
-        alert('Current config is in your copy buffer ready to be pasted somewhere!');
-    }
+    
 });
 
 document.querySelector('#show_achievements_modal').addEventListener('click',function(e){
@@ -787,6 +792,14 @@ new_achievements.forEach(a => {
     list.innerHTML = list.innerHTML + markup;
 });
 
+
+document.getElementById('copy_config').addEventListener('click',function(e){
+    e.preventDefault();
+    document.getElementById('config_export').select();
+    if (document.execCommand('copy')) {
+        alert('Current config is in your copy buffer ready to be pasted somewhere!');
+    }
+});
 
 
 function save_config() {

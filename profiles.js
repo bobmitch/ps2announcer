@@ -4,3 +4,13 @@ var profiles = {};
 profiles_raw.profile_list.forEach(profile => {
     profiles[profile.profile_id] = profile;
 });
+
+
+function get_profile (profile_id) {
+    if (profiles.hasOwnProperty(profile_id)) {
+        return profiles[profile_id];
+    }
+    else {
+        return false;
+    }
+}

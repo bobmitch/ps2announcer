@@ -181,8 +181,13 @@
 				<p><em>https://www.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3?dl=0</em></p>
 				<p>just change the www to dl, and remove everything after mp3 - so in this example it would become:</p>
 				<p>https://dl.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3</p>
+				<hr>
+				<p>If you are serving up audio files from your own webserver, you may need to allow this domain to access your files.</p>
+				<p>For Apache add: <span class='code'>Header set Access-Control-Allow-Origin "https://bobmitch.com"</span> to your .htaccess file.</p>
+				<p>For nginx see <a target='_blank' href='https://enable-cors.org/server_nginx.html'>these instructions</a>. Be sure to replace the wildcard '*' with 'bobmitch.com' for added security.</p>
+				<hr>
 				<p><strong>Any custom sounds will prevent default sounds from playing!</strong></p>
-				<br><br>
+				<hr>
 				<div id='achievments_list'></div>
 			  </section>
 			  <footer class="modal-card-foot">
@@ -219,6 +224,10 @@
 
 				</textarea>
 				<br>
+					<button type='button' href='#' id='copy_config' class='button is-light is-info'>
+						
+						  <span>Copy Config</span>
+					</button>
 					<button type='button' href='#' id='apply_config' class="button is-info">
 						<strong>Apply Config</strong>
 					</button>
