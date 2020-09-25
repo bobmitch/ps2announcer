@@ -79,3 +79,25 @@ function get_weapon_type (category_id) {
         return "[unknown]";
     }
 }
+
+added_weapons = [];
+custom_trigger_select_list = document.getElementById('custom_trigger_weapon_id');
+for (const weapon in weapons) {
+    option = document.createElement('option');
+    option.value = weapons[weapon].item_id;
+    if (weapons[weapon].hasOwnProperty('name') && weapons[weapon].is_vehicle_weapon=="0" && weapons[weapon].item_category_id!="141") {
+        // must have name, not be vehicle weapon, and not a boosting item ;)
+        option.text = weapons[weapon].name.en;
+        option.dataset.item_category_id = weapons[weapon].item_category_id;
+        if (added_weapons.includes(option.text)) {
+            // skip, already in from another faction
+        }
+        else {
+            added_weapons.push(option.text);
+            custom_trigger_select_list.appendChild(option);
+        }
+    }
+    else {
+        //console.log('Item/weapon ',weapons[weapon],' has no name property');
+    }
+}

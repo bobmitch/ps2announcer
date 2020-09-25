@@ -705,6 +705,17 @@ document.querySelector('#show_achievements_modal').addEventListener('click',func
     
 });
 
+document.querySelector('#add_custom_trigger').addEventListener('click',function(e){
+    e.preventDefault();
+    window.edit_custom_trigger_id = null;
+    // reset form
+    document.getElementById('custom_trigger_name').value='';
+    document.getElementById('custom_trigger_description').value='';
+    document.getElementById('custom_trigger_weapon_id').value='';
+    document.querySelector('#custom_trigger_modal').classList.toggle('is-active');
+});
+
+
 modal_backgrounds = document.querySelectorAll('.modal-background');
 modal_backgrounds.forEach(bg => {
     bg.addEventListener('click',function(e){
@@ -722,77 +733,61 @@ close_modals.forEach(close_modal => {
 });
 
 // gen achi list
-list = document.getElementById('achievments_list');
-new_achievements.forEach(a => {
-    friendly_name = encodeURI(a.id);
-    card_footer_markup = '<div class="field is-grouped is-grouped-multiline">';
-    
-    for (let [index, val] of a.soundfiles.entries()) {
-        if (val.startsWith('http')) {
-            filename = val.split('/').pop();
-            card_footer_entry = `
-                <div class="control">
-                    <div class="tags has-addons">
-                        <span data-tooltip="${val}" title='${val}' class="tag">${filename}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></span>
-                        <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
-                    </div>
-                </div>
-            `;
+render_all_achievement_cards();
+
+
+// handle new custom trigger submit
+document.getElementById('custom_trigger_form').addEventListener('submit',function(e){
+    e.preventDefault();
+    // create new / edit existin custom trigger, add markup to manage audio dialog and save
+    label = document.getElementById('custom_trigger_name').value;
+    id = label.toLowerCase().replace(/\s/g, '');
+    description = document.getElementById('custom_trigger_description').value;
+    onkill = document.querySelector('input[name="onkill"]:checked').value;
+    weapon_id = document.getElementById('custom_trigger_weapon_id').value;
+    ach_with_same_id = get_achievement(id);
+    edit_ach = get_achievement(edit_custom_trigger_id);
+    if (ach_with_same_id || edit_ach) {
+        save = confirm('This will overwrite an existing custom trigger - as you sure?');
+        if (save) {
+            edit_ach.id = id;
+            edit_ach.description = description;
+            edit_ach.name = label;
+            edit_ach.onkill = onkill;
+            edit_ach.custom_weapon_trigger = weapon_id;
         }
-        else {
-            // built in audio
-            card_footer_entry = `
-                <div class="control">
-                    <div class="tags has-addons">
-                        <span data-tooltip="Built In Audio" class="tag is-light">${val}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></a>
-                        <!--<a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info disable_default">on</a>-->
-                    </div>
-                </div>
-            `;
-        }
-        card_footer_markup += card_footer_entry;
-    };
-    card_footer_markup += '</div>';
-    if (a.enabled) {
-        yes_checked='checked'; no_checked='';
     }
     else {
-        yes_checked=''; no_checked='checked';
+        // no existing or not editing a current ach
+        foo = new Achievement(id, label, description, function (event) {
+            if (event.payload.event_name=='Death') {
+                if (is_kill(event) && this.on_kill==1) {
+                    if (!is_tk(event)) {
+                        if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
+                            return true;
+                        }
+                    }
+                }
+                if (is_death(event) && this.on_kill==0) {
+                    if (!is_tk(event)) {
+                        if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
+                            return true;
+                        }
+                    }
+                }
+            } 
+            return false;
+        },[]);
+        foo.custom_weapon_trigger = weapon_id;
+        foo.onkill=onkill;
+        //new_achievements.push(foo); // not needed, new object adds itself to new_achievement object
+        console.log('Added new custom weapon trigger: ',foo);
     }
-    markup = `
-    <div class="card" data-id="${a.id}">
-        <header class="card-header">
-            <p class="card-header-title">
-            ${a.name}
-            </p>
-            <div class="control">
-                <label class="radio ">
-                    <input ${yes_checked} value="on" type="radio" class="audio_enabled_radio" name="enabled_${friendly_name}">
-                    On
-                </label>
-                <label class="radio">
-                    <input ${no_checked} value="off" type="radio" class="audio_enabled_radio" name="enabled_${friendly_name}">
-                    Off
-                </label>
-            </div>
-        </header>
-        <div class="card-content">
-            <div class="content">
-                ${a.description}
-                
-            </div>
-        </div>
-        <footer class='card-footer'>
-            ${card_footer_markup}
-            <button style='margin:1em' class='add_audio button is-small iss-light is-success'>+</button>
-        </footer>
-    </div>
-    `;
-    list.innerHTML = list.innerHTML + markup;
+    document.getElementById('custom_trigger_modal').classList.toggle('is-active');
+    render_all_achievement_cards(); // redraw all
+    save_config();
+    return false;
 });
-
 
 document.getElementById('copy_config').addEventListener('click',function(e){
     e.preventDefault();
@@ -807,13 +802,15 @@ function save_config() {
     // strip name/desc and jsonify into localstorage
     ach_json = JSON.stringify(new_achievements);
     window.temp_config = JSON.parse(ach_json);
-    for (n=0;n<temp_config.length;n++) {
-        delete temp_config[n].name;
-        delete temp_config[n].description;
-        delete temp_config[n].sounds;
-        delete temp_config[n].priority;
-        delete temp_config[n].interruptable;
-    }
+    /* for (n=0;n<temp_config.length;n++) {
+        if (!temp_config[n].custom_weapon_trigger) {
+            delete temp_config[n].name;
+            delete temp_config[n].description;
+            delete temp_config[n].sounds;
+            delete temp_config[n].priority;
+            delete temp_config[n].interruptable;
+        }
+    } */
     final_config_string = JSON.stringify(temp_config);
     localStorage.setItem('ps2_achievements',final_config_string);
 }
@@ -847,9 +844,35 @@ function load_config() {
                 }
             };
             if (!ach) {
-                console.log('No matching achievement found during config load for: ',config[i]);
+                if (config[i].custom_weapon_trigger) {
+                    console.log('Found custom weapon trigger: ',config[i]);
+                    // create new custom achievement object based on config
+                    foo = new Achievement(config[i].id, config[i].name, config[i].description, function (event) {
+                        if (event.payload.event_name=='Death') {
+                            if (is_kill(event) && this.on_kill==1) {
+                                if (!is_tk(event)) {
+                                    if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
+                                        return true;
+                                    }
+                                }
+                            }
+                            if (is_death(event) && this.on_kill==0) {
+                                if (!is_tk(event)) {
+                                    if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        } 
+                        return false;
+                    },[]);
+                    foo.custom_weapon_trigger = config[i].custom_weapon_trigger;
+                    foo.onkill=config[i].onkill;
+                    ach=foo;
+                    console.log('Added custom trigger ',foo);
+                }
             }
-            else {
+            if (ach) {
                 // found config for an achievement
                 // loop through sounds and add
                 for (x=0; x<config[i].soundfiles.length; x++) {
@@ -871,6 +894,9 @@ function load_config() {
                         ach.enabled=false;
                     }
                 }
+            }
+            else {
+                console.log('No matching achievement found during config load for: ',config[i]);
             }
         }
     }
@@ -951,7 +977,54 @@ $(window).resize(function(e) {
 
 document.querySelector('body').addEventListener('click',function(e){
 
-    //console.log(e.target);
+    // delete custom
+    if (e.target.classList.contains('delete_custom')) {
+        sure = confirm('Are you sure you wish to delete this custom trigger?');
+        if (sure) {
+            card = e.target.closest('.card');
+            ach_id = card.dataset.id;
+            ach = get_achievement(ach_id);
+            console.log('Deleting custom: ',ach);
+            if (ach) {
+                index = get_achievment_index(ach_id);
+                if (index) {
+                    new_achievements.splice(index,1);
+                    render_all_achievement_cards();
+                    save_config();
+                }
+                else {
+                    console.log('Unknown achievement clicked for removal: ',ach_id);
+                }
+            }
+            else {
+                console.log('Unknown achievement clicked for removal: ',ach_id);
+            }
+        }
+    }
+
+    if (e.target.classList.contains('edit_custom')) {
+        card = e.target.closest('.card');
+        ach_id = card.dataset.id;
+        ach = get_achievement(ach_id);
+        if (ach) {
+            console.log('editing achievement: ',ach);
+            document.getElementById('custom_trigger_name').value = ach.name;
+            document.getElementById('custom_trigger_description').value = ach.description;
+            document.getElementById('custom_trigger_weapon_id').value = ach.custom_weapon_trigger;
+            if (ach.onkill=='1') {
+                document.getElementById('onkill').checked = true;
+            }
+            else {
+                document.getElementById('ondeath').checked = true;
+            }
+            // set current id editing and show modal form
+            window.edit_custom_trigger_id = ach_id;
+            document.querySelector('#custom_trigger_modal').classList.toggle('is-active');
+        }
+        else {
+            console.log('Unknown achievement clicked: ',ach_id);
+        }
+    }
 
     if (e.target.classList.contains('audio_enabled_radio')) {
         var val=null;
