@@ -393,7 +393,7 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     
     if (!is_kill(event) && event.payload.event_name=="Death") {
-        if (event.attacker_weapon_id=="0") {
+        if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
         weapon = weapons[event.payload.attacker_weapon_id];
@@ -414,7 +414,7 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
 var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfucker!', function (event) {
     
     if (is_kill(event) && event.payload.event_name=="Death") {
-        if (event.attacker_weapon_id=="0") {
+        if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
         weapon = weapons[event.payload.attacker_weapon_id];
