@@ -1,6 +1,104 @@
 
 window.new_achievements = [];
 
+function render_all_achievement_cards() {
+    // gen achi list
+    list = document.getElementById('achievments_list');
+    list.innerHTML = '';
+    new_achievements.forEach(a => {
+        markup = render_achievement_card(a);
+        list.innerHTML = list.innerHTML + markup;
+    });
+}
+
+function get_achievment_index (ach_id) {
+    for (n=0;n<new_achievements.length; n++) {
+        if (new_achievements[n].id==ach_id) {
+            return n;
+        }
+    }
+    return false;
+}
+
+function render_achievement_card(a) {
+    friendly_name = encodeURI(a.id);
+    card_footer_markup = '<div class="field is-grouped is-grouped-multiline">';
+    
+    for (let [index, val] of a.soundfiles.entries()) {
+        if (val.startsWith('http')) {
+            filename = val.split('/').pop();
+            card_footer_entry = `
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span title='${val}' class="tag">${filename}</span>
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></span>
+                        <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
+                    </div>
+                </div>
+            `;
+        }
+        else {
+            // built in audio
+            card_footer_entry = `
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span title="Built In Audio" class="tag is-light">${val}</span>
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></a>
+                        <!--<a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info disable_default">on</a>-->
+                    </div>
+                </div>
+            `;
+        }
+        card_footer_markup += card_footer_entry;
+    };
+    card_footer_markup += '</div>';
+    if (a.enabled) {
+        yes_checked='checked'; no_checked='';
+    }
+    else {
+        yes_checked=''; no_checked='checked';
+    }
+    custom_weapon_trigger_class =' regular '
+    //custom_weapon_trigger_label = "<span class='info'><button class='add_audio button is-small is-light is-success'>add audio</button></span>";
+    custom_weapon_trigger_label = "";
+    if (a.custom_weapon_trigger) {
+        custom_weapon_trigger_class=' custom '; 
+        //custom_weapon_trigger_label = '<span class="info"><button class="add_audio button is-small is-light is-success">add audio</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small is-danger is-light delete_custom">delete</button></span> ';
+        custom_weapon_trigger_label = '<span class="info"><button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small is-danger is-light delete_custom">delete</button></span> ';
+    }
+    markup = `
+    <div class="card ${custom_weapon_trigger_class}" data-id="${a.id}">
+        <header class="card-header">
+            <p class="card-header-title">
+            ${a.name} ${custom_weapon_trigger_label}
+            
+            </p>
+            <div class="control">
+                <label class="radio ">
+                    <input ${yes_checked} value="on" type="radio" class="audio_enabled_radio" name="enabled_${friendly_name}">
+                    On
+                </label>
+                <label class="radio">
+                    <input ${no_checked} value="off" type="radio" class="audio_enabled_radio" name="enabled_${friendly_name}">
+                    Off
+                </label>
+            </div>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                ${a.description}
+                
+            </div>
+        </div>
+        <footer class='card-footer'>
+            ${card_footer_markup}
+            <button style='margin:1em' class='add_audio button is-small iss-light is-success'>+</button>
+        </footer>
+    </div>
+    `;
+    return markup;
+}
+
 
 function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], priority=10, interruptable=false) {
     this.id = id;
@@ -11,6 +109,7 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.priority=priority;
     this.interruptable = interruptable;
     this.enabled = true;
+    this.custom_weapon_trigger = null;
     if (trigger) {
         this.triggered = trigger;
     }
@@ -31,7 +130,10 @@ Achievement.prototype.trigger = function() {
             has_external=true;
         }
     }
-    if (!has_external) {
+    if (this.sounds.length==0) {
+        say(this.name);
+    }
+    else if (!has_external) {
         // default only
         random_sound_index = Math.floor(Math.random() * this.sounds.length);
         this.sounds[random_sound_index].play();
@@ -263,7 +365,7 @@ var max_kill = new Achievement('minmax','Min Max!','You killed a tiny brain pers
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
     }
-},['max-here-boy.mp3','embarass-max.mp3'],20);
+},['max-here-boy.mp3','embarass-max.mp3'],3);
 
 var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot kill!', function (event) {
     if (is_kill(event) && !is_tk(event)) {
@@ -291,7 +393,7 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     
     if (!is_kill(event) && event.payload.event_name=="Death") {
-        if (event.attacker_weapon_id=="0") {
+        if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
         weapon = weapons[event.payload.attacker_weapon_id];
@@ -307,6 +409,28 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
     }
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
+
+
+var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfucker!', function (event) {
+    
+    if (is_kill(event) && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=="0") {
+            return false;
+        }
+        weapon = weapons[event.payload.attacker_weapon_id];
+        if (weapon) {
+            type = get_weapon_type (weapon.item_category_id);
+            if (type=="Knife") {
+                return true;
+            }
+        }
+        else {
+            console.log('unknown weapon for event',event);
+        }
+    }
+    return false;
+},['cutcutcut.mp3','stabbing_motion.mp3','do-knife-thing.mp3']);
+
 
 var badspam = new Achievement('badspam',"I Don't Like Spam!",'You got killed by a Lasher!', function (event) {
     if (!is_kill(event) && event.payload.event_name=="Death") {

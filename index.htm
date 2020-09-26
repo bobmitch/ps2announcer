@@ -8,7 +8,9 @@
 		<link rel="stylesheet" href="style.css">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css" integrity="sha256-oSsWW/ca1ll8OVu2t4EKkyb9lmH0Pkd8CXKXnYP4QvA=" crossorigin="anonymous">
 		<link rel="icon" type="image/png" href="https://bobmitch.com/ps2/favicon.ico">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tooltip@1.2.0/dist/bulma-tooltip.min.css" integrity="sha256-OdzWB7wl1AMkFaqhYBnoQJGUJMDAexXa44rXs/d2n4A=" crossorigin="anonymous">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.26.0/slimselect.min.js"></script>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.26.0/slimselect.min.css" rel="stylesheet"></link>
+		<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tooltip@1.2.0/dist/bulma-tooltip.min.css" integrity="sha256-OdzWB7wl1AMkFaqhYBnoQJGUJMDAexXa44rXs/d2n4A=" crossorigin="anonymous"> -->
 		<!-- <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css"> -->
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-10321584-7"></script>
@@ -56,6 +58,9 @@
 						  </a>
 				  
 						  <div class="navbar-dropdown">
+							<a id='show_help_modal' class="navbar-item">
+								Help
+							  </a>
 							<a id='show_about_modal' class="navbar-item">
 							  About
 							</a>
@@ -164,7 +169,7 @@
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Manage Audio</p>
+				<p class="modal-card-title">Manage Audio&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>
@@ -176,7 +181,24 @@
 					</div>
 				</div>
 				<hr>
-				<p>Click + to add custom external audio files - these must be hosted on HTTPS (secure) sites. Dropbox links can be used by changing up the shared URL slightly:</p>
+				<div id='achievments_list'></div>
+			  </section>
+			  <footer class="modal-card-foot">
+				
+			  </footer>
+			</div>
+		  </div>
+
+		  <div id='help_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Help</p>
+				<button class="delete" aria-label="close"></button>
+				
+			  </header>
+			  <section class="modal-card-body">
+				<p>Any external audio files must be hosted on HTTPS (secure) sites. Dropbox links can be used by changing up the shared URL slightly:</p>
 				<p>If the original shared URL is:</p>
 				<p><em>https://www.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3?dl=0</em></p>
 				<p>just change the www to dl, and remove everything after mp3 - so in this example it would become:</p>
@@ -186,13 +208,9 @@
 				<p>For Apache add: <span class='code'>Header set Access-Control-Allow-Origin "https://bobmitch.com"</span> to your .htaccess file.</p>
 				<p>For nginx see <a target='_blank' href='https://enable-cors.org/server_nginx.html'>these instructions</a>. Be sure to replace the wildcard '*' with 'bobmitch.com' for added security.</p>
 				<hr>
-				<p><strong>Any custom sounds will prevent default sounds from playing!</strong></p>
-				<hr>
-				<div id='achievments_list'></div>
+				<p><strong>Any custom sounds add to built-in triggers will prevent default sounds from playing!</strong></p>
 			  </section>
-			  <footer class="modal-card-foot">
-				
-			  </footer>
+			  
 			</div>
 		  </div>
 
@@ -206,6 +224,70 @@
 			  </header>
 			  <section class="modal-card-body">
 				<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScsWiI1_GUhgXrBiK4fN7JqBZpHCzOfmbL4VvC2S8m_BnHnpA/viewform?embedded=true" width="640" height="737" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+			  </section>
+			  
+			</div>
+		  </div>
+
+		  <div id='custom_trigger_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Custom Weapon Trigger</p>
+				<button class="delete" aria-label="close"></button>
+				
+			  </header>
+			  <section class="modal-card-body">
+					<form id='custom_trigger_form'>
+
+
+						<div class="field">
+							<label class="label">Weapon</label>
+							<div class="control">
+							  <div class="slimselect notjustselectanymore-bulmalookedbad">
+								<select required id="custom_trigger_weapon_id" name='custom_trigger_weapon_id' id='custom_trigger_weapon_list'>
+									<option value="" >Please Select</option>
+								</select>
+							  </div>
+							</div>
+						  </div>
+
+						<div class="field">
+							<label class="label">Label</label>
+							<div class="control">
+							  <input id='custom_trigger_name' name='name' required class="input" type="text" placeholder="Name">
+							</div>
+							<p class="help">Shown in killboard in special column</p>
+						  </div>
+
+						  <div class="field">
+							<label class="label">Brief Description</label>
+							<div class="control">
+							  <input id='custom_trigger_description' name='description' class="input" type="text" placeholder="Description">
+							</div>
+						  </div>
+
+						  
+						  
+						  <div class="field">
+							<div class="control">
+							  <label class="radio">
+								<input checked value="1" id='onkill' type="radio" name="onkill">
+								Trigger on Kill
+							  </label>
+							  <label class="radio">
+								<input value="0" type="radio" id='ondeath' name="onkill">
+								Trigger on Death
+							  </label>
+							</div>
+						  </div>
+						  
+						  <div class="field is-grouped">
+							<div class="control">
+							  <button type='submit' id='submit_custom_trigger' class="button is-link">Save</button>
+							</div>
+						  </div>
+					</form>
 			  </section>
 			  
 			</div>

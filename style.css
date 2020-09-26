@@ -116,10 +116,28 @@ span.outfit {
 /* .card-footer {
     overflow-x: auto;
 } */
-.field.is-grouped.is-grouped-multiline {
-    /* overflow-x: auto; */
-}
 
+.control {
+   max-width:100%;
+}
+.field.is-grouped.is-grouped-multiline {
+    max-width: 100%;
+    width:100%;
+    position:relative;
+}
+.card .tags.has-addons {
+    position:relative;
+    max-width:100%;
+}
+.card .tags.has-addons span:first-of-type {
+    /* border: 1px solid red; */
+    /* max-width:30vw; */
+    max-width:88%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
 
 #achievments_list .control {
     padding: 0.5em;
@@ -131,16 +149,23 @@ span.outfit {
     font-size:80%;
     margin:0.5em;
 }
-
+.modal-card-body p span.info {
+    opacity:0.5;
+    padding-left:1rem;
+    transform:scale(0.8);
+}
 .add_audio.button {
         position: absolute;
-        top: 3.5em;
+        /* top: 3.5em; */
         right: 0;
+        bottom: 0;
 }
 .card-header {
-    background:aliceblue !important;
     background:#f0f0f0 !important;
     font-size:130%;
+}
+.custom .card-header {
+    background:#d9f1ef !important;
 }
 #splash .contain {
     text-align:center;
