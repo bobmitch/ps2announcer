@@ -85,8 +85,8 @@ custom_trigger_select_list = document.getElementById('custom_trigger_weapon_id')
 for (const weapon in weapons) {
     option = document.createElement('option');
     option.value = weapons[weapon].item_id;
-    if (weapons[weapon].hasOwnProperty('name') && weapons[weapon].is_vehicle_weapon=="0" && weapons[weapon].item_category_id!="141") {
-        // must have name, not be vehicle weapon, and not a boosting item ;)
+    if (weapons[weapon].hasOwnProperty('name') && weapons[weapon].is_vehicle_weapon=="0" && weapons[weapon].item_category_id!="141" && weapons[weapon].item_category_id!="18" && weapons[weapon].item_category_id!="146" && weapons[weapon].item_category_id!="102") {
+        // must have name, not be vehicle weapon, not tank, bounty, shield, and not a boosting item ;)
         option.text = weapons[weapon].name.en;
         option.dataset.item_category_id = weapons[weapon].item_category_id;
         if (added_weapons.includes(option.text)) {
