@@ -365,7 +365,7 @@ var max_kill = new Achievement('minmax','Min Max!','You killed a tiny brain pers
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
     }
-},['max-here-boy.mp3','embarass-max.mp3'],20);
+},['max-here-boy.mp3','embarass-max.mp3'],3);
 
 var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot kill!', function (event) {
     if (is_kill(event) && !is_tk(event)) {
