@@ -123,6 +123,12 @@ function print_character(character_id, event) {
             if (profile) {
                 profile_name = profile.description.en;
             }
+            else {
+                console.log('Unknown profile for loadout for loadout: ',loadout,' in event ',event);
+            }
+        }
+        else {
+            console.log('Unknown loadout for event char loadout: ',event);
         }
         char+="<span class='"+profile_name+"'>" + profile_name + "</span>";
         char+='<span class="char faction'+character.faction_id+'"> ';
