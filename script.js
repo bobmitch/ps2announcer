@@ -761,14 +761,15 @@ document.getElementById('custom_trigger_form').addEventListener('submit',functio
         // no existing or not editing a current ach
         foo = new Achievement(id, label, description, function (event) {
             if (event.payload.event_name=='Death') {
-                if (is_kill(event) && this.on_kill==1) {
+                //console.log ('checking ',event,' for trigger: ',this);
+                if (is_kill(event) && this.onkill=="1") {
                     if (!is_tk(event)) {
                         if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
                             return true;
                         }
                     }
                 }
-                if (is_death(event) && this.on_kill==0) {
+                if (is_death(event) && this.onkill=="0") {
                     if (!is_tk(event)) {
                         if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
                             return true;
@@ -849,14 +850,15 @@ function load_config() {
                     // create new custom achievement object based on config
                     foo = new Achievement(config[i].id, config[i].name, config[i].description, function (event) {
                         if (event.payload.event_name=='Death') {
-                            if (is_kill(event) && this.on_kill==1) {
+                            //console.log ('checking ',event,' for trigger: ',this);
+                            if (is_kill(event) && this.onkill=="1") {
                                 if (!is_tk(event)) {
                                     if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
                                         return true;
                                     }
                                 }
                             }
-                            if (is_death(event) && this.on_kill==0) {
+                            if (is_death(event) && this.onkill=="0") {
                                 if (!is_tk(event)) {
                                     if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
                                         return true;
