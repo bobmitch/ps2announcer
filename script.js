@@ -12,6 +12,9 @@ if (ps2_extraaudio===null) {
     ps2_extraaudio = [];
 }
 
+test_audio = new Audio('audio/ting.mp3');
+window.mute_test = false;
+
 // setup global vars
 var event_counter = 0;
 var killstreak=0; // reset by death
@@ -930,12 +933,20 @@ document.querySelector('#volume').addEventListener('change',function(e){
             sound.volume = volume/100;
         });
     });
+    test_audio.volume = volume/100;
+    if (!window.mute_test) {
+        test_audio.pause();
+        test_audio.currentTime = 0;
+        test_audio.play();
+    }
+    window.mute_test = false;
 });
 saved_volume = localStorage.getItem('ps2_volume');
 if (saved_volume) {
     volume_slider = document.querySelector('#volume')
     volume_slider.value = saved_volume;
-    volume_slider.dispatchEvent(new Event('change'));
+    window.mute_test = true;
+    volume_slider.dispatchEvent(new Event('change')); 
 }
 else {
     saved_volume = 100;
