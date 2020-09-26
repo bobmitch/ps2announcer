@@ -692,6 +692,11 @@ document.querySelector('#show_about_modal').addEventListener('click',function(e)
     document.querySelector('#about_modal').classList.toggle('is-active');
 });
 
+document.querySelector('#show_help_modal').addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelector('#help_modal').classList.toggle('is-active');
+});
+
 
 document.querySelector('#show_export_modal').addEventListener('click',function(e){
     e.preventDefault();
@@ -778,7 +783,7 @@ document.getElementById('custom_trigger_form').addEventListener('submit',functio
                 }
             } 
             return false;
-        },[]);
+        },[],15);
         foo.custom_weapon_trigger = weapon_id;
         foo.onkill=onkill;
         //new_achievements.push(foo); // not needed, new object adds itself to new_achievement object
@@ -867,7 +872,7 @@ function load_config() {
                             }
                         } 
                         return false;
-                    },[]);
+                    },[],15);
                     foo.custom_weapon_trigger = config[i].custom_weapon_trigger;
                     foo.onkill=config[i].onkill;
                     ach=foo;

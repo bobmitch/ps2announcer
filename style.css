@@ -156,8 +156,9 @@ span.outfit {
 }
 .add_audio.button {
         position: absolute;
-        top: 3.5em;
+        /* top: 3.5em; */
         right: 0;
+        bottom: 0;
 }
 .card-header {
     background:#f0f0f0 !important;

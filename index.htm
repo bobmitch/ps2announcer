@@ -56,6 +56,9 @@
 						  </a>
 				  
 						  <div class="navbar-dropdown">
+							<a id='show_help_modal' class="navbar-item">
+								Help
+							  </a>
 							<a id='show_about_modal' class="navbar-item">
 							  About
 							</a>
@@ -176,7 +179,24 @@
 					</div>
 				</div>
 				<hr>
-				<p>Click + to add custom external audio files - these must be hosted on HTTPS (secure) sites. Dropbox links can be used by changing up the shared URL slightly:</p>
+				<div id='achievments_list'></div>
+			  </section>
+			  <footer class="modal-card-foot">
+				
+			  </footer>
+			</div>
+		  </div>
+
+		  <div id='help_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Help</p>
+				<button class="delete" aria-label="close"></button>
+				
+			  </header>
+			  <section class="modal-card-body">
+				<p>Any external audio files must be hosted on HTTPS (secure) sites. Dropbox links can be used by changing up the shared URL slightly:</p>
 				<p>If the original shared URL is:</p>
 				<p><em>https://www.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3?dl=0</em></p>
 				<p>just change the www to dl, and remove everything after mp3 - so in this example it would become:</p>
@@ -186,13 +206,9 @@
 				<p>For Apache add: <span class='code'>Header set Access-Control-Allow-Origin "https://bobmitch.com"</span> to your .htaccess file.</p>
 				<p>For nginx see <a target='_blank' href='https://enable-cors.org/server_nginx.html'>these instructions</a>. Be sure to replace the wildcard '*' with 'bobmitch.com' for added security.</p>
 				<hr>
-				<p><strong>Any custom sounds will prevent default sounds from playing!</strong></p>
-				<hr>
-				<div id='achievments_list'></div>
+				<p><strong>Any custom sounds add to built-in triggers will prevent default sounds from playing!</strong></p>
 			  </section>
-			  <footer class="modal-card-foot">
-				
-			  </footer>
+			  
 			</div>
 		  </div>
 

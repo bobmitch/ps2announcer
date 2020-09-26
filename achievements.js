@@ -30,7 +30,7 @@ function render_achievement_card(a) {
             card_footer_entry = `
                 <div class="control">
                     <div class="tags has-addons">
-                        <span data-tooltip="${val}" title='${val}' class="tag">${filename}</span>
+                        <span title='${val}' class="tag">${filename}</span>
                         <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></span>
                         <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
                     </div>
@@ -42,7 +42,7 @@ function render_achievement_card(a) {
             card_footer_entry = `
                 <div class="control">
                     <div class="tags has-addons">
-                        <span data-tooltip="Built In Audio" class="tag is-light">${val}</span>
+                        <span title="Built In Audio" class="tag is-light">${val}</span>
                         <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></a>
                         <!--<a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info disable_default">on</a>-->
                     </div>
@@ -59,9 +59,11 @@ function render_achievement_card(a) {
         yes_checked=''; no_checked='checked';
     }
     custom_weapon_trigger_class =' regular '
-    custom_weapon_trigger_label = '';
+    //custom_weapon_trigger_label = "<span class='info'><button class='add_audio button is-small is-light is-success'>add audio</button></span>";
+    custom_weapon_trigger_label = "";
     if (a.custom_weapon_trigger) {
         custom_weapon_trigger_class=' custom '; 
+        //custom_weapon_trigger_label = '<span class="info"><button class="add_audio button is-small is-light is-success">add audio</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small is-danger is-light delete_custom">delete</button></span> ';
         custom_weapon_trigger_label = '<span class="info"><button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small is-danger is-light delete_custom">delete</button></span> ';
     }
     markup = `
@@ -69,6 +71,7 @@ function render_achievement_card(a) {
         <header class="card-header">
             <p class="card-header-title">
             ${a.name} ${custom_weapon_trigger_label}
+            
             </p>
             <div class="control">
                 <label class="radio ">
