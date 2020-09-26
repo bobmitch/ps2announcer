@@ -116,10 +116,28 @@ span.outfit {
 /* .card-footer {
     overflow-x: auto;
 } */
-.field.is-grouped.is-grouped-multiline {
-    /* overflow-x: auto; */
-}
 
+.control {
+   max-width:100%;
+}
+.field.is-grouped.is-grouped-multiline {
+    max-width: 100%;
+    width:100%;
+    position:relative;
+}
+.card .tags.has-addons {
+    position:relative;
+    max-width:100%;
+}
+.card .tags.has-addons span:first-of-type {
+    /* border: 1px solid red; */
+    /* max-width:30vw; */
+    max-width:88%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
 
 #achievments_list .control {
     padding: 0.5em;
@@ -142,12 +160,11 @@ span.outfit {
         right: 0;
 }
 .card-header {
-    background:aliceblue !important;
     background:#f0f0f0 !important;
     font-size:130%;
 }
 .custom .card-header {
-    background:#e0e0e0 !important;
+    background:#d9f1ef !important;
 }
 #splash .contain {
     text-align:center;

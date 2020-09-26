@@ -1047,7 +1047,7 @@ document.querySelector('body').addEventListener('click',function(e){
     }
 
     if (e.target.classList.contains('is-delete') && e.target.classList.contains('remove-audio')) {
-        resp = confirm('Are you sure?');
+        resp = confirm('Are you sure you wish to delete the custom audio file?');
         if (resp) {
             // data-id='${a.id}' data-index='${index}'
             id = e.target.dataset.id;
