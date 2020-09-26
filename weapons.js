@@ -101,3 +101,9 @@ for (const weapon in weapons) {
         //console.log('Item/weapon ',weapons[weapon],' has no name property');
     }
 }
+
+//import SlimSelect from 'slim-select'
+
+slim_select = new SlimSelect({
+  select: '#custom_trigger_weapon_id'
+});

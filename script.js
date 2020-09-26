@@ -713,6 +713,7 @@ document.querySelector('#show_achievements_modal').addEventListener('click',func
 document.querySelector('#add_custom_trigger').addEventListener('click',function(e){
     e.preventDefault();
     window.edit_custom_trigger_id = null;
+    slim_select.set(''); // reset select 
     // reset form
     document.getElementById('custom_trigger_name').value='';
     document.getElementById('custom_trigger_description').value='';
@@ -1010,6 +1011,7 @@ document.querySelector('body').addEventListener('click',function(e){
     }
 
     if (e.target.classList.contains('edit_custom')) {
+        // click edit on custom
         card = e.target.closest('.card');
         ach_id = card.dataset.id;
         ach = get_achievement(ach_id);
@@ -1025,7 +1027,8 @@ document.querySelector('body').addEventListener('click',function(e){
                 document.getElementById('ondeath').checked = true;
             }
             // set current id editing and show modal form
-            window.edit_custom_trigger_id = ach_id;
+            window.edit_custom_trigger_id = ach_id; // set edit id
+            slim_select.set(ach.custom_weapon_trigger); // set select value
             document.querySelector('#custom_trigger_modal').classList.toggle('is-active');
         }
         else {
