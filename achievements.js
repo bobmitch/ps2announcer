@@ -192,11 +192,14 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
 var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', function (event) {
     if (is_player(event.payload.attacker_character_id)) {
         if (!is_tk(event) && (event.payload.event_name=='VehicleDestroy')) {
-            
+            if (is_player(event.payload.attacker_character_id) && is_player(event.payload.character_id)) {
+                // don't trigger if it's your own aircraft - even if this is technically correct
+                return false;
+            }
             var destroyed_vehicle = get_local_vehicle(event.payload.vehicle_id);
-            console.log(event);
+            /* console.log(event);
             console.log('checking if you destroyed a light aircraft:');
-            console.log(destroyed_vehicle);
+            console.log(destroyed_vehicle); */
             if (destroyed_vehicle) {
                 if (destroyed_vehicle.type_name=="Light Aircraft") {
                     return true;
