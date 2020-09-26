@@ -127,7 +127,10 @@ Achievement.prototype.trigger = function() {
             has_external=true;
         }
     }
-    if (!has_external) {
+    if (this.sounds.length==0) {
+        say(this.name);
+    }
+    else if (!has_external) {
         // default only
         random_sound_index = Math.floor(Math.random() * this.sounds.length);
         this.sounds[random_sound_index].play();
