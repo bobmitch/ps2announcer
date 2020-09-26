@@ -410,6 +410,28 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
 
+
+var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfucker!', function (event) {
+    
+    if (is_kill(event) && event.payload.event_name=="Death") {
+        if (event.attacker_weapon_id=="0") {
+            return false;
+        }
+        weapon = weapons[event.payload.attacker_weapon_id];
+        if (weapon) {
+            type = get_weapon_type (weapon.item_category_id);
+            if (type=="Knife") {
+                return true;
+            }
+        }
+        else {
+            console.log('unknown weapon for event',event);
+        }
+    }
+    return false;
+},['cutcutcut.mp3','stabbing_motion.mp3','do-knife-thing.mp3']);
+
+
 var badspam = new Achievement('badspam',"I Don't Like Spam!",'You got killed by a Lasher!', function (event) {
     if (!is_kill(event) && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=='7540') {
