@@ -109,15 +109,35 @@ function nice_date(timestamp) {
 function print_character(character_id, event) {
     character = get_local_character(character_id);
     char = '';
+    loadout_id = null;
     if (!character) {
         char = '[UNKNOWN]';
         // todo: check if looks like valid character_id
         // and run get_character on it for future events to work
     }
     else {
-        loadout_id = event.payload.character_loadout_id;
+        // got character - now match up event loadout with character if possible
+        // and then get profile
+        console.log('Printing character ',character,' for event ',event.payload);
+        if (event.payload.event_name=="GainExperience") {
+            if (character_id==event.payload.character_id) {
+                loadout_id = event.payload.loadout_id;
+            }
+            else  {
+                // no loadout for other_id
+                loadout_id = null;
+            }
+        }
+        else if (event.payload.event_name=="Death") {
+            if (character_id==event.payload.attacker_character_id) {
+                loadout_id = event.payload.attacker_loadout_id;
+            }
+            else {
+                loadout_id = event.payload.character_loadout_id;
+            }
+        }
         loadout = get_loadout(loadout_id);
-        profile_name = '[unknown]';
+        profile_name = '';
         if (loadout) {
             profile = get_profile (loadout.profile_id);
             if (profile) {
