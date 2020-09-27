@@ -566,15 +566,11 @@ var tk_sound = new Achievement('badteamkill','Blue on blue!','You were killed by
 var welcome = new Achievement('welcome','Welcome To Planetside!','You killed someone new to the game!', function (event) {
     if (event.payload.event_name=="Death") {
         if (is_kill(event) && !is_tk(event)) {
-            if (!characters[event.payload.character_id].hasOwnProperty('character_list')) {
-                console.log ('Character ', character_id, ' has no character list array');
-                return '[unknown]';
+            char = get_local_character(event.payload.character_id);
+            if (!char) {
+                return false;
             }
-            if (characters[event.payload.character_id].character_list.length==0) {
-                console.log ('Character ', character_id, ' has empty character list array');
-                return '[unknown]';
-            }
-            if (characters[event.payload.character_id].character_list[0].battle_rank.value < 6) {
+            else if (char.battle_rank.value < 6) {
                 return true;
             }
         }
@@ -586,7 +582,7 @@ var welcome = new Achievement('welcome','Welcome To Planetside!','You killed som
 var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with a good KDR!', function (event) {
     if (event.payload.event_name=="Death") {
         if (is_kill(event) && !is_tk(event)) {
-            stats_history = characters[event.payload.character_id].character_list[0].stats.stat_history;
+            stats_history = get_local_character_stats_history(event.payload.character_id);
             if (stats_history) {
                 victim_kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
             }

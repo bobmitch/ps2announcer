@@ -128,7 +128,7 @@ function print_character(character_id, event) {
                 loadout_id = null;
             }
         }
-        else if (event.payload.event_name=="Death") {
+        else if (event.payload.event_name=="Death"||event.payload.event_name=="VehicleDestroy") {
             if (character_id==event.payload.attacker_character_id) {
                 loadout_id = event.payload.attacker_loadout_id;
             }

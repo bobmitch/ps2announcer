@@ -41,6 +41,19 @@ function get_local_character(character_id) {
     return characters[character_id].character_list[0];
 }
 
+function get_local_character_stats_history(character_id) {
+    char = get_local_character(character_id);
+    if (!char) {
+        return false;
+    }
+    if (char.hasOwnProperty('stats')) {
+        if (char.stats.hasOwnProperty('stat_history')) {
+            return char.stats.stat_history;
+        }
+    }
+    return false;
+}
+
 function unsubscribe(id) {
     var subscription_data = {
     "action":"clearSubscribe",
