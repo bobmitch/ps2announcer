@@ -739,6 +739,10 @@ document.querySelector('#show_help_modal').addEventListener('click',function(e){
 
 document.querySelector('#show_export_modal').addEventListener('click',function(e){
     e.preventDefault();
+    // update config
+    config_textarea = document.getElementById('config_export');
+    config_textarea.innerText = JSON.stringify(config);
+    // show modal
     document.querySelector('#export_modal').classList.toggle('is-active');
     
 });
@@ -947,8 +951,7 @@ function load_config() {
             }
         }
     }
-    config_textarea = document.getElementById('config_export');
-    config_textarea.innerText = JSON.stringify(config);
+    
 }
 
 function get_achievement(id) {
