@@ -256,3 +256,52 @@ span.code {
         margin:1%;
     }
 }
+
+
+@keyframes hide {
+    0%   {opacity: 1; max-height:3em;}
+    90%  {opacity: 1; max-height:3em;}
+    100% {opacity: 0; max-height:0em;}
+}
+.obs .hideme {
+    animation: hide 8s forwards;
+}
+
+body.obs, html {
+    background-color:rgba(0,0,0,0) !important;
+}
+body.testobs {
+    background-color:rgba(0,0,0,0.5) !important;
+}
+.obs .navbar {
+    display:none;
+}
+.obs #stats {
+    background:transparent;
+}
+.obs thead {
+    display:none;
+}
+.obs #events tr {
+    display:flex;
+    width:100%;
+    border:none;
+    max-height:3em;
+}
+.obs table {
+    color:white;
+    background-color:transparent !important;
+}
+.obs table tr {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    max-height:3em;
+    background:transparent !important;
+}
+.obs table td {
+    border:none !important;
+}
+.obs table td:first-child {
+    display: none;
+}

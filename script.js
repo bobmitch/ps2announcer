@@ -3,6 +3,19 @@
 
 // load options
 
+// window.obsstudio property available if within OBS
+
+if (window.hasOwnProperty('obsstudio')) {
+    // do whatever is needed!
+    alert('obs');
+    document.getElementsByTagName('body')[0].classList.add('obs');
+    splash = document.getElementById('splash');
+    splash.parentNode.removeChild(splash);
+}
+else {
+    //document.getElementsByTagName('body')[0].classList.add('testobs');
+}
+
 var playerlist = JSON.parse(localStorage.getItem('ps2_players'));
 if (playerlist===null) {
     playerlist = [];
@@ -55,6 +68,7 @@ function insert_row (data, msg) {
 
     if (msg) {
         var row=events_table.insertRow();
+        row.classList.add('hideme');
         row.className += cls;
         var time = row.insertCell();
         var event = row.insertCell();
@@ -209,8 +223,8 @@ function display_event(data) {
         
         // can also access triggered achievements by this event here: window.cur_achievements - this is cleared next event
 
-        var events_table_body = document.getElementById('events_body');          
-        var events_table = document.getElementById('events');
+        var events_table = document.getElementById('events_body');          
+        //var events_table = document.getElementById('events');
         var cls='';
         var msg='';
         var pills='';
@@ -333,6 +347,7 @@ function display_event(data) {
         }
         if (msg) {
             var row=events_table.insertRow();
+            row.classList.add('hideme');
             row.className += cls;
             var time = row.insertCell();
             var event = row.insertCell();
@@ -575,6 +590,17 @@ function process_event(event) {
     
 }
 
+document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
+    // toggle obs view if space pressed in obs view
+    var code = e.which;
+    if(code==32) {
+        if (document.getElementsByTagName('body')[0].classList.contains('obs')) {
+            e.preventDefault();
+            document.getElementsByTagName('body')[0].classList.toggle('obs');
+        }
+    }
+});
+
 
 
 
@@ -762,6 +788,10 @@ document.querySelector('#add_custom_trigger').addEventListener('click',function(
     document.getElementById('custom_trigger_description').value='';
     document.getElementById('custom_trigger_weapon_id').value='';
     document.querySelector('#custom_trigger_modal').classList.toggle('is-active');
+});
+
+document.getElementById('toggle_view').addEventListener('click',function(){
+    document.getElementsByTagName('body')[0].classList.toggle('obs');
 });
 
 
