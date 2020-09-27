@@ -133,7 +133,13 @@ function print_character(character_id, event) {
                 loadout_id = event.payload.attacker_loadout_id;
             }
             else {
-                loadout_id = event.payload.character_loadout_id;
+                if (event.payload.event_name=="Death") {
+                    // only present in death event, loadout only available for vehicledestory attacker
+                    loadout_id = event.payload.character_loadout_id;
+                }
+                else {
+                    loadout_id = null;
+                }
             }
         }
         loadout = get_loadout(loadout_id);
@@ -391,6 +397,10 @@ function get_player_online_state(char_id) {
     var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:resolve=online_status&character_id="+char_id+"&c:limit=1&callback=?";
     jQuery.getJSON(url,function(json){
         var search = json;
+        if (search.hasOwnProperty('errorCode')) {
+            console.log('API Error - try again later'); 
+            return false;
+        }
         console.log('player online state results:');
         console.log(search);
         if (search.character_list.length==0) {
