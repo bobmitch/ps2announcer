@@ -1,0 +1,101 @@
+<html>
+	<head>
+		<title>Planetside Announcer - beta!</title>
+		<meta charset="UTF-8">
+		<meta name="description" content="Planetside 2 Announcer">
+		<meta name="keywords" content="planetside, announcer, funny">
+		<meta name="author" content="Bob Mitchell">
+		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css" integrity="sha256-oSsWW/ca1ll8OVu2t4EKkyb9lmH0Pkd8CXKXnYP4QvA=" crossorigin="anonymous">
+		<link rel="icon" type="image/png" href="https://bobmitch.com/ps2/favicon.ico">
+		<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tooltip@1.2.0/dist/bulma-tooltip.min.css" integrity="sha256-OdzWB7wl1AMkFaqhYBnoQJGUJMDAexXa44rXs/d2n4A=" crossorigin="anonymous"> -->
+		<!-- <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css"> -->
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-10321584-7"></script>
+        <style>
+            html {
+                background-color:transparent !important;
+            }
+            table th {
+                display:none;
+            }
+            .hideme {
+                animation: cssAnimation 7s forwards;
+            }
+            table tr {
+                border:none !important;
+            }
+            @keyframes cssAnimation {
+                0%   {opacity: 1; max-height:4em}
+                90%  {opacity: 1; max-height:4em;}
+                100% {opacity: 0; max-height:0em;}
+            }
+            body {
+                color: #fff;
+                font-size: 1em;
+                font-weight: bold;
+                line-height: 1.5;
+            }
+            #obs_events {
+                height:100vh;
+               /*  display:flex;
+                align-items: center; */
+            }
+            .obs_row {
+                display:flex;
+                width:100%;
+                justify-content: center;
+                
+            }
+            .obs_row {
+                /* padding:2rem; */
+                overflow: hidden;
+            }
+            .obs_row .event {
+                padding:1rem;
+            }
+        </style>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+            gtag('config', 'UA-10321584-7');
+            
+            window.obs = true;
+		</script>
+	</head>
+	<body>
+
+        <div id='show_player_modal'></div>
+        <div id='show_feedback_modal'></div>
+        <div id='show_about_modal'></div>
+        <div id='show_help_modal'></div>
+        <div id='show_export_modal'></div>
+        <div id='show_achievements_modal'></div>
+        <div id='add_custom_trigger'></div>
+        <div id='custom_trigger_form'></div>
+        <div id='copy_config'></div>
+        <div id='apply_config'></div>
+        <div id='volume'></div>
+        <div style='display:none;' id='custom_trigger_weapon_id'></div>
+        <button onclick='alert("test");'>TEST</button>
+        <div id='obs_events'>
+
+        </div>
+		
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script src="achievements.js"></script>
+		<script src="character.js"></script>
+		<script src="event.js"></script>
+		<script src="profiles.js"></script>
+		<script src="vehicles.js"></script>
+		<script src="weapons.js"></script>
+		<script src="loadouts.js"></script>
+		<script src="item_categories.js"></script>
+        <script src='script.js'></script>
+        <script src='obs_script.js'></script>
+	</body>
+</html>
