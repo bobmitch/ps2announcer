@@ -11,9 +11,10 @@ if (window.hasOwnProperty('obsstudio')) {
     document.getElementsByTagName('body')[0].classList.add('obs');
     splash = document.getElementById('splash');
     splash.parentNode.removeChild(splash);
+    
 }
 else {
-    //document.getElementsByTagName('body')[0].classList.add('testobs');
+    document.getElementsByTagName('body')[0].classList.add('testobs');
 }
 
 var playerlist = JSON.parse(localStorage.getItem('ps2_players'));

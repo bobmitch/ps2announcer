@@ -110,6 +110,7 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.interruptable = interruptable;
     this.enabled = true;
     this.custom_weapon_trigger = null;
+    this.animation_id=null;
     if (trigger) {
         this.triggered = trigger;
     }
@@ -145,6 +146,17 @@ Achievement.prototype.trigger = function() {
             random_sound_index = Math.floor(Math.random() * this.sounds.length);
         }
         this.sounds[random_sound_index].play();
+    }
+    if (this.hasOwnProperty('animation_id')) {
+        anim = document.getElementById(this.animation_id);
+        if (anim) {
+            // remove class, clone and replace to trigger
+            // see: https://css-tricks.com/restart-css-animation/
+            anim.classList.remove('showanimation');
+            var newone = anim.cloneNode(true);
+            anim.parentNode.replaceChild(newone, anim);
+            newone.classList.add('showanimation');
+        }
     }
 };
 
@@ -225,6 +237,7 @@ var topgun = new Achievement('topgun','Top Gun!','Destroyed an ESF with an ESF!'
     }
     return false;
 },['congrats_top_gun.mp3','im_a_pilot.mp3','planes_no_place_for_boys.mp3'],4);
+topgun.animation_id="topgun";
 
 var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who left almost straight away!', function (event) {
     if (event.payload.event_name=="PlayerLogout") {
@@ -281,7 +294,7 @@ var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick s
         }
     }
     return false;
-},['two.mp3'],3);
+},['two.mp3'],3);  doublekill.animation_id="two";
 var triplekill = new Achievement('triplekill','Triple Kill!','3 kills in quick succession!', function (event) {
     if (is_kill(event) && !is_tk(event)) {
         if (multikills==2) {
@@ -378,6 +391,7 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
     }
     return false;
 },['pew.mp3'],10);
+headshot_ach.animation_id="headshot";
 
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
@@ -470,6 +484,7 @@ var reviver = new Achievement('revive','Revive!','You revived someone!', functio
     }
     return false;
 },['xp.mp3','Bwup!.ogg'],['To a Zone... one of Danger.ogg'],20);
+reviver.animation_id="revive";
 
 var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person multiple times!', function (event) {
     var l = window.allevents.length;
