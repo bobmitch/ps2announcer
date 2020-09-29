@@ -139,6 +139,10 @@ span.outfit {
     display: inline-block;
 }
 
+.vanilla #achievments_list, .unclaimed #achievments_list {
+    display:none;
+}
+
 #achievments_list .control {
     padding: 0.5em;
 }
@@ -369,3 +373,28 @@ body.testobs {
 
 }
 
+
+@keyframes notify {
+    0%   {opacity: 1; max-height:9rem;}
+    90%  {opacity: 1;  max-height:9rem;}
+    100% {opacity: 0;  max-height:0rem;}
+}
+.notification.notify {
+    animation: notify 5s forwards;
+}
+#notifications {
+    position:fixed;
+    pointer-events: none;
+    top:0;
+    right:0;
+    padding:2rem;
+    z-index:999;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    max-width:60ch;
+    flex-direction: column;
+}
+#notifications .notification {
+    pointer-events: all;
+}

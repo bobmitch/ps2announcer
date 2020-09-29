@@ -1,11 +1,19 @@
 <?php 
 
-$root = "/ps2/";
+$root = "/ps2test/"; // change to appropriate sub-folder - eg. ps2 when live
 
 function pprint_r ($thing) {
 	echo "<pre>"; print_r ($thing); echo "</pre>";
 }
 
+function get_post ($var) {
+	if (isset($_POST[$var])) {
+		return $_POST[$var];
+	}
+	else {
+		return false;
+	}
+}
 
 $request = $_SERVER['REQUEST_URI'];
 $to_remove = $root;
@@ -23,21 +31,55 @@ if (sizeof($segments)==1) {
 }
 $config_json_path = false;
 if (file_exists('userconfigs/' . $user . '_config.json')) {
-	$config_json_path = $root . 'userconfigs/' . $user . '_config.json'
+	$config_json_path = $root . 'userconfigs/' . $user . '_config.json';
 }
-$claimed = false;
+$server_claim_code = false;
 if (file_exists('userconfigs/' . $user . '_claim.txt')) {
-	//$claim_file = file_get_contents()
+	$server_claim_code = file_get_contents('userconfigs/' . $user . '_claim.txt');
 }
 
 ?>
 <?php if (isset($_POST['action'])):?>
-	<?php header('Content-Type: application/json');?>
-	<?php if ($action=='save') {
-
+	<?php 
+	header('Content-Type: application/json');
+	// first check submitted claim code matches stored claim code
+	$submitted_claim_code = get_post('claim_code');
+	$action = get_post('action');
+	if ($action=='save') {
+		if (!$submitted_claim_code) {
+			echo '{"success":0,"msg":"Changes not saved - enter your password if you think this is your URL!"}';
+			exit(0);
+		}
+		if ($submitted_claim_code!=$server_claim_code) {
+			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
+			exit(0);
+		}
+		else {
+			$config = get_post('config');
+			$valid_json = json_decode($config);
+			if ($valid_json) {
+				file_put_contents('userconfigs/' . $user . '_config.json',$config);
+				echo '{"success":1,"msg":"saved"}';
+			}
+			else {
+				echo '{"success":0,"msg":"invalid config"}';
+			}
+		}
 	}
+	elseif ($action=='claim') {
+		if ($submitted_claim_code && $user) {
+			file_put_contents ('userconfigs/' . $user . '_claim.txt',$submitted_claim_code);
+			echo '{"success":1,"msg":"claimed"}';
+		}
+		else {
+			echo '{"success":0,"msg":"not claimed"}';
+		}
+	}
+	exit(0); // don't progress beyond this point if API call :)
 	?>
 <?php endif; ?>
+
+<?php // END OF API ?>
 
 <html>
 	<head>
@@ -55,16 +97,35 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<!-- <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css"> -->
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-10321584-7"></script>
+		
 		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
 			gtag('js', new Date());
-
 			gtag('config', 'UA-10321584-7');
+
+			function postAjax(url, data, success) {
+				var params = typeof data == 'string' ? data : Object.keys(data).map(
+						function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+					).join('&');
+
+				var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+				xhr.open('POST', url);
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState>3 && xhr.status==200) { success(xhr.responseText); }
+				};
+				xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+				xhr.send(params);
+				return xhr;
+			}
+
+			
 		</script>
+
 	</head>
-	<body class=''>
-		<div id='splash'>
+	<body class='<?php if ($server_claim_code) {echo " claimed ";}?> <?php if (!$server_claim_code) {echo " unclaimed ";}?> <?php if (!$user) {echo " vanilla ";}?>'>
+		<div id='splash' class='notobs'>
 			<div class='contain'>
 				<h1 class='splashtitle'>Planetside 2 Announcer</h1>
 				<button onclick='document.querySelector("#splash").classList.add("hide");allow_voicepack();' class='button btn is-warning is-large'>Enable Audio / Start</button>
@@ -109,9 +170,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 							<a id='show_feedback_modal' class="navbar-item">
 							  Feedback
 							</a>
-							<a id='show_export_modal' class="navbar-item">
+							<!-- <a id='show_export_modal' class="navbar-item">
 								Export/Import Soundpack
-							  </a>
+							  </a> -->
 							  <a id='toggle_view' class="navbar-item">
 								OBS View (space to revert)
 							  </a>
@@ -406,8 +467,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				
 			  </header>
 			  <section class="modal-card-body">
-					<p>First of all, this is <em>not</em> a replacement for Recursion's stat tracker application - there is no overlay, stat tracking, or any of the other cool things that software offers - 
-						this is simply just fun little web project to make funny noises when funny things happen in Planetside 2 without having to install any applications or 
+					<p>First of all, this is <em>not</em> a replacement for Recursion's stat tracker application - there is no  crosshair overlay, permanent stat tracking, achievement logging, or any of the myriad cool things that software offers - 
+					this is simply just fun little web project to make funny noises when funny things happen in Planetside 2 without having to install any applications or 
 					register with any third-party sites.</p>
 					<p>At the time of writing, this site is not intended for widespread public consumption - bugs are plentiful and the experience may break at any second, so don't get mad if things don't work, and don't share this <em>too</em> far and wide until it becomes a bit more polished! </p>
 					<p>All options and settings are stored in your browser's local storage and nothing personally identifiable is stored when you visit this site.</p>
@@ -422,9 +483,34 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			</div>
 		  </div>
 
+		<section id='notifications'>
+		</section>
+
 		<div id='animations' class='obs_only'>
 
 		</div>
+
+		<script>
+			window.user = "<?php echo $user;?>";
+			window.claim_code = '';
+			window.root = "<?php echo $root;?>";
+			<?php if (!$server_claim_code && $user):?>
+				window.claim_code = prompt('Unclaimed Soundpack URL! - Enter a password/passphrase to claim this URL as yours!');
+				if (window.claim_code==''||window.claim_code==null) {
+					// do nothing, not claiming yet
+				}
+				else {
+					window.localStorage.setItem('claim_code_<?php echo $user;?>',window.claim_code);
+					// todo: pass ajax request to with claim action + claim_code to self
+					postAjax('', {"action":"claim","claim_code":window.claim_code}, function(data) { 
+						var response = JSON.parse(data);
+						console.log(response);
+					});
+					document.body.classList.remove('unclaimed');
+				}
+			<?php endif; ?>
+			
+		</script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 		<script src="achievements.js"></script>
@@ -436,5 +522,6 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<script src="loadouts.js"></script>
 		<script src="item_categories.js"></script>
 		<script src='script.js'></script>
+		
 	</body>
 </html>

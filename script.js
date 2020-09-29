@@ -761,15 +761,18 @@ document.querySelector('#show_help_modal').addEventListener('click',function(e){
 });
 
 
-document.querySelector('#show_export_modal').addEventListener('click',function(e){
+/* document.querySelector('#show_export_modal').addEventListener('click',function(e){
     e.preventDefault();
     // update config
     config_textarea = document.getElementById('config_export');
-    config_textarea.innerText = JSON.stringify(config);
+    ach_json = JSON.stringify(new_achievements);
+    window.temp_config = JSON.parse(ach_json);
+    final_config_string = JSON.stringify(temp_config);
+    config_textarea.innerText = JSON.stringify(final_config_string);
     // show modal
     document.querySelector('#export_modal').classList.toggle('is-active');
     
-});
+}); */
 
 document.querySelector('#show_achievements_modal').addEventListener('click',function(e){
     e.preventDefault();
@@ -928,7 +931,22 @@ function save_config() {
         }
     } */
     final_config_string = JSON.stringify(temp_config);
-    localStorage.setItem('ps2_achievements',final_config_string);
+    //localStorage.setItem('ps2_achievements',final_config_string);
+    postAjax('', {"action":"save","claim_code":window.claim_code,"config":final_config_string}, function(data) { 
+        var response = JSON.parse(data);
+        console.log(response);
+        if (response.success==1) {
+            notify('Config saved!','is-success');
+        }
+        else {
+            notify(response.msg,'is-warning');
+            temp = prompt('Enter your password/passphrase to re-establish ownership of this URL:');
+            if (temp!=''&&temp!==null) {
+                window.claim_code = temp;
+                save_config();
+            }
+        }
+    });
 }
 
 document.getElementById('apply_config').addEventListener('click',function(e){
@@ -948,81 +966,125 @@ document.getElementById('apply_config').addEventListener('click',function(e){
 });
 
 function load_config() {
-    config = JSON.parse(localStorage.getItem('ps2_achievements'));
-    if (config) {
-        // find achievements in config and match to hard coded
-        for (i=0; i<config.length; i++) {
-            ach = null;
-            for (n=0; n<new_achievements.length; n++) {
-                if (new_achievements[n].id==config[i].id) {
-                    ach = new_achievements[n];
-                    break;
-                }
-            };
-            if (!ach) {
-                if (config[i].custom_weapon_trigger) {
-                    console.log('Found custom weapon trigger: ',config[i]);
-                    // create new custom achievement object based on config
-                    foo = new Achievement(config[i].id, config[i].name, config[i].description, function (event) {
-                        if (event.payload.event_name=='Death') {
-                            //console.log ('checking ',event,' for trigger: ',this);
-                            if (is_kill(event) && this.onkill=="1") {
-                                if (!is_tk(event)) {
-                                    if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
-                                        return true;
+    // todo - move loading into promise 
+    fetch(window.root + 'userconfigs/' + window.user + "_config.json")
+    .then(response => response.json())
+    .then(
+        function(config){
+            console.log("Remote config: ",config);
+            if (config) {
+                // find achievements in config and match to hard coded
+                for (i=0; i<config.length; i++) {
+                    ach = null;
+                    for (n=0; n<new_achievements.length; n++) {
+                        if (new_achievements[n].id==config[i].id) {
+                            ach = new_achievements[n];
+                            break;
+                        }
+                    };
+                    if (!ach) {
+                        if (config[i].custom_weapon_trigger) {
+                            console.log('Found custom weapon trigger: ',config[i]);
+                            // create new custom achievement object based on config
+                            foo = new Achievement(config[i].id, config[i].name, config[i].description, function (event) {
+                                if (event.payload.event_name=='Death') {
+                                    //console.log ('checking ',event,' for trigger: ',this);
+                                    if (is_kill(event) && this.onkill=="1") {
+                                        if (!is_tk(event)) {
+                                            if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
+                                                return true;
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                            if (is_death(event) && this.onkill=="0") {
-                                if (!is_tk(event)) {
-                                    if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
-                                        return true;
+                                    if (is_death(event) && this.onkill=="0") {
+                                        if (!is_tk(event)) {
+                                            if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
+                                                return true;
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                        } 
-                        return false;
-                    },[],15);
-                    foo.custom_weapon_trigger = config[i].custom_weapon_trigger;
-                    
-                    foo.onkill=config[i].onkill;
-                    ach=foo;
-                    console.log('Added custom trigger ',foo);
-                }
-            }
-            if (ach) {
-                // found config for an achievement
-                // loop through sounds and add
-                for (x=0; x<config[i].soundfiles.length; x++) {
-                    sf = config[i].soundfiles[x];
-                    if (sf.startsWith('https')) {
-                        ach.soundfiles.push(config[i].soundfiles[x]);
-                        s = new Audio(sf);
-                        s.crossOrigin = 'anonymous';
-                        ach.sounds.push(s); 
-                        //console.log('Inserting new audio ',sf,' into ach: ',ach);
+                                } 
+                                return false;
+                            },[],15);
+                            foo.custom_weapon_trigger = config[i].custom_weapon_trigger;
+                            
+                            foo.onkill=config[i].onkill;
+                            ach=foo;
+                            console.log('Added custom trigger ',foo);
+                        }
                     }
-                }
-                // set enabled state
-                if (config[i].hasOwnProperty('enabled')) {
-                    if (config[i].enabled) {
-                        ach.enabled=true;
+                    if (ach) {
+                        // found config for an achievement
+                        // loop through sounds and add
+                        for (x=0; x<config[i].soundfiles.length; x++) {
+                            sf = config[i].soundfiles[x];
+                            if (sf.startsWith('https')) {
+                                ach.soundfiles.push(config[i].soundfiles[x]);
+                                s = new Audio(sf);
+                                s.crossOrigin = 'anonymous';
+                                ach.sounds.push(s); 
+                                //console.log('Inserting new audio ',sf,' into ach: ',ach);
+                            }
+                        }
+                        // set enabled state
+                        if (config[i].hasOwnProperty('enabled')) {
+                            if (config[i].enabled) {
+                                ach.enabled=true;
+                            }
+                            else {
+                                ach.enabled=false;
+                            }
+                        }
+                        // animation/image
+                        if (config[i].hasOwnProperty('custom_image')) {
+                            ach.custom_image = config[i].custom_image;
+                        }
                     }
                     else {
-                        ach.enabled=false;
+                        console.log('No matching achievement found during config load for: ',config[i]);
                     }
                 }
-                // animation/image
-                if (config[i].hasOwnProperty('custom_image')) {
-                    ach.custom_image = config[i].custom_image;
-                }
-            }
-            else {
-                console.log('No matching achievement found during config load for: ',config[i]);
+                render_all_achievement_cards();
+                notify('Loaded config!','is-success');
             }
         }
-    }
+    );
+
+    //config = JSON.parse(localStorage.getItem('ps2_achievements'));
+    config=null;
+
     
+    
+}
+
+function delete_me (thing_id) {
+    thing = document.getElementById(thing_id);
+    if (thing) {
+        //console.log('deleting: ',thing);
+        thing.parentNode.removeChild(thing);
+    }
+    else {
+        //console.log('Thing already gone!');
+    }
+}
+
+window.notification_counter = 0;
+
+function notify(msg, classtext='is-primary') {
+    window.notification_counter++;
+    notification_id = "notification_" + window.notification_counter.toString();
+    notification = document.createElement('div');
+    notification.id = notification_id;
+    notification.classList.add('is-light','notification','notify',classtext);
+    button = document.createElement('button');
+    button.classList.add('delete');
+    notification.innerText = msg;
+    notification.appendChild(button);
+    setTimeout(function(e){
+        delete_me(e);
+    },5000,notification_id);
+    notifications = document.getElementById('notifications');
+    notifications.appendChild(notification);
 }
 
 function get_achievement(id) {
