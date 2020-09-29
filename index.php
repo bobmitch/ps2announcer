@@ -1,3 +1,27 @@
+<?php 
+
+$root = "/ps2/";
+
+function pprint_r ($thing) {
+	echo "<pre>"; print_r ($thing); echo "</pre>";
+}
+
+$request = $_SERVER['REQUEST_URI'];
+$to_remove = $root;
+$request = str_ireplace($to_remove, "", $request);
+$segments = preg_split('@/@', parse_url($request, PHP_URL_PATH), NULL, PREG_SPLIT_NO_EMPTY);
+
+
+
+?>
+<?php if (isset($_POST['action'])):?>
+	<?php header('Content-Type: application/json');?>
+	<?php if ($action=='save') {
+
+	}
+	?>
+<?php endif; ?>
+
 <html>
 	<head>
 		<title>Planetside Announcer - beta!</title>
@@ -5,7 +29,7 @@
 		<meta name="description" content="Planetside 2 Announcer">
 		<meta name="keywords" content="planetside, announcer, funny">
 		<meta name="author" content="Bob Mitchell">
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="<?php echo $root;?>style.css">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css" integrity="sha256-oSsWW/ca1ll8OVu2t4EKkyb9lmH0Pkd8CXKXnYP4QvA=" crossorigin="anonymous">
 		<link rel="icon" type="image/png" href="https://bobmitch.com/ps2/favicon.ico">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.26.0/slimselect.min.js"></script>
