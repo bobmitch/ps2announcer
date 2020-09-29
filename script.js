@@ -9,6 +9,7 @@ if (window.hasOwnProperty('obsstudio')) {
     // do whatever is needed!
     alert('obs');
     document.getElementsByTagName('body')[0].classList.add('obs');
+    document.getElementsByTagName('body')[0].classList.add('obshost');
     splash = document.getElementById('splash');
     splash.parentNode.removeChild(splash);
     
@@ -478,10 +479,6 @@ function is_player(char_id) {
 
 
 
-// TODO
-// backwards loop function (like those above) to set flags for ANY historical comparison
-// so we only do one complete loop backwards and not many short and potentially long ones per test
-
 function update_kd() {
     if (kills>0) {
         if (deaths==0) {
@@ -815,6 +812,26 @@ close_modals.forEach(close_modal => {
 // gen achi list
 render_all_achievement_cards();
 
+// handle new custom image submit
+document.getElementById('custom_image_form').addEventListener('submit',function(e){
+    e.preventDefault();
+    // create new / edit existin custom trigger, add markup to manage audio dialog and save
+    url = document.getElementById('custom_image_url').value;
+    ach_id = document.getElementById('edit_image_achievement_id').value;
+    ach = get_achievement(ach_id);
+    if (url===null||url=='') {
+        alert('URL cannot be empty');
+        return false;
+    }
+    // todo - test url for https etc
+    ach.custom_image = url;
+    console.log('updating image for:',ach);
+    document.getElementById('edit_image_modal').classList.toggle('is-active');
+    render_all_achievement_cards(); // redraw all
+    save_config();
+    return false;
+});
+
 
 // handle new custom trigger submit
 document.getElementById('custom_trigger_form').addEventListener('submit',function(e){
@@ -875,6 +892,24 @@ document.getElementById('copy_config').addEventListener('click',function(e){
     document.getElementById('config_export').select();
     if (document.execCommand('copy')) {
         alert('Current config is in your copy buffer ready to be pasted somewhere!');
+    }
+});
+
+document.getElementById('paste_config').addEventListener('click',function(e){
+    e.preventDefault();
+    document.getElementById('config_export').select();
+    if (window.hasOwnProperty('obsstudio')) {
+        config_json = prompt('Paste config here:');
+        if (config_json) {
+            temp_config = JSON.parse(config_json);
+            final_config_string = JSON.stringify(temp_config);
+            localStorage.setItem('ps2_achievements',final_config_string);
+            load_config();
+            render_all_achievement_cards();
+            modal = e.target.closest('.modal');
+            modal.classList.toggle('is-active');
+            alert('saved new config');
+        }
     }
 });
 
@@ -949,6 +984,7 @@ function load_config() {
                         return false;
                     },[],15);
                     foo.custom_weapon_trigger = config[i].custom_weapon_trigger;
+                    
                     foo.onkill=config[i].onkill;
                     ach=foo;
                     console.log('Added custom trigger ',foo);
@@ -975,6 +1011,10 @@ function load_config() {
                     else {
                         ach.enabled=false;
                     }
+                }
+                // animation/image
+                if (config[i].hasOwnProperty('custom_image')) {
+                    ach.custom_image = config[i].custom_image;
                 }
             }
             else {
@@ -1065,6 +1105,14 @@ $(window).resize(function(e) {
 // live click events
 
 document.querySelector('body').addEventListener('click',function(e){
+    
+    // open image manager 
+    if (e.target.classList.contains('image_preview')) {
+        card = e.target.closest('.card');
+        ach_id = card.dataset.id;
+        document.getElementById('edit_image_achievement_id').value = ach_id;
+        document.querySelector('#edit_image_modal').classList.toggle('is-active');
+    }
 
     // delete custom
     if (e.target.classList.contains('delete_custom')) {

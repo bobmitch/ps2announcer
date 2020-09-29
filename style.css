@@ -257,11 +257,35 @@ span.code {
     }
 }
 
+.image_preview {
+    width:3rem;
+    height:3rem;
+    display:inline-block;
+    object-fit: contain;
+    margin-left:1em;
+    margin-right:1em;
+}
+.image_preview:hover {
+    cursor:pointer;
+}
+
 
 @keyframes hide {
     0%   {opacity: 1; max-height:3em;}
     90%  {opacity: 1; max-height:3em;}
     100% {opacity: 0; max-height:0em;}
+}
+.obsonly {
+    display:none !important; 
+}
+.obshost .obsonly {
+    display:inline-block !important;
+}
+.notobs {
+    display:inline-block !important;
+}
+.obshost .notobs {
+    display:none !important;
 }
 .obs .hideme {
     animation: hide 8s forwards;
@@ -307,12 +331,12 @@ body.testobs {
 }
 
 @keyframes showanimation {
-    0%   {opacity: 1; transform:scale(0.8);}
-    90%  {opacity: 1; transform:scale(0.5);}
-    100% {opacity: 0; transform:scale(0);}
+    0%   {opacity: 1; transform:scale(0.8) translateX(-30vw); }
+    90%  {opacity: 1; transform:scale(0.5) translateX(0vw);}
+    100% {opacity: 0; transform:scale(0) translateX(1000vw);}
 }
 .animation.showanimation {
-    animation: showanimation 8s forwards;
+    animation: showanimation 6s forwards;
 }
 
 #animations {
@@ -337,7 +361,11 @@ body.testobs {
     justify-content: flex-end;
     align-items: center;
 }
-.animation .base_animation_image {
-    width:50vw;
+.animation .animation_image {
+    max-width:30vw;
+    max-height:30vh;
+    object-fit: contain;
+    object-position: top right;
+
 }
 

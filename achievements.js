@@ -66,13 +66,18 @@ function render_achievement_card(a) {
         //custom_weapon_trigger_label = '<span class="info"><button class="add_audio button is-small is-light is-success">add audio</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small is-danger is-light delete_custom">delete</button></span> ';
         custom_weapon_trigger_label = '<span class="info"><button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small is-danger is-light delete_custom">delete</button></span> ';
     }
+    
     markup = `
     <div class="card ${custom_weapon_trigger_class}" data-id="${a.id}">
         <header class="card-header">
             <p class="card-header-title">
             ${a.name} ${custom_weapon_trigger_label}
-            
             </p>
+            <div class='control>
+                <a class='image_preview_wrap' href='#'>
+                    <img class='image_preview' src='${a.custom_image}'/>
+                </a>
+            </div>
             <div class="control">
                 <label class="radio ">
                     <input ${yes_checked} value="on" type="radio" class="audio_enabled_radio" name="enabled_${friendly_name}">
@@ -109,8 +114,8 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.priority=priority;
     this.interruptable = interruptable;
     this.enabled = true;
+    this.custom_image = "images/noimage.png";
     this.custom_weapon_trigger = null;
-    this.animation_id=null;
     if (trigger) {
         this.triggered = trigger;
     }
@@ -147,9 +152,28 @@ Achievement.prototype.trigger = function() {
         }
         this.sounds[random_sound_index].play();
     }
-    if (this.hasOwnProperty('animation_id')) {
-        anim = document.getElementById(this.animation_id);
-        if (anim) {
+    if (this.hasOwnProperty('custom_image')) {
+        if (this.custom_image!='' && this.custom_image!=null) {
+            if (this.custom_image=='images/noimage.png') {
+                return false; // make true for testing with noimage image
+            }
+            anim_id = 'animation' + '_' + this.id ;
+            anim = document.getElementById(anim_id);
+            if (!anim) {
+                animation_container = document.getElementById('animations');
+                anim = document.createElement('div');
+                anim.classList.add('animation');
+                anim.id = anim_id;
+                img = document.createElement('img');
+                img.classList.add('animation_image');
+                img.src = this.custom_image;
+                anim.appendChild(img);
+                animation_container.appendChild(anim);
+            }
+            // make sure src is up to date
+            if (img.src != this.custom_image) {
+                img.src = this.custom_image;
+            }
             // remove class, clone and replace to trigger
             // see: https://css-tricks.com/restart-css-animation/
             anim.classList.remove('showanimation');
@@ -237,7 +261,7 @@ var topgun = new Achievement('topgun','Top Gun!','Destroyed an ESF with an ESF!'
     }
     return false;
 },['congrats_top_gun.mp3','im_a_pilot.mp3','planes_no_place_for_boys.mp3'],4);
-topgun.animation_id="topgun";
+
 
 var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who left almost straight away!', function (event) {
     if (event.payload.event_name=="PlayerLogout") {
@@ -294,7 +318,7 @@ var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick s
         }
     }
     return false;
-},['two.mp3'],3);  doublekill.animation_id="two";
+},['two.mp3'],3);  
 var triplekill = new Achievement('triplekill','Triple Kill!','3 kills in quick succession!', function (event) {
     if (is_kill(event) && !is_tk(event)) {
         if (multikills==2) {
@@ -391,7 +415,7 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
     }
     return false;
 },['pew.mp3'],10);
-headshot_ach.animation_id="headshot";
+headshot_ach.custom_image = 'images/headshot.png'; // example image
 
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
@@ -484,7 +508,6 @@ var reviver = new Achievement('revive','Revive!','You revived someone!', functio
     }
     return false;
 },['xp.mp3','Bwup!.ogg'],['To a Zone... one of Danger.ogg'],20);
-reviver.animation_id="revive";
 
 var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person multiple times!', function (event) {
     var l = window.allevents.length;
