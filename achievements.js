@@ -385,7 +385,7 @@ var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible
     if (is_tk(event)) {
         return false;
     }
-    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='22') {
+    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='28') {
         // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
