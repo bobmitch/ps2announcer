@@ -6,12 +6,29 @@ function pprint_r ($thing) {
 	echo "<pre>"; print_r ($thing); echo "</pre>";
 }
 
+
 $request = $_SERVER['REQUEST_URI'];
 $to_remove = $root;
 $request = str_ireplace($to_remove, "", $request);
 $segments = preg_split('@/@', parse_url($request, PHP_URL_PATH), NULL, PREG_SPLIT_NO_EMPTY);
 
-
+// get user
+$user = false;
+if (sizeof($segments)==1) {
+	if (ctype_alnum ($segments[0])) {
+		if (strlen($segments[0]<16)) {
+			$user = $segments[0];
+		}
+	}
+}
+$config_json_path = false;
+if (file_exists('userconfigs/' . $user . '_config.json')) {
+	$config_json_path = $root . 'userconfigs/' . $user . '_config.json'
+}
+$claimed = false;
+if (file_exists('userconfigs/' . $user . '_claim.txt')) {
+	//$claim_file = file_get_contents()
+}
 
 ?>
 <?php if (isset($_POST['action'])):?>
