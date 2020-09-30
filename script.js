@@ -1274,6 +1274,9 @@ document.querySelector('body').addEventListener('click',function(e){
         index = e.target.dataset.index;
         //console.log('playing audio id',id,' index ',index);
         ach = get_achievement(id);
+        vel = document.querySelector('#volume'); 
+        volume = vel.value;
+        ach.sounds[index].volume = volume/100;
         ach.sounds[index].play();
     }
     

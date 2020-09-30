@@ -130,6 +130,8 @@ Achievement.prototype.triggered = function() {
 Achievement.prototype.trigger = function() {
     /* console.log ('Triggered achievement:');
     console.log (this); */
+    vel = document.querySelector('#volume'); 
+    volume = vel.value;
     has_external = false;
     for (n=0; n<this.sounds.length; n++) {
         if (!this.sounds[n].src.includes('bobmitch.com')) {
@@ -142,6 +144,7 @@ Achievement.prototype.trigger = function() {
     else if (!has_external) {
         // default only
         random_sound_index = Math.floor(Math.random() * this.sounds.length);
+        this.sounds[random_sound_index].volume = volume/100;
         this.sounds[random_sound_index].play();
     }
     else {
@@ -150,6 +153,7 @@ Achievement.prototype.trigger = function() {
         while (this.sounds[random_sound_index].src.includes('bobmitch.com')) {
             random_sound_index = Math.floor(Math.random() * this.sounds.length);
         }
+        this.sounds[random_sound_index].volume = volume/100;
         this.sounds[random_sound_index].play();
     }
     if (this.hasOwnProperty('custom_image')) {
