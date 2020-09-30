@@ -184,7 +184,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						
 						
 						<a id='show_achievements_modal' class="button is-info">
-							<strong>Manage Audio</strong>
+							<strong>Manage Triggers</strong>
 						  </a>
 						  <a id='show_player_modal' class="button is-primary">
 							<strong>Manage Players</strong>
@@ -275,7 +275,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Manage Audio&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
+				<p class="modal-card-title">Manage Triggers&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>
@@ -288,6 +288,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				</div>
 				<hr>
 				<div id='achievments_list'></div>
+				<p class='vanillaonly'>
+				If you want to create your own custom soundpack, simply add a catchy name to the URL with a slash at the beginning. 
+				e.g. <a href='<?php echo $root;?>/bobmitch'>/bobmitch</a> - if the name isn't taken, you can claim it with a secret passphrase/password when you start making changes - and start to create your own soundpack thet you can share with the URL itself.
+				</p>
+				<p class='vanillaonly'>
+				If you don't own the URL, you can still make changes to the soundpack, they just won't be saved permanently. You can hit the 'copy config' button, go to your own owned URL, then hit 'paste config' to start using someone elses creation as a starting point. :)
+				</p>
 			  </section>
 			  <footer class="modal-card-foot">
 				

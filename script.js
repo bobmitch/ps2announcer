@@ -155,6 +155,7 @@ function print_character(character_id, event) {
                 }
                 else {
                     loadout_id = null;
+                    console.log ('Vehicle kill - no loadout available for victim.');
                 }
             }
         }
@@ -166,7 +167,7 @@ function print_character(character_id, event) {
                 profile_name = profile.description.en;
             }
             else {
-                console.log('Unknown profile for loadout for loadout: ',loadout,' in event ',event);
+                console.log('Unknown profile for loadout for loadout - ignore if vehicle kill: ',loadout,' in event ',event);
             }
         }
         else {
@@ -497,10 +498,14 @@ function update_kd() {
 function process_event(event) {
     
     if (event.payload.event_name=="PlayerLogin") {
+        c = get_local_character(event.payload.character_id);
+        notify(c.name.first + ' logged in');
         say('Player logged in');
     }
     if (event.payload.event_name=="PlayerLogout") {
         if (is_player(event.payload.character_id)) {
+            c = get_local_character(event.payload.character_id);
+            notify(c.name.first + ' logged out','is-warning');
             say('Player logged out');
             set_player_offline(event.payload.character_id);
         }
@@ -718,6 +723,7 @@ window.onload = function() {
                 set_player_offline (data.payload.character_id);
             }
             if (data.payload.event_name=="PlayerLogin") {
+                c = get_local_character(character_id);
                 set_player_online (data.payload.character_id);
             }
             //messagesList.innerHTML += '<hr>';

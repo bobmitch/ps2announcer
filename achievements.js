@@ -431,6 +431,20 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
     return false;
 },['VOLUME_Dude wheres my car.wav'],20);
 
+var norobots = new Achievement('norobots',"Kill The Toasters!",'You killed a spitfire turret!', function (event) {
+    if (event.payload.event_name=='VehicleDestroy') {
+        if (is_player(event.payload.attacker_character_id)) {
+            vh = get_local_vehicle(event.payload.vehicle_id);
+            if (vh) {
+                if (vh.name.en=="Spitfire Auto-Turret"||vh.name.en=="AA SpitFire Turret") {
+                    return (true);
+                }
+            }
+        }
+    }
+    return false;
+},['wallescream.mp3','antispitty1.mp3']);
+
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     
     if (!is_kill(event) && event.payload.event_name=="Death") {
@@ -458,7 +472,8 @@ var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfuc
         if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
-        weapon = weapons[event.payload.attacker_weapon_id];
+        //weapon = weapons[event.payload.attacker_weapon_id];
+        weapon = get_local_weapon(event.payload.attacker_weapon_id);
         if (weapon) {
             type = get_weapon_type (weapon.item_category_id);
             if (type=="Knife") {

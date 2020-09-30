@@ -143,6 +143,17 @@ span.outfit {
     display:none;
 }
 
+.vanillaonly {
+    display:none;
+}
+.vanilla .vanillaonly {
+    display:block;
+}
+
+.vanilla #add_custom_trigger, .unclaimed #add_custom_trigger {
+    display:none;
+}
+
 #achievments_list .control {
     padding: 0.5em;
 }
@@ -299,7 +310,7 @@ body.obs, html {
     background-color:rgba(0,0,0,0) !important;
 }
 body.testobs {
-    background-color:rgba(0,0,0,0.5) !important;
+    /* background-color:rgba(0,0,0,0.5) !important; */
 }
 .obs .navbar {
     display:none;
