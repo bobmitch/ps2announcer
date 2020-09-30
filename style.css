@@ -404,7 +404,7 @@ body.testobs {
     font-size:75%;
 }
 .notification.notify {
-    animation: notify 5s forwards;
+    animation: notify 7s forwards;
 }
 #notifications {
     position:fixed;
@@ -429,8 +429,8 @@ body.testobs {
 }
 #notifications img {
     display:inline-block;
-    max-width:20vw;
-    max-height:20vw;
+    width:20rem;
+    height:8rem;
     object-fit: contain;
     object-position: top right;
     right:0;

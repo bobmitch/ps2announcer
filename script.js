@@ -589,7 +589,9 @@ function process_event(event) {
     auto_updaters.forEach(auto => {
         variable = auto.dataset.variable;
         value = window[variable];
-        auto.innerText = value.toString();
+        if (value) {
+            auto.innerText = value.toString();
+        }
     });
     
 }
@@ -1089,7 +1091,7 @@ function notify(msg, classtext='is-primary') {
     notification.appendChild(button);
     setTimeout(function(e){
         delete_me(e);
-    },5000,notification_id);
+    },7000,notification_id);
     notifications = document.getElementById('notifications');
     notifications.appendChild(notification);
 }
