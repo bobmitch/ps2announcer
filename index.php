@@ -200,6 +200,12 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div id='stats' class="field is-grouped is-grouped-multiline">
 				<div class="control">
 					<div class="tags has-addons">
+						<span class="tag is-dark">Bodyshot Streak</span>
+						<span data-variable='bodyshotkillstreak' class="autoupdate tag is-info">0</span>
+					</div>
+				</div>
+				<div class="control">
+					<div class="tags has-addons">
 						<span class="tag is-dark">Killstreak</span>
 						<span data-variable='killstreak' class="autoupdate tag is-info">0</span>
 					</div>
@@ -210,18 +216,19 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<span data-variable='assist_streak' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
-				<div class="control">
+				<!-- <div class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">Multi Kill Streak</span>
 						<span data-variable='multikills' class="autoupdate tag is-info">0</span>
 					</div>
-				</div>
+				</div> -->
 				<div class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">K/D</span>
 						<span data-variable='kd' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
+				
 			</div>
 			
 			<ul id="messages"></ul>

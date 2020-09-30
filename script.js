@@ -39,6 +39,7 @@ var deaths=0;
 var kd=1;
 var max_killstreak=0;
 var assist_streak=0;
+var boydshotkillstreak=0;
 var revive_count_streak=0; // reset by death
 var mines_destroyed=0;
 var proxy_kills_streak=0; // reset by death
@@ -588,7 +589,7 @@ function process_event(event) {
     auto_updaters.forEach(auto => {
         variable = auto.dataset.variable;
         value = window[variable];
-        auto.innerText = value;
+        auto.innerText = value.toString();
     });
     
 }
