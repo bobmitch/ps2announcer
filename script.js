@@ -1083,8 +1083,8 @@ function notify(msg, classtext='is-primary') {
     notification.id = notification_id;
     notification.classList.add('is-light','notification','notify',classtext);
     button = document.createElement('button');
-    button.classList.add('delete');
-    notification.innerText = msg;
+    button.classList.add('delete','notify-delete');
+    notification.innerHTML = msg;
     notification.appendChild(button);
     setTimeout(function(e){
         delete_me(e);

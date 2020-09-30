@@ -327,6 +327,12 @@ body.testobs {
     border:none;
     max-height:3em;
 }
+.obs #events {
+    max-width:60%;
+}
+.obs #events tbody tr td:nth-child(3) {
+    display:none; /* hide special column on obs */
+}
 .obs table {
     color:white;
     background-color:transparent !important;
@@ -344,6 +350,7 @@ body.testobs {
 .obs table td:first-child {
     display: none;
 }
+
 
 @keyframes showanimation {
     0%   {opacity: 1; transform:scale(0.8) translateX(-30vw); }
@@ -386,9 +393,15 @@ body.testobs {
 
 
 @keyframes notify {
-    0%   {opacity: 1; max-height:9rem;}
-    90%  {opacity: 1;  max-height:9rem;}
+    0%   {opacity: 1;  max-height:7rem;}
+    90%  {opacity: 1;  max-height:7rem;}
     100% {opacity: 0;  max-height:0rem;}
+}
+.notify-delete {
+    display:none !important;
+}
+.obs .notification {
+    font-size:75%;
 }
 .notification.notify {
     animation: notify 5s forwards;
@@ -406,6 +419,23 @@ body.testobs {
     max-width:60ch;
     flex-direction: column;
 }
+.obs #notifications {
+    max-width:30%;
+}
 #notifications .notification {
     pointer-events: all;
+    position:relative;
+    display:flex;
+}
+#notifications img {
+    display:inline-block;
+    max-width:20vw;
+    max-height:20vw;
+    object-fit: contain;
+    object-position: top right;
+    right:0;
+    margin-left:auto; /* keep image right aligned inside flex notification */
+}
+.notification.custom_image_notification {
+    background:transparent !important;
 }

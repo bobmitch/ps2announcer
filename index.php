@@ -478,7 +478,6 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					this is simply just fun little web project to make funny noises when funny things happen in Planetside 2 without having to install any applications or 
 					register with any third-party sites.</p>
 					<p>At the time of writing, this site is not intended for widespread public consumption - bugs are plentiful and the experience may break at any second, so don't get mad if things don't work, and don't share this <em>too</em> far and wide until it becomes a bit more polished! </p>
-					<p>All options and settings are stored in your browser's local storage and nothing personally identifiable is stored when you visit this site.</p>
 					<p>Please use the feedback for to give suggestions or report problems - thanks!</p>
 					<hr>
 					Special thanks to <a href="https://twitch.tv/myian" target="_blank">Myian</a> for help with testing, debugging and suggestions.
