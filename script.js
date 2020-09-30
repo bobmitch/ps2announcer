@@ -535,7 +535,7 @@ function process_event(event) {
             if (!is_tk(event)) {
                 // genuine kill
                 window.killstreak++;
-                if (event.payload.is_headhot=="0") {
+                if (event.payload.is_headshot=="0") {
                     window.bodyshotkillstreak++;
                 }
                 else {
