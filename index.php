@@ -1,6 +1,6 @@
 <?php 
 
-$root = "/ps2test/"; // change to appropriate sub-folder - eg. ps2 when live
+$root = "/ps2/"; // change to appropriate sub-folder - eg. ps2 when live
 
 function pprint_r ($thing) {
 	echo "<pre>"; print_r ($thing); echo "</pre>";
