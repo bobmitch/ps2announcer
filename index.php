@@ -223,6 +223,12 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				</div>
 				<div class="control">
 					<div class="tags has-addons">
+						<span class="tag is-dark">HS Streak</span>
+						<span data-variable='headshotstreak' class="autoupdate tag is-info">0</span>
+					</div>
+				</div>
+				<div class="control">
+					<div class="tags has-addons">
 						<span class="tag is-dark">Killstreak</span>
 						<span data-variable='killstreak' class="autoupdate tag is-info">0</span>
 					</div>
@@ -536,7 +542,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		</div>
 
 		<script>
-			window.user = "<?php echo $user;?>";
+			window.user = "<?php if ($user) {echo $user;} else {echo 'bobmitch';}?>"; // load bobmitch if no user passed
 			window.passed_player_id = "<?php echo $passed_player_id;?>";
 			window.passed_player_name = "<?php echo $passed_player_name;?>";
 			window.playerlist = [];

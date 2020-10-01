@@ -46,6 +46,7 @@ var kd=1;
 var max_killstreak=0;
 var assist_streak=0;
 var bodyshotkillstreak=0;
+var headshotstreak=0;
 var revive_count_streak=0; // reset by death
 var mines_destroyed=0;
 var proxy_kills_streak=0; // reset by death
@@ -556,9 +557,11 @@ function process_event(event) {
                 window.killstreak++;
                 if (event.payload.is_headshot=="0") {
                     window.bodyshotkillstreak++;
+                    window.headshotstreak=0;
                 }
                 else {
                     window.bodyshotkillstreak=0;
+                    window.headshotstreak++;
                 }
                 window.kills++;
                 update_kd();
@@ -986,6 +989,7 @@ document.getElementById('apply_config').addEventListener('click',function(e){
 
 function load_config() {
     // todo - move loading into promise 
+    // window.user set in index.php
     fetch(window.root + 'userconfigs/' + window.user + "_config.json")
     .then(response => response.json())
     .then(
