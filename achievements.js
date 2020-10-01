@@ -318,6 +318,13 @@ var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a
     return false;
 },['No One Could have Survived.ogg'],4);
 
+var streakend = new Achievement('streakend','Oh.','Your impressive streak came to an end!', function (event) {
+    if (is_death(event) && (killstreak>10 || multikills>3)) {
+        return (true);
+    }
+    return false;
+},['oh-no.mp3','sad-crowd.mp3','crowd-scream-no_M1xhZ_Nd_NWM.mp3','this-is-it-this-is-how-it-ends-this-is-how-shake-and-bake-ends.mp3'],5); 
+
 var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick succession!', function (event) {
     //console.log('checking for double kill - current multikills = ',multikills);
     if (is_kill(event) && !is_tk(event)) {
