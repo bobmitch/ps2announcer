@@ -18,10 +18,10 @@ else {
     document.getElementsByTagName('body')[0].classList.add('testobs');
 }
 
-var playerlist = JSON.parse(localStorage.getItem('ps2_players'));
-if (playerlist===null) {
-    playerlist = [];
-}
+var stored_playerlist = JSON.parse(localStorage.getItem('ps2_players'));
+stored_playerlist.forEach(stored_player => {
+    playerlist.push(stored_player);
+});
 var ps2_extraaudio = JSON.parse(localStorage.getItem('ps2_extraaudio'));
 if (ps2_extraaudio===null) {
     ps2_extraaudio = [];
@@ -101,6 +101,17 @@ load_config(); // important - do this after previous built-in hardcoded achievem
 
 function reset_streaks() {
     revive_count_streak=0;
+}
+
+function update_stats() {
+    auto_updaters = document.querySelectorAll('.autoupdate');
+    auto_updaters.forEach(auto => {
+        variable = auto.dataset.variable;
+        value = window[variable];
+        if (value) {
+            auto.innerText = value.toString();
+        }
+    });
 }
 
 function allow_voicepack() {
@@ -224,6 +235,7 @@ function display_event(data) {
         //console.log ('All promises handled, doing logic now');
 
         process_event(data);
+        update_stats();
         
         // can also access triggered achievements by this event here: window.cur_achievements - this is cleared next event
 
@@ -585,14 +597,7 @@ function process_event(event) {
         }
     }
 
-    auto_updaters = document.querySelectorAll('.autoupdate');
-    auto_updaters.forEach(auto => {
-        variable = auto.dataset.variable;
-        value = window[variable];
-        if (value) {
-            auto.innerText = value.toString();
-        }
-    });
+    update_stats();
     
 }
 

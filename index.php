@@ -22,13 +22,30 @@ $segments = preg_split('@/@', parse_url($request, PHP_URL_PATH), NULL, PREG_SPLI
 
 // get user
 $user = false;
-if (sizeof($segments)==1) {
+$passed_player_id = false;
+$passed_player_name = false;
+
+if (sizeof($segments)>0) {
+	// user = audio pack user
 	if (ctype_alnum ($segments[0])) {
 		if (strlen($segments[0]<16)) {
 			$user = $segments[0];
 		}
 	}
+	if (sizeof($segments)>1) {
+		// got player id too
+		if (ctype_digit($segments[1])) {
+			$passed_player_id = $segments[1];
+		}
+	}
+	if (sizeof($segments)>2) {
+		// got player id too
+		if (ctype_alnum($segments[2])) {
+			$passed_player_name = $segments[2];
+		}
+	}
 }
+
 $config_json_path = false;
 if (file_exists('userconfigs/' . $user . '_config.json')) {
 	$config_json_path = $root . 'userconfigs/' . $user . '_config.json';
@@ -505,6 +522,16 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 		<script>
 			window.user = "<?php echo $user;?>";
+			window.passed_player_id = "<?php echo $passed_player_id;?>";
+			window.passed_player_name = "<?php echo $passed_player_name;?>";
+			window.playerlist = [];
+			if (passed_player_name) {
+				console.log('adding passed player');
+				passed_player = {};
+				passed_player.char_id = passed_player_id;
+				passed_player.name = passed_player_name;
+				playerlist.push(passed_player);
+			}
 			window.claim_code = '';
 			window.root = "<?php echo $root;?>";
 			<?php if (!$server_claim_code && $user):?>
@@ -526,15 +553,15 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		</script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-		<script src="achievements.js"></script>
-		<script src="character.js"></script>
-		<script src="event.js"></script>
-		<script src="profiles.js"></script>
-		<script src="vehicles.js"></script>
-		<script src="weapons.js"></script>
-		<script src="loadouts.js"></script>
-		<script src="item_categories.js"></script>
-		<script src='script.js'></script>
+		<script src="<?php echo $root; ?>achievements.js"></script>
+		<script src="<?php echo $root; ?>character.js"></script>
+		<script src="<?php echo $root; ?>event.js"></script>
+		<script src="<?php echo $root; ?>profiles.js"></script>
+		<script src="<?php echo $root; ?>vehicles.js"></script>
+		<script src="<?php echo $root; ?>weapons.js"></script>
+		<script src="<?php echo $root; ?>loadouts.js"></script>
+		<script src="<?php echo $root; ?>item_categories.js"></script>
+		<script src='<?php echo $root; ?>script.js'></script>
 		
 	</body>
 </html>
