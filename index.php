@@ -1,3 +1,103 @@
+<?php 
+
+$root = "/ps2test/"; // change to appropriate sub-folder - eg. ps2 when live
+
+function pprint_r ($thing) {
+	echo "<pre>"; print_r ($thing); echo "</pre>";
+}
+
+function get_post ($var) {
+	if (isset($_POST[$var])) {
+		return $_POST[$var];
+	}
+	else {
+		return false;
+	}
+}
+
+$request = $_SERVER['REQUEST_URI'];
+$to_remove = $root;
+$request = str_ireplace($to_remove, "", $request);
+$segments = preg_split('@/@', parse_url($request, PHP_URL_PATH), NULL, PREG_SPLIT_NO_EMPTY);
+
+// get user
+$user = false;
+$passed_player_id = false;
+$passed_player_name = false;
+
+if (sizeof($segments)>0) {
+	// user = audio pack user
+	if (ctype_alnum ($segments[0])) {
+		if (strlen($segments[0]<16)) {
+			$user = $segments[0];
+		}
+	}
+	if (sizeof($segments)>1) {
+		// got player id too
+		if (ctype_digit($segments[1])) {
+			$passed_player_id = $segments[1];
+		}
+	}
+	if (sizeof($segments)>2) {
+		// got player id too
+		if (ctype_alnum($segments[2])) {
+			$passed_player_name = $segments[2];
+		}
+	}
+}
+
+$config_json_path = false;
+if (file_exists('userconfigs/' . $user . '_config.json')) {
+	$config_json_path = $root . 'userconfigs/' . $user . '_config.json';
+}
+$server_claim_code = false;
+if (file_exists('userconfigs/' . $user . '_claim.txt')) {
+	$server_claim_code = file_get_contents('userconfigs/' . $user . '_claim.txt');
+}
+
+?>
+<?php if (isset($_POST['action'])):?>
+	<?php 
+	header('Content-Type: application/json');
+	// first check submitted claim code matches stored claim code
+	$submitted_claim_code = get_post('claim_code');
+	$action = get_post('action');
+	if ($action=='save') {
+		if (!$submitted_claim_code) {
+			echo '{"success":0,"msg":"Changes not saved - enter your password if you think this is your URL!"}';
+			exit(0);
+		}
+		if ($submitted_claim_code!=$server_claim_code) {
+			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
+			exit(0);
+		}
+		else {
+			$config = get_post('config');
+			$valid_json = json_decode($config);
+			if ($valid_json) {
+				file_put_contents('userconfigs/' . $user . '_config.json',$config);
+				echo '{"success":1,"msg":"saved"}';
+			}
+			else {
+				echo '{"success":0,"msg":"invalid config"}';
+			}
+		}
+	}
+	elseif ($action=='claim') {
+		if ($submitted_claim_code && $user) {
+			file_put_contents ('userconfigs/' . $user . '_claim.txt',$submitted_claim_code);
+			echo '{"success":1,"msg":"claimed"}';
+		}
+		else {
+			echo '{"success":0,"msg":"not claimed"}';
+		}
+	}
+	exit(0); // don't progress beyond this point if API call :)
+	?>
+<?php endif; ?>
+
+<?php // END OF API ?>
+
 <html>
 	<head>
 		<title>Planetside Announcer - beta!</title>
@@ -5,7 +105,7 @@
 		<meta name="description" content="Planetside 2 Announcer">
 		<meta name="keywords" content="planetside, announcer, funny">
 		<meta name="author" content="Bob Mitchell">
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="<?php echo $root;?>style.css">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css" integrity="sha256-oSsWW/ca1ll8OVu2t4EKkyb9lmH0Pkd8CXKXnYP4QvA=" crossorigin="anonymous">
 		<link rel="icon" type="image/png" href="https://bobmitch.com/ps2/favicon.ico">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.26.0/slimselect.min.js"></script>
@@ -14,16 +114,35 @@
 		<!-- <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css"> -->
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-10321584-7"></script>
+		
 		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
 			gtag('js', new Date());
-
 			gtag('config', 'UA-10321584-7');
+
+			function postAjax(url, data, success) {
+				var params = typeof data == 'string' ? data : Object.keys(data).map(
+						function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+					).join('&');
+
+				var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+				xhr.open('POST', url);
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState>3 && xhr.status==200) { success(xhr.responseText); }
+				};
+				xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+				xhr.send(params);
+				return xhr;
+			}
+
+			
 		</script>
+
 	</head>
-	<body class=''>
-		<div id='splash'>
+	<body class='<?php if ($server_claim_code) {echo " claimed ";}?> <?php if (!$server_claim_code) {echo " unclaimed ";}?> <?php if (!$user) {echo " vanilla ";}?>'>
+		<div id='splash' class='notobs'>
 			<div class='contain'>
 				<h1 class='splashtitle'>Planetside 2 Announcer</h1>
 				<button onclick='document.querySelector("#splash").classList.add("hide");allow_voicepack();' class='button btn is-warning is-large'>Enable Audio / Start</button>
@@ -68,9 +187,9 @@
 							<a id='show_feedback_modal' class="navbar-item">
 							  Feedback
 							</a>
-							<a id='show_export_modal' class="navbar-item">
+							<!-- <a id='show_export_modal' class="navbar-item">
 								Export/Import Soundpack
-							  </a>
+							  </a> -->
 							  <a id='toggle_view' class="navbar-item">
 								OBS View (space to revert)
 							  </a>
@@ -82,7 +201,7 @@
 						
 						
 						<a id='show_achievements_modal' class="button is-info">
-							<strong>Manage Audio</strong>
+							<strong>Manage Triggers</strong>
 						  </a>
 						  <a id='show_player_modal' class="button is-primary">
 							<strong>Manage Players</strong>
@@ -98,6 +217,12 @@
 			<div id='stats' class="field is-grouped is-grouped-multiline">
 				<div class="control">
 					<div class="tags has-addons">
+						<span class="tag is-dark">Bodyshot Streak</span>
+						<span data-variable='bodyshotkillstreak' class="autoupdate tag is-info">0</span>
+					</div>
+				</div>
+				<div class="control">
+					<div class="tags has-addons">
 						<span class="tag is-dark">Killstreak</span>
 						<span data-variable='killstreak' class="autoupdate tag is-info">0</span>
 					</div>
@@ -108,18 +233,19 @@
 						<span data-variable='assist_streak' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
-				<div class="control">
+				<!-- <div class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">Multi Kill Streak</span>
 						<span data-variable='multikills' class="autoupdate tag is-info">0</span>
 					</div>
-				</div>
+				</div> -->
 				<div class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">K/D</span>
 						<span data-variable='kd' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
+				
 			</div>
 			
 			<ul id="messages"></ul>
@@ -173,7 +299,7 @@
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Manage Audio&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
+				<p class="modal-card-title">Manage Triggers&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>
@@ -186,6 +312,13 @@
 				</div>
 				<hr>
 				<div id='achievments_list'></div>
+				<p class='vanillaonly'>
+				If you want to create your own custom soundpack, simply add a catchy name to the URL with a slash at the beginning. 
+				e.g. <a href='<?php echo $root;?>/bobmitch'>/bobmitch</a> - if the name isn't taken, you can claim it with a secret passphrase/password when you start making changes - and start to create your own soundpack thet you can share with the URL itself.
+				</p>
+				<p class='vanillaonly'>
+				If you don't own the URL, you can still make changes to the soundpack, they just won't be saved permanently. You can hit the 'copy config' button, go to your own owned URL, then hit 'paste config' to start using someone elses creation as a starting point. :)
+				</p>
 			  </section>
 			  <footer class="modal-card-foot">
 				
@@ -365,11 +498,10 @@
 				
 			  </header>
 			  <section class="modal-card-body">
-					<p>First of all, this is <em>not</em> a replacement for Recursion's stat tracker application - there is no overlay, stat tracking, or any of the other cool things that software offers - 
-						this is simply just fun little web project to make funny noises when funny things happen in Planetside 2 without having to install any applications or 
+					<p>First of all, this is <em>not</em> a replacement for Recursion's stat tracker application - there is no  crosshair overlay, permanent stat tracking, achievement logging, or any of the myriad cool things that software offers - 
+					this is simply just fun little web project to make funny noises when funny things happen in Planetside 2 without having to install any applications or 
 					register with any third-party sites.</p>
 					<p>At the time of writing, this site is not intended for widespread public consumption - bugs are plentiful and the experience may break at any second, so don't get mad if things don't work, and don't share this <em>too</em> far and wide until it becomes a bit more polished! </p>
-					<p>All options and settings are stored in your browser's local storage and nothing personally identifiable is stored when you visit this site.</p>
 					<p>Please use the feedback for to give suggestions or report problems - thanks!</p>
 					<hr>
 					Special thanks to <a href="https://twitch.tv/myian" target="_blank">Myian</a> for help with testing, debugging and suggestions.
@@ -381,19 +513,55 @@
 			</div>
 		  </div>
 
+		<section id='notifications'>
+		</section>
+
 		<div id='animations' class='obs_only'>
 
 		</div>
 
+		<script>
+			window.user = "<?php echo $user;?>";
+			window.passed_player_id = "<?php echo $passed_player_id;?>";
+			window.passed_player_name = "<?php echo $passed_player_name;?>";
+			window.playerlist = [];
+			if (passed_player_name) {
+				console.log('adding passed player');
+				passed_player = {};
+				passed_player.char_id = passed_player_id;
+				passed_player.name = passed_player_name;
+				playerlist.push(passed_player);
+			}
+			window.claim_code = '';
+			window.root = "<?php echo $root;?>";
+			<?php if (!$server_claim_code && $user):?>
+				window.claim_code = prompt('Unclaimed Soundpack URL! - Enter a password/passphrase to claim this URL as yours!');
+				if (window.claim_code==''||window.claim_code==null) {
+					// do nothing, not claiming yet
+				}
+				else {
+					window.localStorage.setItem('claim_code_<?php echo $user;?>',window.claim_code);
+					// todo: pass ajax request to with claim action + claim_code to self
+					postAjax('', {"action":"claim","claim_code":window.claim_code}, function(data) { 
+						var response = JSON.parse(data);
+						console.log(response);
+					});
+					document.body.classList.remove('unclaimed');
+				}
+			<?php endif; ?>
+			
+		</script>
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-		<script src="achievements.js"></script>
-		<script src="character.js"></script>
-		<script src="event.js"></script>
-		<script src="profiles.js"></script>
-		<script src="vehicles.js"></script>
-		<script src="weapons.js"></script>
-		<script src="loadouts.js"></script>
-		<script src="item_categories.js"></script>
-		<script src='script.js'></script>
+		<script src="<?php echo $root; ?>achievements.js"></script>
+		<script src="<?php echo $root; ?>character.js"></script>
+		<script src="<?php echo $root; ?>event.js"></script>
+		<script src="<?php echo $root; ?>profiles.js"></script>
+		<script src="<?php echo $root; ?>vehicles.js"></script>
+		<script src="<?php echo $root; ?>weapons.js"></script>
+		<script src="<?php echo $root; ?>loadouts.js"></script>
+		<script src="<?php echo $root; ?>item_categories.js"></script>
+		<script src='<?php echo $root; ?>script.js'></script>
+		
 	</body>
 </html>

@@ -130,6 +130,8 @@ Achievement.prototype.triggered = function() {
 Achievement.prototype.trigger = function() {
     /* console.log ('Triggered achievement:');
     console.log (this); */
+    vel = document.querySelector('#volume'); 
+    volume = vel.value;
     has_external = false;
     for (n=0; n<this.sounds.length; n++) {
         if (!this.sounds[n].src.includes('bobmitch.com')) {
@@ -142,6 +144,7 @@ Achievement.prototype.trigger = function() {
     else if (!has_external) {
         // default only
         random_sound_index = Math.floor(Math.random() * this.sounds.length);
+        this.sounds[random_sound_index].volume = volume/100;
         this.sounds[random_sound_index].play();
     }
     else {
@@ -150,11 +153,17 @@ Achievement.prototype.trigger = function() {
         while (this.sounds[random_sound_index].src.includes('bobmitch.com')) {
             random_sound_index = Math.floor(Math.random() * this.sounds.length);
         }
+        this.sounds[random_sound_index].volume = volume/100;
         this.sounds[random_sound_index].play();
     }
     if (this.hasOwnProperty('custom_image')) {
         if (this.custom_image!='' && this.custom_image!=null) {
             if (this.custom_image=='images/noimage.png') {
+                notify( this.name + '&nbsp' + this.description,'achievement_notification');
+                return false; // make true for testing with noimage image
+            }
+            else {
+                notify('<img src="' + this.custom_image + '">','custom_image_notification');
                 return false; // make true for testing with noimage image
             }
             anim_id = 'animation' + '_' + this.id ;
@@ -309,6 +318,13 @@ var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a
     return false;
 },['No One Could have Survived.ogg'],4);
 
+var streakend = new Achievement('streakend','Oh.','Your impressive streak came to an end!', function (event) {
+    if (is_death(event) && (killstreak>5 || multikills>2)) {
+        return (true);
+    }
+    return false;
+},['oh-no.mp3','sad-crowd.mp3','crowd-scream-no_M1xhZ_Nd_NWM.mp3','this-is-it-this-is-how-it-ends-this-is-how-shake-and-bake-ends.mp3'],5); 
+
 var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick succession!', function (event) {
     //console.log('checking for double kill - current multikills = ',multikills);
     if (is_kill(event) && !is_tk(event)) {
@@ -385,7 +401,7 @@ var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible
     if (is_tk(event)) {
         return false;
     }
-    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='22') {
+    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='28') {
         // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
@@ -431,6 +447,20 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
     return false;
 },['VOLUME_Dude wheres my car.wav'],20);
 
+var norobots = new Achievement('norobots',"Kill The Toasters!",'You killed a spitfire turret!', function (event) {
+    if (event.payload.event_name=='VehicleDestroy') {
+        if (is_player(event.payload.attacker_character_id)) {
+            vh = get_local_vehicle(event.payload.vehicle_id);
+            if (vh) {
+                if (vh.name.en=="Spitfire Auto-Turret"||vh.name.en=="AA SpitFire Turret") {
+                    return (true);
+                }
+            }
+        }
+    }
+    return false;
+},['wallescream.mp3','antispitty1.mp3']);
+
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     
     if (!is_kill(event) && event.payload.event_name=="Death") {
@@ -458,7 +488,8 @@ var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfuc
         if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
-        weapon = weapons[event.payload.attacker_weapon_id];
+        //weapon = weapons[event.payload.attacker_weapon_id];
+        weapon = get_local_weapon(event.payload.attacker_weapon_id);
         if (weapon) {
             type = get_weapon_type (weapon.item_category_id);
             if (type=="Knife") {

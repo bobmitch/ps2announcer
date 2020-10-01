@@ -5,7 +5,7 @@ loadouts_raw.loadout_list.forEach(loadout => {
     loadouts[loadout.loadout_id] = loadout;
 });
 // add missing loadouts - may not be correct!
-loadouts['28'] = {'faction_id':'4','loadout_id':'28','profile_id':'190'};
+loadouts['28'] = {'faction_id':'4','loadout_id':'28','profile_id':'190'}; // infil?
 loadouts['29'] = {'faction_id':'4','loadout_id':'29','profile_id':'191'};
 loadouts['30'] = {'faction_id':'4','loadout_id':'30','profile_id':'192'};
 loadouts['31'] = {'faction_id':'4','loadout_id':'31','profile_id':'193'}; // engie
