@@ -19,12 +19,18 @@ else {
 }
 
 var stored_playerlist = JSON.parse(localStorage.getItem('ps2_players'));
-stored_playerlist.forEach(stored_player => {
-    playerlist.push(stored_player);
-});
+if (stored_playerlist) {
+    stored_playerlist.forEach(stored_player => {
+        playerlist.push(stored_player);
+    });
+}
 var ps2_extraaudio = JSON.parse(localStorage.getItem('ps2_extraaudio'));
 if (ps2_extraaudio===null) {
     ps2_extraaudio = [];
+}
+// if no players are tracked, show reminder for potentially new users!
+if (playerlist.length==0) {
+    document.getElementById('noplayers_modal').classList.add('is-active');
 }
 
 test_audio = new Audio('audio/ting.mp3');

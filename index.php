@@ -314,7 +314,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				<div id='achievments_list'></div>
 				<p class='vanillaonly'>
 				If you want to create your own custom soundpack, simply add a catchy name to the URL with a slash at the beginning. 
-				e.g. <a href='<?php echo $root;?>/bobmitch'>/bobmitch</a> - if the name isn't taken, you can claim it with a secret passphrase/password when you start making changes - and start to create your own soundpack thet you can share with the URL itself.
+				Click <a href='#' onclick='var newname=prompt("Enter a soundpack name with no spaces:"); window.location="https://bobmitch.com<?php echo $root;?>" + newname;'>here</a> to choose a name - if the name isn't taken, you can claim it with a secret passphrase/password when you start making changes - and start to create your own soundpack thet you can share with the URL itself.
 				</p>
 				<p class='vanillaonly'>
 				If you don't own the URL, you can still make changes to the soundpack, they just won't be saved permanently. You can hit the 'copy config' button, go to your own owned URL, then hit 'paste config' to start using someone elses creation as a starting point. :)
@@ -508,6 +508,21 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					<hr>
 					<p>[BAX] BobMitch</p>
 					<br>
+			  </section>
+			  
+			</div>
+		  </div>
+
+		  <div id='noplayers_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Welcome!</p>
+				<button class="delete" aria-label="close"></button>
+				
+			  </header>
+			  <section class="modal-card-body">
+					<p>This thing does nothing if you're not tracking at least one player - so don't forget to click 'manage players', find your player(s), and add them to the list!</p>
 			  </section>
 			  
 			</div>
