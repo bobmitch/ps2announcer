@@ -65,6 +65,19 @@ function unsubscribe(id) {
     window.logoutsocket.send (JSON.stringify(subscription_data));
 }
 
+function unsubscribe_from_character (id) {
+    var subscription_data = {
+    "action":"clearSubscribe",
+		"characters":[id],
+		"eventNames":[
+			"PlayerLogout"
+        ]
+    };
+    window.socket.send (JSON.stringify(subscription_data));
+}
+
+
+
 function subscribe_to_character_logout(id) {
     // todo - monitor for rage quits
     subscribe_to_character(id,true);

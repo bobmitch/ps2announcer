@@ -666,6 +666,8 @@ window.onload = function() {
         jQuery(this).closest('div.tags').remove(); 
         for (let i = playerlist.length - 1; i >= 0; i--) {
             if (playerlist[i].char_id == delete_char_id.toString()) {
+                // todo: unsubscribe
+                unsubscribe_from_character(delete_char_id.toString());
                 playerlist.splice(i, 1);
             }
         }
