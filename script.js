@@ -726,7 +726,6 @@ window.onload = function() {
                 set_player_offline (data.payload.character_id);
             }
             if (data.payload.event_name=="PlayerLogin") {
-                c = get_local_character(character_id);
                 set_player_online (data.payload.character_id);
             }
             //messagesList.innerHTML += '<hr>';

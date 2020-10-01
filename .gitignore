@@ -1,3 +1,6 @@
-/useraudio/
-/userconfigs/
-/userimages/
+/useraudio/*
+/userconfigs/*
+/userimages/*
+!/useraudio/.keep
+!/userconfigs/.keep
+!/userimages/.keep
