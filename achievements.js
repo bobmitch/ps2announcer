@@ -433,6 +433,15 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
 },['pew.mp3'],10);
 headshot_ach.custom_image = 'images/headshot.png'; // example image
 
+var accuracy = new Achievement('accuracy','Accuracy!','5 headshots in a row!', function (event) {
+    if (is_kill(event) && !is_tk(event)) {
+        if (headshotstreak>0 && headshotstreak%5==0) {
+            return true;
+        }
+    }
+    return false;
+},['pew.mp3'],6);
+
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
         if (is_player(event.payload.attacker_character_id)) {
