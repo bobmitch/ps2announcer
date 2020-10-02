@@ -319,15 +319,15 @@ var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a
 },['No One Could have Survived.ogg'],4);
 
 var streakend = new Achievement('streakend','Oh.','Your impressive streak came to an end!', function (event) {
-    console.log('checking streakend:');
+    /* console.log('checking streakend:');
     console.log('is death: ',is_death(event));
     console.log('killstreak',killstreak);
-    console.log('multikills:',multikills);
-    if (is_death(event) && (killstreak>4 || multikills>1)) {
+    console.log('multikills:',multikills); */
+    if (is_death(event) && (killstreak_was>4 || multikills_was>1)) {
         return (true);
     }
     return false;
-},['oh-no.mp3','sad-crowd.mp3','crowd-scream-no_M1xhZ_Nd_NWM.mp3','this-is-it-this-is-how-it-ends-this-is-how-shake-and-bake-ends.mp3'],5); 
+},['oh-no.mp3','sad_crowd.mp3','crowd-scream-no_M1xhZ_Nd_NWM.mp3','this-is-it-this-is-how-it-ends-this-is-how-shake-and-bake-ends.mp3'],5); 
 
 var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick succession!', function (event) {
     //console.log('checking for double kill - current multikills = ',multikills);

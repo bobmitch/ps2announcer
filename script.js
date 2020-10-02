@@ -545,6 +545,9 @@ function process_event(event) {
 
         if (is_player(event.payload.character_id)) {
             // you died
+            window.killstreak_was = window.killstreak;
+            window.multikills_was = window.multikills;
+            window.multikills = 0;
             window.killstreak=0;
             window.spamstreak=0;
             multikills=0;
