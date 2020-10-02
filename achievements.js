@@ -158,7 +158,7 @@ Achievement.prototype.trigger = function() {
     }
     if (this.hasOwnProperty('custom_image')) {
         if (this.custom_image!='' && this.custom_image!=null) {
-            if (this.custom_image=='images/noimage.png') {
+            if (this.custom_image.includes('noimage.png')) {
                 notify( this.name + '&nbsp' + this.description,'achievement_notification');
                 return false; // make true for testing with noimage image
             }

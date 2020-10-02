@@ -854,8 +854,9 @@ document.getElementById('custom_image_form').addEventListener('submit',function(
     ach_id = document.getElementById('edit_image_achievement_id').value;
     ach = get_achievement(ach_id);
     if (url===null||url=='') {
-        alert('URL cannot be empty');
-        return false;
+        url = window.root + 'images/noimage.png';
+        //alert('URL cannot be empty');
+        //return false;
     }
     // todo - test url for https etc
     ach.custom_image = url;
@@ -1217,6 +1218,9 @@ document.querySelector('body').addEventListener('click',function(e){
         card = e.target.closest('.card');
         ach_id = card.dataset.id;
         document.getElementById('edit_image_achievement_id').value = ach_id;
+        ach = get_achievement(ach_id);
+        custom_image = ach.custom_image;
+        document.getElementById('custom_image_url').value = custom_image;
         document.querySelector('#edit_image_modal').classList.toggle('is-active');
     }
 
