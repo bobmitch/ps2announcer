@@ -410,7 +410,21 @@ var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible
         // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
         return true;
     }
-},['Low Profile.ogg','invisibleman.mp3'],20);
+},['Low Profile.ogg'],20);
+
+var sneaker_death = new Achievement('sneakerdeath','Long Range Wanker!','You were killed by an invisible bastard!', function (event) {
+    if (is_death(event)) {
+        return false;
+    }
+    if (is_tk(event)) {
+        return false;
+    }
+    if (event.payload.attacker_loadout_id=='1' || event.payload.attacker_loadout_id=='8' || event.payload.attacker_loadout_id=='15'|| event.payload.attacker_loadout_id=='28') {
+        // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
+        // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
+        return true;
+    }
+},['invisibleman.mp3'],4);
 
 
 var max_kill = new Achievement('minmax','Min Max!','You killed a tiny brain person in a really big suit!', function (event) {
@@ -496,7 +510,7 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
 
 var rocketman = new Achievement('rocketman','Rocket Man!','You killed someone with a rocket!', function (event) {
     
-    if (!is_kill(event) && event.payload.event_name=="Death") {
+    if (is_kill(event)) {
         if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
