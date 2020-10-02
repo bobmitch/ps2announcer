@@ -114,7 +114,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<!-- <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css"> -->
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-10321584-7"></script>
-		
+		<script src="https://kit.fontawesome.com/e73dd5d55b.js" crossorigin="anonymous"></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
@@ -201,10 +201,10 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						
 						
 						<a id='show_achievements_modal' class="button is-info">
-							<strong>Manage Triggers</strong>
+							<strong><i class="fas fa-volume-up"></i> Manage Triggers</strong>
 						  </a>
 						  <a id='show_player_modal' class="button is-primary">
-							<strong>Manage Players</strong>
+							<strong><i class="fas fa-users"></i> Manage Players</strong>
 						  </a>
 					  </div>
 					</div>
@@ -305,7 +305,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Manage Triggers&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
+				<p class="modal-card-title">Manage Triggers <i title='URL already claimed' class="claimedonly fas fa-lock"></i>&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>

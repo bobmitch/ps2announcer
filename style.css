@@ -143,6 +143,19 @@ span.outfit {
     display:none;
 }
 
+body:not(.claimed) .claimedonly {
+    display:none;
+}
+
+.play_sound:hover {
+    text-decoration:none !important;
+    opacity:0.6;
+}
+
+.claimed i.claimedonly, .vanilla i.claimedonly {
+    display:inline;
+}
+
 .vanillaonly {
     display:none;
 }

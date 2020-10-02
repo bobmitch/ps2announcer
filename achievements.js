@@ -31,7 +31,7 @@ function render_achievement_card(a) {
                 <div class="control">
                     <div class="tags has-addons">
                         <span title='${val}' class="tag">${filename}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></span>
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound"><i class="fas fa-play-circle"></i></span>
                         <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
                     </div>
                 </div>
@@ -43,7 +43,7 @@ function render_achievement_card(a) {
                 <div class="control">
                     <div class="tags has-addons">
                         <span title="Built In Audio" class="tag is-light">${val}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound">></a>
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound"><i class="fas fa-play-circle"></i></a>
                         <!--<a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info disable_default">on</a>-->
                     </div>
                 </div>
@@ -97,7 +97,7 @@ function render_achievement_card(a) {
         </div>
         <footer class='card-footer'>
             ${card_footer_markup}
-            <button style='margin:1em' class='add_audio button is-small iss-light is-success'>+</button>
+            <button style='margin:1em' class='add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>
         </footer>
     </div>
     `;
@@ -480,6 +480,26 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
     }
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
+
+var rocketman = new Achievement('rocketman','Rocket Man!','You killed someone with a rocket!', function (event) {
+    
+    if (!is_kill(event) && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=="0") {
+            return false;
+        }
+        weapon = weapons[event.payload.attacker_weapon_id];
+        if (weapon) {
+            type = get_weapon_type (weapon.item_category_id);
+            if (type=="Rocket Launcher") {
+                return true;
+            }
+        }
+        else {
+            console.log('unknown weapon for event',event);
+        }
+    }
+    return false;
+},['rocket-man.mp3']);
 
 
 var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfucker!', function (event) {
