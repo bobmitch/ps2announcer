@@ -319,6 +319,10 @@ var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a
 },['No One Could have Survived.ogg'],4);
 
 var streakend = new Achievement('streakend','Oh.','Your impressive streak came to an end!', function (event) {
+    console.log('checking streakend:');
+    console.log('is death: ',is_death(event));
+    console.log('killstreak',killstreak);
+    console.log('multikills:',multikills);
     if (is_death(event) && (killstreak>4 || multikills>1)) {
         return (true);
     }

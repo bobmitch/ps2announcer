@@ -1070,7 +1070,7 @@ function load_config() {
                     }
                 }
                 render_all_achievement_cards();
-                notify('Loaded config!','is-success');
+                notify('Loaded "'+window.user+'" soundpack!','is-success');
             }
         }
     );

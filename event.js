@@ -22,7 +22,6 @@ function is_tk(event) {
 function is_death(event) {
     if (event.payload.event_name=='Death') {
         if (is_player(event.payload.character_id)) {
-        //if (event.payload.character_id!=window.char) {
             return (true);
         }
     }
@@ -32,19 +31,9 @@ function is_death(event) {
 function is_kill(event) {
     if (event.payload.event_name=='Death') {
         if (!is_player(event.payload.character_id)) {
-        //if (event.payload.character_id!=window.char) {
             return (true);
         }
     }
     return (false);
 }
 
-function is_death(event) {
-    if (event.payload.event_name=='Death') {
-        if (is_player(event.payload.character_id)) {
-        //if (event.payload.character_id!=window.char) {
-            return (true);
-        }
-    }
-    return (false);
-}

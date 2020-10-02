@@ -558,6 +558,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<?php if (!$server_claim_code && $user):?>
 				window.claim_code = prompt('Unclaimed Soundpack URL! - Enter a password/passphrase to claim this URL as yours!');
 				if (window.claim_code==''||window.claim_code==null) {
+					window.user = 'bobmitch'; // use default bobmitch soundpack as default for new pack
 					// do nothing, not claiming yet
 				}
 				else {
