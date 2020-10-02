@@ -241,6 +241,10 @@ span.code {
     color:white;
     font-weight:bold;
 }
+#playername:hover {
+    cursor:pointer;
+    filter:contrast(1.3);
+}
 
 
 

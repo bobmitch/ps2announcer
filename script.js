@@ -771,6 +771,10 @@ document.querySelector('#show_player_modal').addEventListener('click',function(e
     e.preventDefault();
     document.querySelector('#playermodal').classList.toggle('is-active');
 });
+document.querySelector('#playername').addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelector('#playermodal').classList.toggle('is-active');
+});
 
 document.querySelector('#show_feedback_modal').addEventListener('click',function(e){
     e.preventDefault();
@@ -1096,6 +1100,12 @@ function delete_me (thing_id) {
     }
 }
 
+function delete_me_el (thing) {
+    if (thing) {
+        thing.parentNode.removeChild(thing);
+    }
+}
+
 window.notification_counter = 0;
 
 function notify(msg, classtext='is-primary') {
@@ -1195,7 +1205,13 @@ $(window).resize(function(e) {
 // live click events
 
 document.querySelector('body').addEventListener('click',function(e){
-    
+
+    // hide notification if clicked
+    if (e.target.classList.contains('notification') || e.target.closest('.notification')) {
+        console.log('clicked notification');
+        delete_me_el(e.target.closest('.notification'));
+    }
+
     // open image manager 
     if (e.target.classList.contains('image_preview')) {
         card = e.target.closest('.card');
