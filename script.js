@@ -7,7 +7,7 @@
 
 if (window.hasOwnProperty('obsstudio')) {
     // do whatever is needed!
-    alert('obs');
+    //alert('obs');
     document.getElementsByTagName('body')[0].classList.add('obs');
     document.getElementsByTagName('body')[0].classList.add('obshost');
     splash = document.getElementById('splash');
