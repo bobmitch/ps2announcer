@@ -1310,10 +1310,11 @@ document.querySelector('body').addEventListener('click',function(e){
         }
     }
 
-    if (e.target.classList.contains('play_sound')) {
+    if (e.target.classList.contains('play_sound')||e.target.closest('.play_sound')) {
         // data-id='${a.id}' data-index='${index}'
-        id = e.target.dataset.id;
-        index = e.target.dataset.index;
+        clickedsound = e.target.closest('.play_sound');
+        id = clickedsound.dataset.id;
+        index = clickedsound.dataset.index;
         //console.log('playing audio id',id,' index ',index);
         ach = get_achievement(id);
         vel = document.querySelector('#volume'); 
