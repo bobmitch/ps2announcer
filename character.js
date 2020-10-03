@@ -29,6 +29,15 @@ function get_character (character_id) {
     }
 }
 
+function is_same_faction (char_id_1, char_id_2) {
+    // can be used when both loadouts not available - eg. vehicledestroy
+    char1 = get_local_character(char_id_1);
+    char2 = get_local_character(char_id_2);
+    if (char1 && char2) {
+        return (char1.faction_id == char2.faction_id);
+    }
+}
+
 function get_local_character(character_id) {
     if (!characters[character_id].hasOwnProperty('character_list')) {
         console.log ('Character ', character_id, ' has no character list array');

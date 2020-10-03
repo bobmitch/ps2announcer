@@ -333,23 +333,50 @@ function display_event(data) {
             if (is_player(data.payload.character_id)) {
             //if (data.payload.character_id==window.char) {
                 vehicle_name = get_vehicle_name(data.payload.vehicle_id);
-                if (vehicle_name) {
-                    msg+='Your <span>'+vehicle_name+'</span> was destroyed by ';
+                if (is_same_faction(data.payload.character_id, data.payload.attacker_character_id)) {
+                    // teamkill 
+                    cls+=' tk ';
+                    if (vehicle_name) {
+                        msg+='Your <span>'+vehicle_name+'</span> was put to sleep by ';
+                    }
+                    else {
+                        msg+='Your <span>[unknown]</span> was put to sleep by ';
+                    }
                 }
                 else {
-                    msg+='Your <span>[unknown]</span> was destroyed by ';
+                    // legit enemy killed your vehicle
+                    if (vehicle_name) {
+                        msg+='Your <span>'+vehicle_name+'</span> was destroyed by ';
+                    }
+                    else {
+                        msg+='Your <span>[unknown]</span> was destroyed by ';
+                    }
                 }
                 msg+=print_character(data.payload.attacker_character_id, data);
             }
             else {
+                // you killed a vehicle
                 msg+='You destroyed ';
                 vehicle_name = get_vehicle_name(data.payload.vehicle_id);
-                if (data.payload.character_id=="0") {
-                    msg += " a " +vehicle_name+'</span> ';
+                if (is_same_faction(data.payload.character_id, data.payload.attacker_character_id)) {
+                    // teamkill 
+                    cls+=' tk ';
+                    if (data.payload.character_id=="0") {
+                        msg += "(for humane reasons) a friendly " +vehicle_name+'</span> ';
+                    }
+                    else {
+                        msg+=print_character(data.payload.character_id, data);
+                        msg+="'s<span> friendly "+vehicle_name+'</span>. Woopsy!';
+                    }
                 }
                 else {
-                    msg+=print_character(data.payload.character_id, data);
-                    msg+="'s<span> "+vehicle_name+'</span> ';
+                    if (data.payload.character_id=="0") {
+                        msg += " a " +vehicle_name+'</span> ';
+                    }
+                    else {
+                        msg+=print_character(data.payload.character_id, data);
+                        msg+="'s<span> "+vehicle_name+'</span> ';
+                    }
                 }
                 
                 
