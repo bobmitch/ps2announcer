@@ -580,6 +580,22 @@ function process_event(event) {
             multikills=0;
             window.deaths++;
             update_kd();
+            if (!is_player(event.payload.attacker_character_id)) {
+                // not suicide
+                // update character with killcount for revenge/repeat etc
+                char = get_local_character(event.payload.attacker_character_id);
+                char.killstreak=0;
+                if (char.hasOwnProperty('deathcount')) {
+                    char.deathcount++;
+                    char.deathstreak++;
+                    
+                }
+                else {
+                    char.deathcount=1;
+                    char.deathstreak=1;
+                }
+                char.primed_for_revenge = true;
+            }
         }
         else {
             if (!is_tk(event)) {
@@ -609,6 +625,18 @@ function process_event(event) {
                 // and add timestamp to watchlist
                 subscribe_to_character_logout(event.payload.character_id);
                 ragequit_watchlist[event.payload.character_id] = event.payload.timestamp;
+                // update character with killcount for revenge/repeat etc
+                char = get_local_character(event.payload.character_id);
+                char.deathstreak=0;
+                if (char.hasOwnProperty('killcount')) {
+                    char.killcount++;
+                    char.killstreak++;
+                }
+                else {
+                    char.killcount=1;
+                    char.killstreak=1;
+                }
+                //char.primed_for_revenge = false; // has to be cleared by achievement itself
             }
             else {
                 say ('Teamkill');

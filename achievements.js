@@ -217,16 +217,11 @@ var roadkill = new Achievement('roadkill','Roadkill!','Squished someone with a g
 
 var revenge = new Achievement('revenge','Revenge!','Killed someone who killed you before!', function (event) {
     // latest event is current
-    var l = window.allevents.length;
-    if (is_kill(event)) {
-        for (n=l-2;n>=0;n--) {
-            // -2, because current event is already on stack
-            if (!is_kill(window.allevents[n])) {
-                if (event.payload.character_id==window.allevents[n].payload.attacker_character_id) {
-                    // if current event victim = old event attacker...
-                    return true;
-                }
-            }
+    char = get_local_character(event.payload.character_id);
+    if (is_kill(event) && !is_tk(event)) {
+        if (char.is_primed_for_revenge) {
+            char.is_primed_for_revenge=false;
+            return true;
         }
     }
     return false;
@@ -399,7 +394,7 @@ var holyshit = new Achievement('holyshit','Holy Shit!','9 kills in quick success
 
 
 var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible pussy!', function (event) {
-    if (!is_kill(event)) {
+    if (is_death(event)) {
         return false;
     }
     if (is_tk(event)) {
@@ -413,7 +408,7 @@ var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible
 },['Low Profile.ogg'],20);
 
 var sneaker_death = new Achievement('sneakerdeath','Long Range Wanker!','You were killed by an invisible bastard!', function (event) {
-    if (is_death(event)) {
+    if (is_kill(event)) {
         return false;
     }
     if (is_tk(event)) {
@@ -587,24 +582,25 @@ var reviver = new Achievement('revive','Revive!','You revived someone!', functio
     return false;
 },['xp.mp3','Bwup!.ogg'],['To a Zone... one of Danger.ogg'],20);
 
-var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person multiple times!', function (event) {
-    var l = window.allevents.length;
-    if (l<3) {
-        return false;
-        // cannot be repeat at start of tracking :)
-    }
+var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person 3 times!', function (event) {
     if (is_kill(event) && !is_tk(event)) {
-        for (n=l-2;n>=0;n--) {
-            // -2, because current event is already on stack
-            if (is_kill(window.allevents[n]) && !is_tk(window.allevents[n])) {
-                if (event.payload.character_id==window.allevents[n].payload.character_id) {
-                    return (true);
-                }
-            }
-        }
+       char = get_local_character(event.payload.character_id);
+       if (char.killstreak>1) {
+           return true;
+       }
     }
     return false;
-},['Whats Up_ Whattya been doin_.ogg'],20);
+},['Whats Up_ Whattya been doin_.ogg'],15);
+
+var nemesis = new Achievement('nemesis','Nemesis!','You were killed by the same person more than 3 times!', function (event) {
+    if (is_death(event) && !is_tk(event)) {
+       char = get_local_character(event.payload.character_id);
+       if (char.deathstreak>2) {
+           return true;
+       }
+    }
+    return false;
+},['crowd-scream-no_M1xhZ_Nd_NWM.mp3'],15);
 
 var spraypray = new Achievement('spraypray','Spray & Pray!','You killed 5 people in a row with body shots!', function (event) {
     if (is_kill(event) && !is_tk(event)) {
