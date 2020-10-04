@@ -550,7 +550,7 @@ function update_kd() {
 function process_event(event) {
 
     event.is_kill = is_kill(event);
-    event.is_death = is_kill(event);
+    event.is_death = is_death(event);
     event.is_tk = is_tk(event);
     
     if (event.payload.event_name=="PlayerLogin") {
