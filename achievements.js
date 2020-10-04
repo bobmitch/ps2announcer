@@ -200,8 +200,8 @@ Achievement.prototype.trigger = function() {
 var roadkill = new Achievement('roadkill','Roadkill!','Squished someone with a ground vehicle!', function (event) {
     // latest event is current
     var l = window.allevents.length;
-    if (is_kill(event)) {
-        if (!is_tk(event)) {
+    if (event.is_kill) {
+        if (!event.is_tk) {
             if (event.payload.attacker_weapon_id=="0") {
                 if (event.payload.attacker_vehicle_id!="0") {
                     vh = get_local_vehicle (event.payload.attacker_vehicle_id);
@@ -218,7 +218,7 @@ var roadkill = new Achievement('roadkill','Roadkill!','Squished someone with a g
 var revenge = new Achievement('revenge','Revenge!','Killed someone who killed you before!', function (event) {
     // latest event is current
     char = get_local_character(event.payload.character_id);
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (char.is_primed_for_revenge) {
             char.is_primed_for_revenge=false;
             return true;
@@ -231,7 +231,7 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
 
 var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', function (event) {
     if (is_player(event.payload.attacker_character_id)) {
-        if (!is_tk(event) && (event.payload.event_name=='VehicleDestroy')) {
+        if (!event.is_tk && (event.payload.event_name=='VehicleDestroy')) {
             if (is_player(event.payload.attacker_character_id) && is_player(event.payload.character_id)) {
                 // don't trigger if it's your own aircraft - even if this is technically correct
                 return false;
@@ -254,7 +254,7 @@ var topgun = new Achievement('topgun','Top Gun!','Destroyed an ESF with an ESF!'
     if (event.payload.event_name=='VehicleDestroy') {
         if (is_player(event.payload.attacker_character_id) && !is_player(event.payload.character_id)) {
             // killed a vehicle, not your own
-            if (!is_tk(event)) {
+            if (!event.is_tk) {
                 // ...or a friendly vehicle
                 if (is_esf(event.payload.vehicle_id) && is_esf(event.payload.attacker_vehicle_id)) {
                     // killed an esf while in your esf
@@ -296,7 +296,7 @@ var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who le
 },['solong.mp3'],5);
 
 var decikills = new Achievement('pentakill','PentaKill!','5 unanswered kills in a row!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (killstreak==5) {
             return (true);
         }
@@ -305,7 +305,7 @@ var decikills = new Achievement('pentakill','PentaKill!','5 unanswered kills in 
 },['five_long.mp3'],4);
 
 var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a row!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (killstreak==10) {
             return (true);
         }
@@ -315,10 +315,10 @@ var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a
 
 var streakend = new Achievement('streakend','Oh.','Your impressive streak came to an end!', function (event) {
     /* console.log('checking streakend:');
-    console.log('is death: ',is_death(event));
+    console.log('is death: ',event.is_death);
     console.log('killstreak',killstreak);
     console.log('multikills:',multikills); */
-    if (is_death(event) && (killstreak_was>4 || multikills_was>1)) {
+    if (event.is_death && (killstreak_was>4 || multikills_was>1)) {
         return (true);
     }
     return false;
@@ -326,7 +326,7 @@ var streakend = new Achievement('streakend','Oh.','Your impressive streak came t
 
 var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick succession!', function (event) {
     //console.log('checking for double kill - current multikills = ',multikills);
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         //console.log('...you got a kill... checking multikills count==2....');
         if (multikills==1) {
             return (true);
@@ -335,7 +335,7 @@ var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick s
     return false;
 },['two.mp3'],3);  
 var triplekill = new Achievement('triplekill','Triple Kill!','3 kills in quick succession!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (multikills==2) {
             return (true);
         }
@@ -343,7 +343,7 @@ var triplekill = new Achievement('triplekill','Triple Kill!','3 kills in quick s
     return false;
 },['three.mp3'],3);
 var multikill = new Achievement('multikill','Multi Kill!','4 kills in quick succession!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (multikills==3) {
             return (true);
         }
@@ -351,7 +351,7 @@ var multikill = new Achievement('multikill','Multi Kill!','4 kills in quick succ
     return false;
 },['four.mp3'],3);
 var megakill = new Achievement('megakill','Mega Kill!','5 kills in quick succession!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (multikills==4) {
             return (true);
         }
@@ -359,7 +359,7 @@ var megakill = new Achievement('megakill','Mega Kill!','5 kills in quick success
     return false;
 },['five.mp3'],3);
 var ultrakill = new Achievement('ultrakill','Ultra Kill!','6 kills in quick succession!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (multikills==5) {
             return (true);
         }
@@ -367,7 +367,7 @@ var ultrakill = new Achievement('ultrakill','Ultra Kill!','6 kills in quick succ
     return false;
 },['six.mp3'],3);
 var monsterkill = new Achievement('monsterkill','Monster Kill!','7 kills in quick succession!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (multikills==6) {
             return (true);
         }
@@ -375,7 +375,7 @@ var monsterkill = new Achievement('monsterkill','Monster Kill!','7 kills in quic
     return false;
 },['count_laughing.mp3'],3);
 var ludicrous = new Achievement('ludicrous','Ludicrous Kill!','8 kills in quick succession!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (multikills==7) {
             return (true);
         }
@@ -383,7 +383,7 @@ var ludicrous = new Achievement('ludicrous','Ludicrous Kill!','8 kills in quick 
     return false;
 },['count_laughing.mp3'],3);
 var holyshit = new Achievement('holyshit','Holy Shit!','9 kills in quick succession!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (multikills==8) {
             return (true);
         }
@@ -394,39 +394,33 @@ var holyshit = new Achievement('holyshit','Holy Shit!','9 kills in quick success
 
 
 var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible pussy!', function (event) {
-    if (is_death(event)) {
-        return false;
+    if (event.is_kill && !event.is_tk) {
+        if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='27') {
+            // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
+            // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
+            return true;
+        }
     }
-    if (is_tk(event)) {
-        return false;
-    }
-    if (event.payload.character_loadout_id=='1' || event.payload.character_loadout_id=='8' || event.payload.character_loadout_id=='15'|| event.payload.character_loadout_id=='28') {
-        // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
-        // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
-        return true;
-    }
+    return false;
 },['Low Profile.ogg'],20);
 
 var sneaker_death = new Achievement('sneakerdeath','Long Range Wanker!','You were killed by an invisible bastard!', function (event) {
-    if (is_kill(event)) {
-        return false;
+    if (event.is_death && !event.is_tk) {
+        if (event.payload.attacker_loadout_id=='1' || event.payload.attacker_loadout_id=='8' || event.payload.attacker_loadout_id=='15'|| event.payload.attacker_loadout_id=='27') {
+            // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
+            // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
+            return true;
+        }
     }
-    if (is_tk(event)) {
-        return false;
-    }
-    if (event.payload.attacker_loadout_id=='1' || event.payload.attacker_loadout_id=='8' || event.payload.attacker_loadout_id=='15'|| event.payload.attacker_loadout_id=='28') {
-        // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
-        // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
-        return true;
-    }
+    return false;
 },['invisibleman.mp3'],4);
 
 
 var max_kill = new Achievement('minmax','Min Max!','You killed a tiny brain person in a really big suit!', function (event) {
-    if (!is_kill(event)) {
+    if (!event.is_kill) {
         return false;
     }
-    if (is_tk(event)) {
+    if (event.is_tk) {
         return false;
     }
     if (event.payload.character_loadout_id=='7' || event.payload.character_loadout_id=='14' || event.payload.character_loadout_id=='21'|| event.payload.character_loadout_id=='33') {
@@ -437,7 +431,7 @@ var max_kill = new Achievement('minmax','Min Max!','You killed a tiny brain pers
 },['max-here-boy.mp3','embarass-max.mp3'],3);
 
 var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot kill!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (event.payload.is_headshot=='1') {
             return (true);
         }
@@ -447,7 +441,7 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
 headshot_ach.custom_image = 'images/headshot.png'; // example image
 
 var accuracy = new Achievement('accuracy','Accuracy!','5 headshots in a row!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (headshotstreak>0 && headshotstreak%5==0) {
             return true;
         }
@@ -485,7 +479,7 @@ var norobots = new Achievement('norobots',"Kill The Toasters!",'You killed a spi
 
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     
-    if (!is_kill(event) && event.payload.event_name=="Death") {
+    if (!event.is_kill && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
@@ -505,7 +499,7 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
 
 var rocketman = new Achievement('rocketman','Rocket Man!','You killed someone with a rocket!', function (event) {
     
-    if (is_kill(event)) {
+    if (event.is_kill) {
         if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
@@ -526,7 +520,7 @@ var rocketman = new Achievement('rocketman','Rocket Man!','You killed someone wi
 
 var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfucker!', function (event) {
     
-    if (is_kill(event) && event.payload.event_name=="Death") {
+    if (event.is_kill && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=="0") {
             return false;
         }
@@ -547,7 +541,7 @@ var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfuc
 
 
 var badspam = new Achievement('badspam',"I Don't Like Spam!",'You got killed by a Lasher!', function (event) {
-    if (!is_kill(event) && event.payload.event_name=="Death") {
+    if (!event.is_kill && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=='7540') {
             return true;
         }
@@ -556,7 +550,7 @@ var badspam = new Achievement('badspam',"I Don't Like Spam!",'You got killed by 
 },['spam1.mp3','spam2.mp3','spam3.mp3']);
 
 var goodspam = new Achievement('goodspam','Good Spam!','You spammed 5 people to death with the Lasher!', function (event) {
-    if (is_kill(event) && event.payload.event_name=="Death") {
+    if (event.is_kill && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=='7540') {
             spamstreak++;
             if (spamstreak>0 && spamstreak%5==0) {
@@ -582,10 +576,10 @@ var reviver = new Achievement('revive','Revive!','You revived someone!', functio
     return false;
 },['xp.mp3','Bwup!.ogg'],['To a Zone... one of Danger.ogg'],20);
 
-var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person 3 times!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person 2 times in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
        char = get_local_character(event.payload.character_id);
-       if (char.killstreak>1) {
+       if (char.killstreak==2) {
            return true;
        }
     }
@@ -593,7 +587,7 @@ var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the
 },['Whats Up_ Whattya been doin_.ogg'],15);
 
 var nemesis = new Achievement('nemesis','Nemesis!','You were killed by the same person more than 3 times!', function (event) {
-    if (is_death(event) && !is_tk(event)) {
+    if (event.is_death && !event.is_tk) {
        char = get_local_character(event.payload.character_id);
        if (char.deathstreak>2) {
            return true;
@@ -603,7 +597,7 @@ var nemesis = new Achievement('nemesis','Nemesis!','You were killed by the same 
 },['crowd-scream-no_M1xhZ_Nd_NWM.mp3'],15);
 
 var spraypray = new Achievement('spraypray','Spray & Pray!','You killed 5 people in a row with body shots!', function (event) {
-    if (is_kill(event) && !is_tk(event)) {
+    if (event.is_kill && !event.is_tk) {
         if (window.bodyshotkillstreak>0 && window.bodyshotkillstreak%5==0) {
             return true;
         }
@@ -659,7 +653,7 @@ var hatebombs = new Achievement('hatebombs','Bomb Disposal!','You killed someone
 
 var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', function (event) {
     if (event.payload.event_name=="Death") {
-        if (is_kill(event) && is_tk(event)) {
+        if (event.is_kill && event.is_tk) {
             return true;
         }
     }
@@ -668,7 +662,7 @@ var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', 
 
 var tk_sound = new Achievement('badteamkill','Blue on blue!','You were killed by a friendly!', function (event) {
     if (event.payload.event_name=="Death") {
-        if (!is_kill(event) && is_tk(event)) {
+        if (!event.is_kill && event.is_tk) {
             return true;
         }
     }
@@ -677,7 +671,7 @@ var tk_sound = new Achievement('badteamkill','Blue on blue!','You were killed by
 
 var welcome = new Achievement('welcome','Welcome To Planetside!','You killed someone new to the game!', function (event) {
     if (event.payload.event_name=="Death") {
-        if (is_kill(event) && !is_tk(event)) {
+        if (event.is_kill && !event.is_tk) {
             char = get_local_character(event.payload.character_id);
             if (!char) {
                 return false;
@@ -693,7 +687,7 @@ var welcome = new Achievement('welcome','Welcome To Planetside!','You killed som
 
 var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with a good KDR!', function (event) {
     if (event.payload.event_name=="Death") {
-        if (is_kill(event) && !is_tk(event)) {
+        if (event.is_kill && !event.is_tk) {
             stats_history = get_local_character_stats_history(event.payload.character_id);
             if (stats_history) {
                 victim_kdr = (parseInt(stats_history[5].all_time) / parseInt(stats_history[2].all_time)).toFixed(2);
@@ -711,7 +705,7 @@ var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with
 
 var mutual = new Achievement('mutual','Mutually Assured Destruction!','You killed another player at the same time as he killed you!', function (event) {
     if (event.payload.event_name=="Death") {
-        if (is_kill(event) && !is_tk(event) && allevents.length>=2) {
+        if (event.is_kill && !event.is_tk && allevents.length>=2) {
             // your kill, check previous event for death at same time
             prev = allevents[allevents.length-2];
             if (prev.payload.timestamp==event.payload.timestamp) {
@@ -726,7 +720,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
                 }
             }
         }
-        if (!is_kill(event) && !is_tk(event) && allevents.length>=2) {
+        if (!event.is_kill && !event.is_tk && allevents.length>=2) {
             // you died, check for a kill prev event
             prev = allevents[allevents.length-2];
             if (prev.payload.timestamp==event.payload.timestamp) {

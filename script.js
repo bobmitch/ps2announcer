@@ -40,6 +40,8 @@ window.mute_test = false;
 var event_counter = 0;
 var killstreak=0; // reset by death
 var spamstreak=0;
+var killstreak_was=0;
+var multikills_was=0;
 var kills=0;
 var deaths=0;
 var kd=1;
@@ -235,7 +237,10 @@ function display_event(data) {
     }
     var other_id=0;
     if (data.payload.hasOwnProperty('other_id')) {
-        other_id = data.payload.other_id;
+        if (data.payload.other_id.length > 17) {
+            // could be character - if shorter, probably other internal id
+            other_id = data.payload.other_id;
+        }
     }
     jQuery.when(get_vehicle(data.payload.vehicle_id),get_vehicle(data.payload.attacker_vehicle_id),get_character(data.payload.character_id), get_character(data.payload.other_id), get_character(data.payload.attacker_character_id), get_weapon(data.payload.attacker_weapon_id) ).then(function(){
         // all promised data available, show event
@@ -543,6 +548,10 @@ function update_kd() {
 }
 
 function process_event(event) {
+
+    event.is_kill = is_kill(event);
+    event.is_death = is_kill(event);
+    event.is_tk = is_tk(event);
     
     if (event.payload.event_name=="PlayerLogin") {
         c = get_local_character(event.payload.character_id);
