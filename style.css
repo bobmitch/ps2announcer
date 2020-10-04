@@ -227,7 +227,7 @@ span.code {
     position:sticky;
     z-index:2;
     top:0;
-    background: white;
+    /* background: white; */
     padding-bottom: 1rem;
 }
 
@@ -373,6 +373,9 @@ body.testobs {
     display: none;
 }
 
+#playerstatus .fas, #soundpack .fas {
+    opacity:0.5;
+}
 
 @keyframes showanimation {
     0%   {opacity: 1; transform:scale(0.8) translateX(-30vw); }

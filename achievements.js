@@ -584,7 +584,7 @@ var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the
        }
     }
     return false;
-},['Whats Up_ Whattya been doin_.ogg'],15);
+},['Whats Up_ Whattya been doin_.ogg'],9);
 
 var nemesis = new Achievement('nemesis','Nemesis!','You were killed by the same person more than 3 times!', function (event) {
     if (event.is_death && !event.is_tk) {
