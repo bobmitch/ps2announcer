@@ -127,34 +127,36 @@ Achievement.prototype.triggered = function() {
     return false;
 };
 
-Achievement.prototype.trigger = function() {
+Achievement.prototype.trigger = function(notification_only) {
     /* console.log ('Triggered achievement:');
     console.log (this); */
     vel = document.querySelector('#volume'); 
     volume = vel.value;
     has_external = false;
-    for (n=0; n<this.sounds.length; n++) {
-        if (!this.sounds[n].src.includes('bobmitch.com')) {
-            has_external=true;
+    if (!notification_only) {
+        for (n=0; n<this.sounds.length; n++) {
+            if (!this.sounds[n].src.includes('bobmitch.com')) {
+                has_external=true;
+            }
         }
-    }
-    if (this.sounds.length==0) {
-        say(this.name);
-    }
-    else if (!has_external) {
-        // default only
-        random_sound_index = Math.floor(Math.random() * this.sounds.length);
-        this.sounds[random_sound_index].volume = volume/100;
-        this.sounds[random_sound_index].play();
-    }
-    else {
-        // pick random until external found
-        random_sound_index = Math.floor(Math.random() * this.sounds.length);
-        while (this.sounds[random_sound_index].src.includes('bobmitch.com')) {
+        if (this.sounds.length==0) {
+            say(this.name);
+        }
+        else if (!has_external) {
+            // default only
             random_sound_index = Math.floor(Math.random() * this.sounds.length);
+            this.sounds[random_sound_index].volume = volume/100;
+            this.sounds[random_sound_index].play();
         }
-        this.sounds[random_sound_index].volume = volume/100;
-        this.sounds[random_sound_index].play();
+        else {
+            // pick random until external found
+            random_sound_index = Math.floor(Math.random() * this.sounds.length);
+            while (this.sounds[random_sound_index].src.includes('bobmitch.com')) {
+                random_sound_index = Math.floor(Math.random() * this.sounds.length);
+            }
+            this.sounds[random_sound_index].volume = volume/100;
+            this.sounds[random_sound_index].play();
+        }
     }
     if (this.hasOwnProperty('custom_image')) {
         if (this.custom_image!='' && this.custom_image!=null) {

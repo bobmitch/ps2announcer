@@ -448,6 +448,7 @@ function set_player_online (char_id, name="Unknown Player") {
     playername_el = document.getElementById('playername');
     console.log('setting player online:');
     console.log(playername);
+    say ('tracking ' + playername );
     playername_el.innerText = playername;
     playername_el.classList.remove('offline');
     playername_el.dataset.char_id = char_id;
@@ -664,12 +665,13 @@ function process_event(event) {
         
     });
     // sort by priority
-    // and trigger top enabled 
+    // and trigger top enabled audio, let the rest trigger notifications
+    var notifications_only = false;
     window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
     for (n=0; n<window.cur_achievements.length; n++) {
         if (window.cur_achievements[n].enabled) {
-            window.cur_achievements[n].trigger();
-            break;
+            window.cur_achievements[n].trigger(notifications_only);
+            notifications_only = true; // loop through rest and trigger, but no audio pls
         }
     }
 
