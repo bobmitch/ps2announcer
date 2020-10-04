@@ -442,7 +442,7 @@ body.testobs {
     flex-direction: column;
 }
 .obs #notifications {
-    max-width:30%;
+    max-width:45%;
 }
 #notifications .notification {
     pointer-events: all;
