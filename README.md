@@ -11,7 +11,7 @@ There is a live version available to try at: [https://bobmitch.com/ps2](https://
 
 ## How To Use?
 
-Go to the site above (or install it on your own webserver - it only requires PHP 5 or greater - no database).
+Go to the site above - or install it on your own webserver - it only requires PHP 5 or greater - no database. If you clone/download this project to run on your own server, please apply for and change the service ID for all API calls to your own as a courtesy. ID's can be applied for [here](http://census.daybreakgames.com/#devSignup).
 
 Click on 'Manage Players' and use the search facility to find your player(s) - the system will detect when they login and will begin tracking events using the [DBG API](http://census.daybreakgames.com/#what-is-websocket).
 
