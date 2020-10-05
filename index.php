@@ -25,13 +25,43 @@ $user = false;
 $passed_player_id = false;
 $passed_player_name = false;
 
+function filter_filename($filename, $beautify=true) {
+    // sanitize filename
+    $filename = preg_replace(
+        '~
+        [<>:"/\\|?*]|            # file system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+        [\x00-\x1F]|             # control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
+        [\x7F\xA0\xAD]|          # non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
+        [#\[\]@!$&\'()+,;=]|     # URI reserved https://tools.ietf.org/html/rfc3986#section-2.2
+        [{}^\~`]                 # URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
+        ~x',
+        '-', $filename);
+    // avoids ".", ".." or ".hiddenFiles"
+    $filename = ltrim($filename, '.-');
+    // optional beautification
+    if ($beautify) $filename = beautify_filename($filename);
+    // maximize filename length to 255 bytes http://serverfault.com/a/9548/44086
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    $filename = mb_strcut(pathinfo($filename, PATHINFO_FILENAME), 0, 255 - ($ext ? strlen($ext) + 1 : 0), mb_detect_encoding($filename)) . ($ext ? '.' . $ext : '');
+    return $filename;
+}
+
 if (sizeof($segments)>0) {
 	// user = audio pack user
-	if (ctype_alnum ($segments[0])) {
+	$user = filter_filename (urldecode($segments[0]),false);
+	/* pprint_r ($user);
+	pprint_r (urldecode($segments[0])); */
+	if ($user != urldecode($segments[0])) {
+		// filtered user != raw passed user, filename is unsafe
+		$user=false;
+		echo "<style>body{font-family:sans-serif;display:flex; height:100vh; justify-content:center; align-items:center;}</style><h1>Unsafe name - please use characters which are safe for filenames only!</h1>";
+		exit(0);
+	}
+	/* if (ctype_alnum ($segments[0])) {
 		if (strlen($segments[0]<16)) {
 			$user = $segments[0];
 		}
-	}
+	} */
 	if (sizeof($segments)>1) {
 		// got player id too
 		if (ctype_digit($segments[1])) {
@@ -39,7 +69,7 @@ if (sizeof($segments)>0) {
 		}
 	}
 	if (sizeof($segments)>2) {
-		// got player id too
+		// got player name too
 		if (ctype_alnum($segments[2])) {
 			$passed_player_name = $segments[2];
 		}
@@ -81,6 +111,16 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			else {
 				echo '{"success":0,"msg":"invalid config"}';
 			}
+		}
+	}
+	elseif ($action=='test_claim') {
+		if ($submitted_claim_code==$server_claim_code) {
+			echo '{"success":1,"msg":"Correct password/passphrase!"}';
+			exit(0);
+		}
+		else {
+			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
+			exit(0);
 		}
 	}
 	elseif ($action=='claim') {
@@ -312,7 +352,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Manage Triggers <i title='URL already claimed' class="claimedonly fas fa-lock"></i>&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
+				<p class="modal-card-title">Manage Triggers <i id='unlock' title='URL already claimed' class="claimedonly fas fa-lock"></i> <span class='info'>(click to unlock)</span>&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button authorized_only btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>

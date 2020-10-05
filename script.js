@@ -1279,6 +1279,22 @@ $(window).resize(function(e) {
 
 document.querySelector('body').addEventListener('click',function(e){
 
+    if (e.target.id=='unlock') {
+        temp_claim_code = prompt('Enter your password/passphrase:');
+        postAjax('', {"action":"test_claim","claim_code":temp_claim_code}, function(data) { 
+            var response = JSON.parse(data);
+            console.log(response);
+            if (response.success==1) {
+                notify(response.msg,'is-success');
+                window.claim_code = temp_claim_code;
+                document.body.classList.add('authorized');
+            }
+            else {
+                notify(response.msg,'is-warning');
+            }
+        });
+    }
+
     // hide notification if clicked
     if (e.target.classList.contains('notification') || e.target.closest('.notification')) {
         console.log('clicked notification');

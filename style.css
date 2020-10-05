@@ -139,8 +139,21 @@ span.outfit {
     display: inline-block;
 }
 
-.vanilla #achievments_list, .unclaimed #achievments_list {
+.authorized_only {
+    display:none !important;
+}
+.authorized .authorized_only {
+    display:inline-block !important;
+}
+.authorized #unlock {
     display:none;
+}
+
+.vanilla #achievments_list, .unclaimed #achievments_list, .claimed #achievments_list {
+    display:none;
+}
+.authorized #achievments_list {
+    display:flex;
 }
 
 body:not(.claimed) .claimedonly {
@@ -181,6 +194,10 @@ body:not(.claimed) .claimedonly {
     opacity:0.5;
     padding-left:1rem;
     transform:scale(0.8);
+}
+.modal-card-title span.info {
+    font-size:0.8rem;
+    opacity:0.5;
 }
 .add_audio.button {
         position: absolute;
@@ -477,4 +494,8 @@ body.testobs {
 .notification.achievement_notification {
     background-color:rgba(0,0,0,0.6) !important;
     color:white !important;
+}
+
+#unlock:hover {
+    cursor:pointer;
 }
