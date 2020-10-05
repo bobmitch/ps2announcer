@@ -155,7 +155,7 @@ function print_character(character_id, event) {
     else {
         // got character - now match up event loadout with character if possible
         // and then get profile
-        console.log('Printing character ',character,' for event ',event.payload);
+        //console.log('Printing character ',character,' for event ',event.payload);
         if (event.payload.event_name=="GainExperience") {
             if (character_id==event.payload.character_id) {
                 loadout_id = event.payload.loadout_id;
@@ -669,9 +669,9 @@ function process_event(event) {
     // and trigger top enabled audio, let the rest trigger notifications
     var notifications_only = false;
     window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
-    for (n=0; n<window.cur_achievements.length; n++) {
-        if (window.cur_achievements[n].enabled) {
-            window.cur_achievements[n].trigger(notifications_only);
+    for (sorted_index=0; sorted_index<window.cur_achievements.length; sorted_index++) {
+        if (window.cur_achievements[sorted_index].enabled) {
+            window.cur_achievements[sorted_index].trigger(notifications_only);
             notifications_only = true; // loop through rest and trigger, but no audio pls
         }
     }
