@@ -6,8 +6,11 @@ function is_tk(event) {
                 return true;
             }
             else {
-                console.log('unable to determine tk character for vehicle destroy',event.payload);
+                return false;
             }
+        }
+        else {
+            console.log('unable to determine tk character for vehicle destroy',event.payload);
         }
         return false;
     }

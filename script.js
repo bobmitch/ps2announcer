@@ -192,7 +192,8 @@ function print_character(character_id, event) {
             }
         }
         else {
-            console.log('Unknown loadout for event char loadout: ',event);
+            // can get here if vehicledestroy that's your vehicle, no loadout for a vehicle
+            //console.log('Unknown loadout for event char loadout: ',event);
         }
         char+="<span class='"+profile_name+"'>" + profile_name + "</span>";
         char+='<span class="char faction'+character.faction_id+'"> ';
