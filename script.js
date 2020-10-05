@@ -595,17 +595,22 @@ function process_event(event) {
                 // not suicide
                 // update character with killcount for revenge/repeat etc
                 char = get_local_character(event.payload.attacker_character_id);
-                char.killstreak=0;
-                if (char.hasOwnProperty('deathcount')) {
-                    char.deathcount++;
-                    char.deathstreak++;
-                    
+                if (char) {
+                    char.killstreak=0;
+                    if (char.hasOwnProperty('deathcount')) {
+                        char.deathcount++;
+                        char.deathstreak++;
+                        
+                    }
+                    else {
+                        char.deathcount=1;
+                        char.deathstreak=1;
+                    }
+                    char.primed_for_revenge = true;
                 }
                 else {
-                    char.deathcount=1;
-                    char.deathstreak=1;
+                    console.log('Local character not available for attacker in event: ',event);
                 }
-                char.primed_for_revenge = true;
             }
         }
         else {
@@ -1390,8 +1395,8 @@ document.querySelector('body').addEventListener('click',function(e){
         ach.sounds[index].play();
     }
     
-    if (e.target.classList.contains('add_audio')) {
-        card = e.target.closest('.card');
+    if (e.target.classList.contains('add_audio')||e.target.closest('.add_audio')) {
+        card = e.target.closest('.add_audio');
         achievement_id = card.dataset.id;
         //alert(achievement_id);
         url = prompt('Enter full URL of mp3/ogg file:');

@@ -579,7 +579,6 @@ var reviver = new Achievement('revive','Revive!','You revived someone!', functio
         // 7 = revive, 57 = squad revive
         if (event.payload.experience_id=='7' || event.payload.experience_id=='53' ) {
             window.revive_count_streak++;
-            console.log ('Triggered revive:');
             return true;
         }
     }

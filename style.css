@@ -246,6 +246,10 @@ span.code {
     filter:contrast(1.3);
 }
 
+/* fix playerlist */
+.control .tags:last-child {
+    margin-bottom: 0.5rem;
+}
 
 
     .navbar-item.has-dropdown .navbar-dropdown {
