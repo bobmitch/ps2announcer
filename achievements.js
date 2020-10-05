@@ -233,18 +233,25 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
 
 var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', function (event) {
     if (is_player(event.payload.attacker_character_id)) {
-        if (!event.is_tk && (event.payload.event_name=='VehicleDestroy')) {
-            if (is_player(event.payload.attacker_character_id) && is_player(event.payload.character_id)) {
-                // don't trigger if it's your own aircraft - even if this is technically correct
-                return false;
-            }
-            var destroyed_vehicle = get_local_vehicle(event.payload.vehicle_id);
-            /* console.log(event);
-            console.log('checking if you destroyed a light aircraft:');
-            console.log(destroyed_vehicle); */
-            if (destroyed_vehicle) {
-                if (destroyed_vehicle.type_name=="Light Aircraft") {
-                    return true;
+        if (event.payload.event_name=='VehicleDestroy') {
+            if (is_player(event.payload.attacker_character_id)) {
+                // you killed it
+                if (is_player(event.payload.character_id)) {
+                    // don't trigger if it's your own aircraft - even if this is technically correct
+                    return false;
+                }
+                if (event.is_tk) {
+                    // killed friendly, not good
+                    return false;
+                }
+                var destroyed_vehicle = get_local_vehicle(event.payload.vehicle_id);
+                console.log(event);
+                console.log('checking if you destroyed a light aircraft:');
+                console.log(destroyed_vehicle); 
+                if (destroyed_vehicle) {
+                    if (destroyed_vehicle.type_name=="Light Aircraft") {
+                        return true;
+                    }
                 }
             }
         }
@@ -256,12 +263,13 @@ var topgun = new Achievement('topgun','Top Gun!','Destroyed an ESF with an ESF!'
     if (event.payload.event_name=='VehicleDestroy') {
         if (is_player(event.payload.attacker_character_id) && !is_player(event.payload.character_id)) {
             // killed a vehicle, not your own
-            if (!event.is_tk) {
-                // ...or a friendly vehicle
-                if (is_esf(event.payload.vehicle_id) && is_esf(event.payload.attacker_vehicle_id)) {
-                    // killed an esf while in your esf
-                    return true;
-                }
+            if (event.is_tk) {
+                // tks don't count
+                return false;
+            }
+            if (is_esf(event.payload.vehicle_id) && is_esf(event.payload.attacker_vehicle_id)) {
+                // killed an esf while in your esf
+                return true;
             }
         }
     }
