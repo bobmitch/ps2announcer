@@ -591,6 +591,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					postAjax('', {"action":"claim","claim_code":window.claim_code}, function(data) { 
 						var response = JSON.parse(data);
 						console.log(response);
+						if (response.success==1) {
+							document.body.classList.add('claimed','authorized');
+						}
 					});
 					document.body.classList.remove('unclaimed');
 				}

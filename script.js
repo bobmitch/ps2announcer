@@ -1017,6 +1017,7 @@ function save_config() {
         console.log(response);
         if (response.success==1) {
             notify('Config saved!','is-success');
+            document.body.classList.add('claimed','authorized');
         }
         else {
             notify(response.msg,'is-warning');
@@ -1025,6 +1026,8 @@ function save_config() {
                 window.claim_code = temp;
                 save_config();
             }
+            /* document.body.classList.add('claimed');
+            document.body.classList.remove('authorized'); */
         }
     });
 }
@@ -1050,7 +1053,8 @@ document.getElementById('paste_config').addEventListener('click',function(e){
             // set config, resave to server, and re render
             new_achievements = config;
             save_config();
-            render_all_achievement_cards();
+            //render_all_achievement_cards();
+            load_config(); // this also re-renders all cards
         }
         else {
             notify('Error pastings soundpack - no copied soundpack found!','is-warning'); 
@@ -1110,6 +1114,8 @@ function load_config() {
                     if (ach) {
                         // found config for an achievement
                         // loop through sounds and add
+                        ach.soundfiles=[];
+                        ach.sounds=[];
                         for (x=0; x<config[i].soundfiles.length; x++) {
                             sf = config[i].soundfiles[x];
                             if (sf.startsWith('https')) {
@@ -1118,6 +1124,13 @@ function load_config() {
                                 s.crossOrigin = 'anonymous';
                                 ach.sounds.push(s); 
                                 //console.log('Inserting new audio ',sf,' into ach: ',ach);
+                            }
+                            else {
+                                // assume bobmitch
+                                ach.soundfiles.push(config[i].soundfiles[x]);
+                                s = new Audio('https://bobmitch.com/ps2/audio/' + sf);
+                                s.crossOrigin = 'anonymous';
+                                ach.sounds.push(s); 
                             }
                         }
                         // set enabled state
@@ -1276,7 +1289,7 @@ document.querySelector('body').addEventListener('click',function(e){
             if (response.success==1) {
                 notify(response.msg,'is-success');
                 window.claim_code = temp_claim_code;
-                document.body.classList.add('authorized');
+                document.body.classList.add('authorized','claimed');
             }
             else {
                 notify(response.msg,'is-warning');
@@ -1292,13 +1305,18 @@ document.querySelector('body').addEventListener('click',function(e){
 
     // open image manager 
     if (e.target.classList.contains('image_preview')) {
-        card = e.target.closest('.card');
-        ach_id = card.dataset.id;
-        document.getElementById('edit_image_achievement_id').value = ach_id;
-        ach = get_achievement(ach_id);
-        custom_image = ach.custom_image;
-        document.getElementById('custom_image_url').value = custom_image;
-        document.querySelector('#edit_image_modal').classList.toggle('is-active');
+        if (document.body.classList.contains('authorized')) {
+            card = e.target.closest('.card');
+            ach_id = card.dataset.id;
+            document.getElementById('edit_image_achievement_id').value = ach_id;
+            ach = get_achievement(ach_id);
+            custom_image = ach.custom_image;
+            document.getElementById('custom_image_url').value = custom_image;
+            document.querySelector('#edit_image_modal').classList.toggle('is-active');
+        }
+        else {
+            alert('Must be authorized to make image changes');
+        }
     }
 
     // delete custom
@@ -1401,7 +1419,7 @@ document.querySelector('body').addEventListener('click',function(e){
     }
     
     if (e.target.classList.contains('add_audio')||e.target.closest('.add_audio')) {
-        card = e.target.closest('.add_audio');
+        card = e.target.closest('.card');
         achievement_id = card.dataset.id;
         //alert(achievement_id);
         url = prompt('Enter full URL of mp3/ogg file:');

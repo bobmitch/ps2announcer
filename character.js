@@ -29,6 +29,19 @@ function get_character (character_id) {
     }
 }
 
+function get_decimator_hit_percentage_for_aeflic (char_id) {
+    // http://census.daybreakgames.com/get/ps2/item?c:limit=1000&item_category_id=13&c:show=name - rocket primarys
+    // https://census.daybreakgames.com/s:example/get/ps2:v2/characters_weapon_stat?character_id=5428041429986337681&item_id=84 - fire count + hit count for item
+    if (!window.hasOwnProperty('aeflic_starting_deci_accuracy')) {
+        window.aeflic_starting_deci_accuracy = hits/total ;
+        window.aeflic_starting_deci_accuracy_session_start = last_save_date ;
+        window.aeflic_session_deci_accuracy = same_as_historic;
+    }
+    else {
+        window.aeflic_session_deci_accuracy = diff_since_last_save_hits / diff_since_last_save_total;
+    }
+}
+
 function is_same_faction (char_id_1, char_id_2) {
     // can be used when both loadouts not available - eg. vehicledestroy
     char1 = get_local_character(char_id_1);

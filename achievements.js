@@ -32,7 +32,7 @@ function render_achievement_card(a) {
                     <div class="tags has-addons">
                         <span title='${val}' class="tag">${filename}</span>
                         <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound"><i class="fas fa-play-circle"></i></span>
-                        <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
+                        <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger authorized_only"></a>
                     </div>
                 </div>
             `;
@@ -64,7 +64,7 @@ function render_achievement_card(a) {
     if (a.custom_weapon_trigger) {
         custom_weapon_trigger_class=' custom '; 
         //custom_weapon_trigger_label = '<span class="info"><button class="add_audio button is-small is-light is-success">add audio</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small is-danger is-light delete_custom">delete</button></span> ';
-        custom_weapon_trigger_label = '<span class="info"><button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="button is-small is-danger is-light delete_custom">delete</button></span> ';
+        custom_weapon_trigger_label = '<span class="info"><button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="authorized_only button is-small is-danger is-light delete_custom">delete</button></span> ';
     }
     
     markup = `
@@ -78,7 +78,7 @@ function render_achievement_card(a) {
                     <img class='image_preview' src='${a.custom_image}'/>
                 </a>
             </div>
-            <div class="control">
+            <div class="control authorized_only">
                 <label class="radio ">
                     <input ${yes_checked} value="on" type="radio" class="audio_enabled_radio" name="enabled_${friendly_name}">
                     On
@@ -97,7 +97,7 @@ function render_achievement_card(a) {
         </div>
         <footer class='card-footer'>
             ${card_footer_markup}
-            <button style='margin:1em' class='add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>
+            <button style='margin:1em' class='authorized_only add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>
         </footer>
     </div>
     `;

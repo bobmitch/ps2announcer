@@ -150,7 +150,7 @@ span.outfit {
 }
 
 .vanilla #achievments_list, .unclaimed #achievments_list, .claimed #achievments_list {
-    display:none;
+    /* display:none; */
 }
 .authorized #achievments_list {
     display:flex;
