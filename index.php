@@ -352,7 +352,11 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Manage Triggers <i id='unlock' title='URL already claimed' class="claimedonly fas fa-lock"></i> <span class='info'>(click to unlock)</span>&nbsp;&nbsp;&nbsp;&nbsp;<button id='add_custom_trigger' class='button authorized_only btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
+				<p class="modal-card-title">
+				Manage Triggers <i id='unlock' title='URL already claimed' class="claimedonly fas fa-lock"></i> <span class='claimedonly info'>(click to unlock)</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<button id='copy_config' class='button claimed_only btn is-small is-primary'>Copy Soundpack</button>
+				<button id='paste_config' class='button authorized_only btn is-small is-warning'>Paste Soundpack</button>
+				<button id='add_custom_trigger' class='button authorized_only btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>
@@ -513,34 +517,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			</div>
 		  </div>
 
-		  <div id='export_modal' class="modal">
-			<div class="modal-background"></div>
-			<div class="modal-card">
-			  <header class="modal-card-head">
-				<p class="modal-card-title">Import/Export Soundpack</p>
-				<button class="delete" aria-label="close"></button>
-				
-			  </header>
-			  <section class="modal-card-body">
-				<textarea id='config_export'>
-
-				</textarea>
-				<br>
-					<button type='button' href='#' id='copy_config' class='button is-light is-info'>
-						
-						  <span>Copy Config</span>
-					</button>
-					<button type='button' href='#' id='apply_config' class="button notobs is-info">
-						<strong>Apply Config</strong>
-					</button>
-					<button type='button' href='#' id='paste_config' class='obsonly button is-info is-warning'>
-						
-						<span>Paste Config</span>
-				  </button>
-			  </section>
-			  
-			</div>
-		  </div>
+		 
 
 		  <div id='about_modal' class="modal">
 			<div class="modal-background"></div>

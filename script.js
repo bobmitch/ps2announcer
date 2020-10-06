@@ -994,31 +994,7 @@ document.getElementById('custom_trigger_form').addEventListener('submit',functio
     return false;
 });
 
-document.getElementById('copy_config').addEventListener('click',function(e){
-    e.preventDefault();
-    document.getElementById('config_export').select();
-    if (document.execCommand('copy')) {
-        alert('Current config is in your copy buffer ready to be pasted somewhere!');
-    }
-});
 
-document.getElementById('paste_config').addEventListener('click',function(e){
-    e.preventDefault();
-    document.getElementById('config_export').select();
-    if (window.hasOwnProperty('obsstudio')) {
-        config_json = prompt('Paste config here:');
-        if (config_json) {
-            temp_config = JSON.parse(config_json);
-            final_config_string = JSON.stringify(temp_config);
-            localStorage.setItem('ps2_achievements',final_config_string);
-            load_config();
-            render_all_achievement_cards();
-            modal = e.target.closest('.modal');
-            modal.classList.toggle('is-active');
-            alert('saved new config');
-        }
-    }
-});
 
 
 function save_config() {
@@ -1053,19 +1029,32 @@ function save_config() {
     });
 }
 
-document.getElementById('apply_config').addEventListener('click',function(e){
-    config_string = document.getElementById('config_export').value;
-    console.log('Applying:');
-    console.log(config_string);
-    config = JSON.parse(config_string);
-    if (config) {
+document.getElementById('copy_config').addEventListener('click',function(e){
+    config_string = JSON.stringify(new_achievements);
+    if (config_string) {
         // save string and reload config
-        localStorage.setItem('ps2_achievments',config_string);
-        load_config();
-        alert('Sound Pack Loaded');
+        localStorage.setItem('ps2_soundpack_copy', config_string);
+        notify('Sound Pack Copied - Ready to paste into your own claimed URL!');
     }
     else {
-        alert('Error applying sound pack!');
+        notify('Error copying Sound Pack!','is-warning');
+    }
+});
+
+document.getElementById('paste_config').addEventListener('click',function(e){
+    sure = confirm('Are you sure - this will overwrite your current config?');
+    if (sure) {
+        config_string = localStorage.getItem('ps2_soundpack_copy');
+        config = JSON.parse(config_string);
+        if (config) {
+            // set config, resave to server, and re render
+            new_achievements = config;
+            save_config();
+            render_all_achievement_cards();
+        }
+        else {
+            notify('Error pastings soundpack - no copied soundpack found!','is-warning'); 
+        }
     }
 });
 
