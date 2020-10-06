@@ -312,7 +312,7 @@ var decikills = new Achievement('pentakill','PentaKill!','5 unanswered kills in 
         }
     }
     return false;
-},['five_long.mp3'],4);
+},['farming.mp3'],4);
 
 var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
@@ -322,6 +322,42 @@ var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a
     }
     return false;
 },['No One Could have Survived.ogg'],4);
+
+var decakills2 = new Achievement('decakill2','20 in a row!','20 unanswered kills in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+        if (killstreak==20) {
+            return (true);
+        }
+    }
+    return false;
+},['twenty-real-lemmons.mp3'],1);
+
+var decakills3 = new Achievement('decakill3','30 in a row!!','30 unanswered kills in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+        if (killstreak==30) {
+            return (true);
+        }
+    }
+    return false;
+},['relentless.mp3'],1);
+
+var decakills4 = new Achievement('decakill4','40 in a row!!','40 unanswered kills in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+        if (killstreak==40) {
+            return (true);
+        }
+    }
+    return false;
+},['how-do-you-kill-a-god.mp3'],1);
+
+var decakills5 = new Achievement('decakill5','50 in a row!!','50 unanswered kills in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+        if (killstreak==50) {
+            return (true);
+        }
+    }
+    return false;
+},['he-was-like-a-god-walking-amongst-mere-mortals.mp3'],1);
 
 var streakend = new Achievement('streakend','Oh.','Your impressive streak came to an end!', function (event) {
     /* console.log('checking streakend:');
@@ -367,7 +403,7 @@ var megakill = new Achievement('megakill','Mega Kill!','5 kills in quick success
         }
     }
     return false;
-},['five.mp3'],3);
+},['five_long.mp3'],3);
 var ultrakill = new Achievement('ultrakill','Ultra Kill!','6 kills in quick succession!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (multikills==5) {
