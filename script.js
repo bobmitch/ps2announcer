@@ -668,8 +668,22 @@ function process_event(event) {
         if (achievement.triggered(event)) {
             window.cur_achievements.push(achievement);
         }
-        
     });
+
+    // aeflic request
+    say_kills = false;
+    if (window.cur_achievements.length==0 && is_kill(event)) {
+        say_kills = true;
+    }
+    if (window.cur_achievements.length==1 && is_kill(event) && window.cur_achievements[0].id=='headshot') {
+        say_kills = true;
+    }
+    if (say_kills) {
+        // got a kill and no achievements triggered, or just headshot, and you are aeflic, say the killcount
+        if ( event.payload.attacker_character_id=="5428011263382229073") {
+            say(killstreak.toString());
+        }
+    }
     // sort by priority
     // and trigger top enabled audio, let the rest trigger notifications
     var notifications_only = false;
@@ -680,9 +694,7 @@ function process_event(event) {
             notifications_only = true; // loop through rest and trigger, but no audio pls
         }
     }
-
     update_stats();
-    
 }
 
 document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
