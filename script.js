@@ -672,10 +672,10 @@ function process_event(event) {
 
     // aeflic request
     say_kills = false;
-    if (window.cur_achievements.length==0 && is_kill(event)) {
+    if (window.cur_achievements.length==0 && is_kill(event) && killstreak>1) {
         say_kills = true;
     }
-    if (window.cur_achievements.length==1 && is_kill(event) && window.cur_achievements[0].id=='headshot') {
+    if (window.cur_achievements.length==1 && is_kill(event) && window.cur_achievements[0].id=='headshot' && killstreak>1) {
         say_kills = true;
     }
     if (say_kills) {
