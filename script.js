@@ -1337,6 +1337,12 @@ document.querySelector('body').addEventListener('change',function(e){
         ach = get_achievement(ach_id);
         ach.volumes[sound_index] = e.target.value;
         ach.sounds[sound_index].config_volume = e.target.value;
+        // trigger replay with new volume scaled by global 
+        glogal_volume = localStorage.getItem('ps2_volume');
+        ach.sounds[sound_index].volume = (glogal_volume/100) * (custom_volume/100);
+        ach.sounds[sound_index].pause();
+        ach.sounds[sound_index].currentTime = 0;
+        ach.sounds[sound_index].play();
         save_config();
     } 
 });
@@ -1524,6 +1530,21 @@ document.querySelector('body').addEventListener('click',function(e){
                             </div>
                         </div>
                     `;
+                    card_footer_entry = `
+                    <div class="control">
+                        <div class="tags has-addons">
+                            <span title='${url}' class="tag">${filename}</span>
+                            <a data-id='${id}' data-index='${index}' class="tag iss-light authorized_only is-primary show_volume">
+                                <i class="fas fa-volume-up"></i>
+                                <input type="range" class='config_volume' data-id='${id}' data-index='${index}' name="volume" value="90" min="0" max="100">
+                            </a>
+                            <a data-id='${id}' data-index='${index}' class="tag iss-light is-info play_sound"><i class="fas fa-play-circle"></i></span></a>
+                            <a data-id='${id}' data-index='${index}' class="remove-audio tag is-delete is-danger authorized_only"></a>
+                            
+                        </div>
+                        
+                    </div>
+                `;
                     html = card.querySelector('.is-grouped').innerHTML;
                     html += card_footer_entry;
                     card.querySelector('.is-grouped').innerHTML = html;

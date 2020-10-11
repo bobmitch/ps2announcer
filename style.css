@@ -145,6 +145,9 @@ span.outfit {
 .authorized .authorized_only {
     display:inline-block !important;
 }
+.authorized .tag.authorized_only {
+    display:flex !important;
+}
 .authorized #unlock {
     display:none;
 }

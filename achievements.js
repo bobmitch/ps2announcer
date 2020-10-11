@@ -32,7 +32,7 @@ function render_achievement_card(a) {
                 <div class="control">
                     <div class="tags has-addons">
                         <span title='${val}' class="tag">${filename}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-primary show_volume">
+                        <a data-id='${a.id}' data-index='${index}' class="tag authorized_only iss-light is-primary show_volume">
                             <i class="fas fa-volume-up"></i>
                             <input type="range" class='config_volume' data-id='${a.id}' data-index='${index}' name="volume" value="${config_volume}" min="0" max="100">
                         </a>
@@ -50,7 +50,7 @@ function render_achievement_card(a) {
                 <div class="control">
                     <div class="tags has-addons">
                         <span title="Built In Audio" class="tag is-light">${val}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-primary show_volume">
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light authorized_only is-primary show_volume">
                             <i class="fas fa-volume-up"></i>
                             <input type="range" class='config_volume' data-index='${index}' data-id='${a.id}' name="volume" value="${config_volume}" min="0" max="100">
                         </a>
