@@ -108,7 +108,7 @@ function render_achievement_card(a) {
         </div>
         <footer class='card-footer'>
             ${card_footer_markup}
-            <button style='margin:1em' class='authorized_only add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>
+            <button title="Add Custom Audio File" style='margin:1em' class='authorized_only add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>
         </footer>
     </div>
     `;
@@ -244,6 +244,9 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
 // https://dl.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3
 
 var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', function (event) {
+    /* if (topgun.triggered(event)) {
+        return false; // don't trigger if topgun already triggered...
+    } */
     if (is_player(event.payload.attacker_character_id)) {
         if (event.payload.event_name=='VehicleDestroy') {
             if (is_player(event.payload.attacker_character_id)) {
