@@ -1013,15 +1013,24 @@ function save_config() {
     // strip name/desc and jsonify into localstorage
     ach_json = JSON.stringify(new_achievements);
     window.temp_config = JSON.parse(ach_json);
-    /* for (n=0;n<temp_config.length;n++) {
-        if (!temp_config[n].custom_weapon_trigger) {
+    for (n=0;n<temp_config.length;n++) {
+        /* if (!temp_config[n].custom_weapon_trigger) {
             delete temp_config[n].name;
             delete temp_config[n].description;
             delete temp_config[n].sounds;
             delete temp_config[n].priority;
             delete temp_config[n].interruptable;
-        }
-    } */
+        } */
+         // set volume of each sound
+      /*   temp_config[n].sounds.forEach(function(sound,index){
+            if (temp_config[n].hasOwnProperty('volumes')) {
+                sound.config_volume = temp_config[n].volumes[index];
+            }
+            else {
+                sound.config_volume = 100; 
+            }
+        }); */
+    }
     final_config_string = JSON.stringify(temp_config);
     //localStorage.setItem('ps2_achievements',final_config_string);
     postAjax('', {"action":"save","claim_code":window.claim_code,"config":final_config_string}, function(data) { 
@@ -1128,6 +1137,18 @@ function load_config() {
                         // loop through sounds and add
                         ach.soundfiles=[];
                         ach.sounds=[];
+                        ach.volumes=[];
+                        if (config[i].hasOwnProperty('volumes')) {
+                            config[i].volumes.forEach(vol => {
+                                ach.volumes.push(vol);
+                            });
+                        }
+                        else {
+                            for (c=0; c<config[i].soundfiles.length; c++) {
+                                ach.volumes.push(100);
+                            }
+                        }
+                        
                         for (x=0; x<config[i].soundfiles.length; x++) {
                             sf = config[i].soundfiles[x];
                             if (sf.startsWith('https')) {
@@ -1145,6 +1166,15 @@ function load_config() {
                                 ach.sounds.push(s); 
                             }
                         }
+                         // set volume of each sound                         
+                        ach.sounds.forEach(function(sound,index){
+                            if (config[i].hasOwnProperty('volumes')) {
+                                sound.config_volume = config[i].volumes[index];
+                            }
+                            else {
+                                sound.config_volume = 100; 
+                            }
+                        });
                         // set enabled state
                         if (config[i].hasOwnProperty('enabled')) {
                             if (config[i].enabled) {
@@ -1162,6 +1192,7 @@ function load_config() {
                     else {
                         console.log('No matching achievement found during config load for: ',config[i]);
                     }
+                    
                 }
                 render_all_achievement_cards();
                 notify('Loaded "'+window.user+'" soundpack!','is-success');
@@ -1221,6 +1252,8 @@ function get_achievement(id) {
     return null;
 }
 
+// glogal volume
+
 document.querySelector('#volume').addEventListener('change',function(e){
     volume = e.target.value;
     console.log('volume is now ',volume);
@@ -1248,6 +1281,8 @@ if (saved_volume) {
 else {
     saved_volume = 100;
 }
+
+
 
 // hamburger
 
@@ -1290,6 +1325,21 @@ $(window).resize(function(e) {
 });
 
 // live click events
+
+document.querySelector('body').addEventListener('change',function(e){
+    if (e.target.classList.contains('config_volume')) {
+        custom_volume = e.target.value;
+        console.log('volume is now ',custom_volume);
+        ach_id = e.target.dataset.id;
+        console.log('for ach ',ach_id);
+        sound_index = e.target.dataset.index;
+        console.log('for index ',sound_index);
+        ach = get_achievement(ach_id);
+        ach.volumes[sound_index] = e.target.value;
+        ach.sounds[sound_index].config_volume = e.target.value;
+        save_config();
+    } 
+});
 
 document.querySelector('body').addEventListener('click',function(e){
 
@@ -1426,7 +1476,11 @@ document.querySelector('body').addEventListener('click',function(e){
         ach = get_achievement(id);
         vel = document.querySelector('#volume'); 
         volume = vel.value;
-        ach.sounds[index].volume = volume/100;
+        config_volume = ach.sounds[index].config_volume;
+        console.log('glogal: ',volume);
+        console.log('config: ',config_volume);
+
+        ach.sounds[index].volume = (volume/100) * (config_volume/100);
         ach.sounds[index].play();
     }
     

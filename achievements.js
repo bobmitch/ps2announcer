@@ -25,15 +25,22 @@ function render_achievement_card(a) {
     card_footer_markup = '<div class="field is-grouped is-grouped-multiline">';
     
     for (let [index, val] of a.soundfiles.entries()) {
+        config_volume = a.volumes[index];
         if (val.startsWith('http')) {
             filename = val.split('/').pop();
             card_footer_entry = `
                 <div class="control">
                     <div class="tags has-addons">
                         <span title='${val}' class="tag">${filename}</span>
-                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound"><i class="fas fa-play-circle"></i></span>
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-primary show_volume">
+                            <i class="fas fa-volume-up"></i>
+                            <input type="range" class='config_volume' data-id='${a.id}' data-index='${index}' name="volume" value="${config_volume}" min="0" max="100">
+                        </a>
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound"><i class="fas fa-play-circle"></i></span></a>
                         <a data-id='${a.id}' data-index='${index}' class="remove-audio tag is-delete is-danger authorized_only"></a>
+                        
                     </div>
+                    
                 </div>
             `;
         }
@@ -43,6 +50,10 @@ function render_achievement_card(a) {
                 <div class="control">
                     <div class="tags has-addons">
                         <span title="Built In Audio" class="tag is-light">${val}</span>
+                        <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-primary show_volume">
+                            <i class="fas fa-volume-up"></i>
+                            <input type="range" class='config_volume' data-index='${index}' data-id='${a.id}' name="volume" value="${config_volume}" min="0" max="100">
+                        </a>
                         <a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info play_sound"><i class="fas fa-play-circle"></i></a>
                         <!--<a data-id='${a.id}' data-index='${index}' class="tag iss-light is-info disable_default">on</a>-->
                     </div>
@@ -111,6 +122,7 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.description = description;
     this.soundfiles = soundfiles;
     this.sounds = [];
+    this.volumes = [];
     this.priority=priority;
     this.interruptable = interruptable;
     this.enabled = true;
@@ -145,7 +157,7 @@ Achievement.prototype.trigger = function(notification_only) {
         else if (!has_external) {
             // default only
             random_sound_index = Math.floor(Math.random() * this.sounds.length);
-            this.sounds[random_sound_index].volume = volume/100;
+            this.sounds[random_sound_index].volume = (volume/100) * (this.sounds[random_sound_index].config_volume/100) ;
             this.sounds[random_sound_index].play();
         }
         else {
@@ -154,7 +166,7 @@ Achievement.prototype.trigger = function(notification_only) {
             while (this.sounds[random_sound_index].src.includes('bobmitch.com')) {
                 random_sound_index = Math.floor(Math.random() * this.sounds.length);
             }
-            this.sounds[random_sound_index].volume = volume/100;
+            this.sounds[random_sound_index].volume = (volume/100) * (this.sounds[random_sound_index].config_volume/100) ;
             this.sounds[random_sound_index].play();
         }
     }

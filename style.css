@@ -509,3 +509,20 @@ body.testobs {
 #unlock:hover {
     cursor:pointer;
 }
+
+
+input.config_volume {
+    position: absolute;
+    width: 100%;
+    padding:0.5rem 0;
+    top:-0.5rem;
+    display:none;
+    left:0;
+    z-index: 2;
+}
+input.config_volume:hover {
+    cursor:grab;
+}
+.show_volume:hover .config_volume {
+    display:block;
+}
