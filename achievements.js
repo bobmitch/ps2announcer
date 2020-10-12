@@ -79,7 +79,7 @@ function render_achievement_card(a) {
     }
     
     markup = `
-    <div class="card ${custom_weapon_trigger_class}" data-id="${a.id}">
+    <div class="${no_checked} card ${custom_weapon_trigger_class}" data-id="${a.id}">
         <header class="card-header">
             <p class="card-header-title">
             ${a.name} ${custom_weapon_trigger_label}

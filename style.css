@@ -282,36 +282,9 @@ span.code {
        
      }
   
-@media screen and (min-width: 1400px) {
-    #achievement_modal .modal-card {
-        width:80% !important;
-    }
-    div#achievments_list {
-        display: flex;
-        flex-direction: row;
-        flex-wrap:wrap;
-    }
-    div#achievments_list .card {
-        width:48%;
-        margin:1%;
-    }
-}
 
-@media screen and (min-width: 1900px) {
-    #achievement_modal .modal-card {
-        width:80% !important;
-        max-width:1600px !important;
-    }
-    div#achievments_list {
-        display: flex;
-        flex-direction: row;
-        flex-wrap:wrap;
-    }
-    div#achievments_list .card {
-        width:31%;
-        margin:1%;
-    }
-}
+
+
 
 .image_preview {
     width:3rem;
@@ -528,4 +501,46 @@ input.config_volume:hover {
 }
 .show_volume:hover .config_volume {
     display:block;
+}
+
+@media screen and (min-width: 1900px) {
+    #achievement_modal .modal-card {
+        width:80% !important;
+        max-width:1600px !important;
+    }
+    div#achievments_list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap:wrap;
+    }
+    div#achievments_list .card {
+        width:31%;
+        margin:1%;
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    #achievement_modal .modal-card {
+        width:80% !important;
+    }
+    div#achievments_list, .authorized  div#achievments_list {
+        display:flex;
+        flex-direction: row !important;
+        flex-wrap:wrap !important;
+    }
+    
+    div#achievments_list .card, .authorized div#achievments_list .card {
+        width:48% !important;
+        margin:1% !important;
+    }
+}
+
+@media screen and (max-width: 1400px) {
+    .authorized div#achievments_list {
+        display:block !important;
+    }
+}
+
+body:not(.authorized) .card.checked {
+    display:none !important;
 }
