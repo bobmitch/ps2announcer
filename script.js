@@ -1326,6 +1326,14 @@ $(window).resize(function(e) {
 
 // live click events
 
+document.querySelector('body').addEventListener('error',function(e){
+    console.log(e);
+    tag = e.target.tagName.toLowerCase();
+    if (tag=='audio') {
+        notify('Error - audio file not found: ' + e.target.src, 'danger');
+    }
+});
+
 document.querySelector('body').addEventListener('change',function(e){
     if (e.target.classList.contains('config_volume')) {
         custom_volume = e.target.value;
@@ -1338,11 +1346,12 @@ document.querySelector('body').addEventListener('change',function(e){
         ach.volumes[sound_index] = e.target.value;
         ach.sounds[sound_index].config_volume = e.target.value;
         // trigger replay with new volume scaled by global 
-        glogal_volume = localStorage.getItem('ps2_volume');
+        /* glogal_volume = localStorage.getItem('ps2_volume');
         ach.sounds[sound_index].volume = (glogal_volume/100) * (custom_volume/100);
         ach.sounds[sound_index].pause();
         ach.sounds[sound_index].currentTime = 0;
-        ach.sounds[sound_index].play();
+        ach.sounds[sound_index].play(); */
+        ach.play(sound_index);
         save_config();
     } 
 });
@@ -1480,14 +1489,20 @@ document.querySelector('body').addEventListener('click',function(e){
         index = clickedsound.dataset.index;
         //console.log('playing audio id',id,' index ',index);
         ach = get_achievement(id);
-        vel = document.querySelector('#volume'); 
+        /* vel = document.querySelector('#volume'); 
         volume = vel.value;
-        config_volume = ach.sounds[index].config_volume;
+        if (ach.volumes.length==ach.sounds.length) {
+            config_volume = ach.sounds[index].config_volume;
+        }
+        else {
+            config_volume = 100;
+        }
         console.log('glogal: ',volume);
         console.log('config: ',config_volume);
 
         ach.sounds[index].volume = (volume/100) * (config_volume/100);
-        ach.sounds[index].play();
+        ach.sounds[index].play(); */
+        ach.play(index);
     }
     
     if (e.target.classList.contains('add_audio')||e.target.closest('.add_audio')) {
