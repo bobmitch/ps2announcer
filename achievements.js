@@ -811,6 +811,22 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
     return false;
 },['aallrighty.mp3'],10);
 
+var spitty = new Achievement('spitty','Lazy!','Spitfire Turret Got The Kill!', function (event) {
+    if (event.is_kill) {
+        if (!event.is_tk) {
+            if (event.payload.attacker_weapon_id=="0") {
+                if (event.payload.attacker_vehicle_id!="0") {
+                    vh = get_local_vehicle (event.payload.attacker_vehicle_id);
+                    if (vh.type_name.includes("Spitfire")) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+},['spitfire.mp3','machine-survive.mp3'],3);
+
 // end of define achievments
 
 // replace sound filenames in achievements with actual audio elements
