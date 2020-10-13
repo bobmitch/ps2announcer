@@ -122,7 +122,10 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.description = description;
     this.soundfiles = soundfiles;
     this.sounds = [];
-    this.volumes = [100];
+    this.volumes = [];
+    this.soundfiles.forEach(s => {
+        this.volumes.push(100);
+    });
     this.priority=priority;
     this.interruptable = interruptable;
     this.enabled = true;
