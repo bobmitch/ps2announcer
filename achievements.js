@@ -122,7 +122,7 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.description = description;
     this.soundfiles = soundfiles;
     this.sounds = [];
-    this.volumes = [];
+    this.volumes = [100];
     this.priority=priority;
     this.interruptable = interruptable;
     this.enabled = true;
@@ -434,7 +434,7 @@ var monsterkill = new Achievement('monsterkill','Monster Kill!','7 kills in quic
         }
     }
     return false;
-},['count_laughing.mp3'],3);
+},['seven.mp3'],3);
 var ludicrous = new Achievement('ludicrous','Ludicrous Kill!','8 kills in quick succession!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (multikills==7) {
@@ -634,7 +634,17 @@ var reviver = new Achievement('revive','Revive!','You revived someone!', functio
         }
     }
     return false;
-},['xp.mp3','Bwup!.ogg'],['To a Zone... one of Danger.ogg'],20);
+},['xp.mp3','Bwup!.ogg'],20);
+
+var nobeacon = new Achievement('nobeacon','Light The Beacons!','You killed the fight!', function (event) {
+    if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
+        // 7 = revive, 57 = squad revive
+        if (event.payload.experience_id=='270') {
+            return true;
+        }
+    }
+    return false;
+},["wheres-the-damn-beacon-oh-i-see-it.mp3"],20);
 
 var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person 2 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
