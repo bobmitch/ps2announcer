@@ -766,6 +766,10 @@ window.onload = function() {
         var char_id = jQuery(this).data('character_id');
         var name = jQuery(this).text();
         var player = {'char_id':char_id, 'name':name};
+        if (is_player(char_id)) {
+            alert('Player already being tracked!');
+            return false;
+        }
         add_player_to_list(player);
         subscribe_to_character(char_id);
         get_player_online_state(char_id);
