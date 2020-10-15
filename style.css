@@ -544,3 +544,8 @@ input.config_volume:hover {
 body:not(.authorized) .card.checked {
     display:none !important;
 }
+
+@media screen and (min-width: 769px) {
+.modal-content, .modal-card {
+    width: 720px !important;
+}
