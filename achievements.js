@@ -185,7 +185,8 @@ Achievement.prototype.trigger = function(notification_only) {
             /* random_sound_index = Math.floor(Math.random() * this.sounds.length);
             this.sounds[random_sound_index].volume = (volume/100) * (this.sounds[random_sound_index].config_volume/100) ;
             this.sounds[random_sound_index].play(); */
-            this.play();
+            random_sound_index = Math.floor(Math.random() * this.sounds.length);
+            this.play(random_sound_index);
         }
         else {
             // pick random until external found
