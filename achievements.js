@@ -843,13 +843,17 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
 var spitty = new Achievement('spitty','Lazy!','Spitfire Turret Got The Kill!', function (event) {
     if (event.is_kill) {
         if (!event.is_tk) {
-            if (event.payload.attacker_weapon_id=="0") {
+            /* if (event.payload.attacker_weapon_id=="0") {
                 if (event.payload.attacker_vehicle_id!="0") {
                     vh = get_local_vehicle (event.payload.attacker_vehicle_id);
                     if (vh.type_name.includes("Spitfire")) {
                         return true;
                     }
                 }
+            } */
+            // 802514, 802517, 802518
+            if (event.payload.attacker_weapon_id=='802514'||event.payload.attacker_weapon_id=='802517'||event.payload.attacker_weapon_id=='802518') {
+                return true;
             }
         }
     }

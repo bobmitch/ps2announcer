@@ -588,6 +588,7 @@ function process_event(event) {
             window.multikills = 0;
             window.killstreak=0;
             window.spamstreak=0;
+            window.assist_streak=0; // end assist streak
             multikills=0;
             window.deaths++;
             update_kd();
