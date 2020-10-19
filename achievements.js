@@ -278,24 +278,21 @@ var antiair = new Achievement('antiair','Clear Skies!','Killed an aircraft!', fu
     } */
     if (is_player(event.payload.attacker_character_id)) {
         if (event.payload.event_name=='VehicleDestroy') {
-            if (is_player(event.payload.attacker_character_id)) {
-                // you killed it
-                if (is_player(event.payload.character_id)) {
-                    // don't trigger if it's your own aircraft - even if this is technically correct
-                    return false;
-                }
-                if (event.is_tk) {
-                    // killed friendly, not good
-                    return false;
-                }
-                var destroyed_vehicle = get_local_vehicle(event.payload.vehicle_id);
-                console.log(event);
-                console.log('checking if you destroyed a light aircraft:');
-                console.log(destroyed_vehicle); 
-                if (destroyed_vehicle) {
-                    if (destroyed_vehicle.type_name=="Light Aircraft") {
-                        return true;
-                    }
+            if (is_player(event.payload.character_id)) {
+                // don't trigger if it's your own aircraft - even if this is technically correct
+                return false;
+            }
+            if (event.is_tk) {
+                // killed friendly, not good
+                return false;
+            }
+            var destroyed_vehicle = get_local_vehicle(event.payload.vehicle_id);
+            console.log(event);
+            console.log('checking if you destroyed a light aircraft:');
+            console.log(destroyed_vehicle); 
+            if (destroyed_vehicle) {
+                if (destroyed_vehicle.type_name=="Light Aircraft") {
+                    return true;
                 }
             }
         }
