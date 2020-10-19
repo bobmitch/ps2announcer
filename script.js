@@ -68,6 +68,8 @@ var spot_kill_count=0;
 var motion_sensor_kills=0;
 var characters={};
 var synth = window.speechSynthesis;
+var shotgun_killstreak = 0; // reset by death and non-shotgun kill
+var shotgun_killstreak_timestamp = 0;
 
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
 
@@ -597,6 +599,7 @@ function process_event(event) {
 
         if (is_player(event.payload.character_id)) {
             // you died
+            window.shotgun_killstreak=0;
             window.killstreak_was = window.killstreak;
             window.multikills_was = window.multikills;
             window.multikills = 0;
@@ -631,6 +634,20 @@ function process_event(event) {
         else {
             if (!is_tk(event)) {
                 // genuine kill
+                weapon = get_local_weapon (event.payload.attacker_weapon_id);
+                if (weapon) {
+                    type = get_weapon_type (weapon.item_category_id);
+                    if (type=="Shotgun") {
+                        time_since_last_shotgun_kill = parseInt(event.payload.timestamp) - parseInt(window.shotgun_killstreak_timestamp);
+                        if (time_since_last_shotgun_kill<5) {
+                            window.shotgun_killstreak++;
+                        }
+                    }
+                    else {
+                        window.shotgun_killstreak=0;
+                    }
+                }
+                // killstreak
                 window.killstreak++;
                 if (event.payload.is_headshot=="0") {
                     window.bodyshotkillstreak++;

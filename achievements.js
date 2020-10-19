@@ -584,6 +584,27 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
 
+var shotgun_shogun = new Achievement('shotgun_shogun','Shotgun Shogun!','4 shotgun kills in a row, within 5 seconds of each other!', function (event) {
+    if (event.is_tk) {
+        return false;
+    }
+    if (event.is_kill && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=="0") {
+            return false;
+        }
+        weapon = weapons[event.payload.attacker_weapon_id];
+        if (weapon) {
+            type = get_weapon_type (weapon.item_category_id);
+            if (type=="Shotgun") {
+                if (shotgun_killstreak%4==0 && shotgun_killstreak>0) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+},['shotgun.mp3']);
+
 var rocketman = new Achievement('rocketman','Rocket Man!','You killed someone with a rocket!', function (event) {
     
     if (event.is_kill) {
