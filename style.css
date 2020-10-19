@@ -31,6 +31,10 @@ body {
     opacity: 0.5;
 }
 
+p.info {
+    font-size:60% !important;
+}
+
 .faction1 .charname {
     background:purple;
 }

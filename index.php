@@ -367,6 +367,12 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<input type="range" id="volume" name="volume" value="100" min="0" max="100"/> 
 					</div>
 				</div>
+				<div class='control flex'>
+					<label class='checkbox' for='countkills'>Say Killcount
+						<input type='checkbox' id='countkills'/>
+					</label>
+				</div>
+				<p class='info'>TTS says killcount in absence of any other audio triggers</p>
 				<hr>
 				<div id='achievments_list'></div>
 				<p class='vanillaonly'>

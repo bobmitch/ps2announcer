@@ -18,6 +18,10 @@ else {
     document.getElementsByTagName('body')[0].classList.add('testobs');
 }
 
+var countkills = false;
+countkills = JSON.parse(localStorage.getItem('ps2_countkills'));
+document.getElementById('countkills').checked = countkills;
+
 var stored_playerlist = JSON.parse(localStorage.getItem('ps2_players'));
 if (stored_playerlist) {
     stored_playerlist.forEach(stored_player => {
@@ -666,7 +670,7 @@ function process_event(event) {
                 //char.primed_for_revenge = false; // has to be cleared by achievement itself
             }
             else {
-                say ('Teamkill');
+                //say ('Teamkill');
             }
         }
     }
@@ -681,19 +685,18 @@ function process_event(event) {
         }
     });
 
-    // aeflic request
+    // kill tts
     say_kills = false;
-    if (window.cur_achievements.length==0 && is_kill(event) && killstreak>1) {
+    if (window.countkills && window.cur_achievements.length==0 && is_kill(event) && killstreak>1) {
+        // no triggers
         say_kills = true;
     }
-    if (window.cur_achievements.length==1 && is_kill(event) && window.cur_achievements[0].id=='headshot' && killstreak>1) {
+    if (window.countkills && window.cur_achievements.length==1 && is_kill(event) && window.cur_achievements[0].id=='headshot' && killstreak>1) {
+        // just one trigger and its a headshot
         say_kills = true;
     }
     if (say_kills) {
-        // got a kill and no achievements triggered, or just headshot, and you are aeflic, say the killcount
-        if ( event.payload.attacker_character_id=="5428011263382229073") {
-            say(killstreak.toString());
-        }
+        say(killstreak.toString());
     }
     // sort by priority
     // and trigger top enabled audio, let the rest trigger notifications
@@ -1266,6 +1269,11 @@ function get_achievement(id) {
     }
     return null;
 }
+
+document.getElementById('countkills').addEventListener('change',function(e) {
+    window.countkills = e.target.checked;
+    localStorage.setItem('ps2_countkills',window.countkills);
+});
 
 // glogal volume
 
