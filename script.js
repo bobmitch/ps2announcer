@@ -120,6 +120,16 @@ function update_stats() {
         if (value||value===0) {
             auto.innerText = value.toString();
         }
+        if (variable=='killstreak') {
+            //console.log('killstreak update');
+            var ksw = document.getElementById('killstreak_wrap');
+            if (value>4) {
+                ksw.classList.add('overfive');
+            }
+            else {
+                ksw.classList.remove('overfive');
+            }
+        }
     });
 }
 
