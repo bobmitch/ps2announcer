@@ -209,29 +209,6 @@ Achievement.prototype.trigger = function(notification_only) {
                 notify('<img src="' + this.custom_image + '">','custom_image_notification');
                 return false; // make true for testing with noimage image
             }
-            anim_id = 'animation' + '_' + this.id ;
-            anim = document.getElementById(anim_id);
-            if (!anim) {
-                animation_container = document.getElementById('animations');
-                anim = document.createElement('div');
-                anim.classList.add('animation');
-                anim.id = anim_id;
-                img = document.createElement('img');
-                img.classList.add('animation_image');
-                img.src = this.custom_image;
-                anim.appendChild(img);
-                animation_container.appendChild(anim);
-            }
-            // make sure src is up to date
-            if (img.src != this.custom_image) {
-                img.src = this.custom_image;
-            }
-            // remove class, clone and replace to trigger
-            // see: https://css-tricks.com/restart-css-animation/
-            anim.classList.remove('showanimation');
-            var newone = anim.cloneNode(true);
-            anim.parentNode.replaceChild(newone, anim);
-            newone.classList.add('showanimation');
         }
     }
 };

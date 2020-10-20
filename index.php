@@ -194,7 +194,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<nav id='nav' class="navbar" role="navigation" aria-label="main navigation">
 				<div class="navbar-brand">
 				  <a class="navbar-item" href="https://bobmitch.com/ps2">
-					<h3 class='title is-3'>Planetside Announcer</h3>
+					<h3 class='title is-3'>Planetside Announcer TEST</h3>
 				  </a>
 
 				  <div class='navbar-item' id="playerstatus">
