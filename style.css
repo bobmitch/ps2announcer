@@ -68,7 +68,7 @@ p.info {
 }
 
 tr.death {
-    opacity: 0.5;
+    opacity: 0.7;
     background: rgba(255,0,0,0.1);
 }
 tr.kill {
@@ -360,6 +360,10 @@ body.testobs {
     border:none;
     max-height:3em;
 }
+.obs #events td {
+    display: flex;
+    align-items: center;
+}
 .obs #events {
     max-width:60%;
 }
@@ -369,6 +373,9 @@ body.testobs {
 .obs table {
     color:white;
     background-color:transparent !important;
+}
+.obs .timestamp {
+    display:none !important;
 }
 .obs table tr {
     display: flex;
@@ -380,8 +387,16 @@ body.testobs {
 .obs table td {
     border:none !important;
 }
-.obs table td:first-child {
-    display: none;
+.obs table tbody tr td:first-child {
+    display: none !important;
+}
+span.char.faction {
+    padding-right: 1em;
+}
+.obs .br {
+    background: rgba(0,0,0,0.5);
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.2rem;
 }
 
 #playerstatus .fas, #soundpack .fas {
@@ -484,6 +499,41 @@ body.testobs {
 .notification.achievement_notification {
     background-color:rgba(0,0,0,0.6) !important;
     color:white !important;
+}
+
+.obs .weapon_name {
+    padding:0.3em 0.6em;
+    background:rgba(0,0,0,0.7);
+    border-radius:0.2rem;
+}
+
+span.event_type {
+    text-indent: -9999px;
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 1rem;
+}
+.profile_name, .weapon_type {
+    display:none;
+}
+.event_type.you_revived {
+    background-image: url(icons/icons8-medical-bag-64.png);
+}
+.headshot .event_type.you_killed {
+    background-image: url(icons/icons8-accuracy-64.png);
+}
+.event_type.you_killed {
+    background-image: url(icons/icons8-counter-strike-64.png);
+}
+.event_type.killed_by {
+    background-image:url(icons/icons8-skull-64.png);
+}
+.event_type.vehicle_destroy {
+    background-image: url(icons/icons8-middle-finger-64.png);
 }
 
 #unlock:hover {

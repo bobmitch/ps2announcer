@@ -30,7 +30,7 @@ function display_weapon_and_type(weapon_id) {
         weapon.name.en = "[unknown]";
         type = '[unknown]';
     }
-    return ' using <span>'+weapon.name.en+'</span> <span class="weapon_type"> ('+type+')</span> ';
+    return '<span class="weapon_name">'+weapon.name.en+'</span> <span class="weapon_type"> ('+type+')</span> ';
 }
 
 function get_weapon (weapon_id) {

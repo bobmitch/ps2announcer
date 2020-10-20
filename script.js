@@ -211,8 +211,8 @@ function print_character(character_id, event) {
             // can get here if vehicledestroy that's your vehicle, no loadout for a vehicle
             //console.log('Unknown loadout for event char loadout: ',event);
         }
-        char+="<span class='"+profile_name+"'>" + profile_name + "</span>";
-        char+='<span class="char faction'+character.faction_id+'"> ';
+        char+="<span class='profile_name "+profile_name+"'>" + profile_name + "</span>";
+        char+='<span class="char faction faction'+character.faction_id+'"> ';
             char+='<span class="charname">';
             if (character.hasOwnProperty('outfit')) {
                 char+='<span class="outfit">'+characters[character_id].character_list[0].outfit.alias+'</span>&nbsp;';
@@ -228,7 +228,7 @@ function print_character(character_id, event) {
             else {
                 kdr = "?";
             }
-            char+='<span class="br kdr">KDR: ' + kdr + '</span>'
+            char+='<span class="br kdr">KD: ' + kdr + '</span>'
         char+='</span>';
     }
     return char;
@@ -278,7 +278,8 @@ function display_event(data) {
         if (data.payload.event_name=="GainExperience") {
             // do messages for none-displayed achievements
             if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.character_id)) {
-                msg+='You revived ';
+                msg+='<span class="event_type you_revived">You revived </span>';
+                console.log(msg);
                 cls+=' info ';
                 msg+=print_character(data.payload.other_id, data);
                 revive_count_streak++;
@@ -291,7 +292,7 @@ function display_event(data) {
 
             //console.log ('Comparing ' + data.payload.attacker_character_id + ' to ' + window.char);
             if (is_player(data.payload.attacker_character_id)) {
-                msg+='You killed ';
+                msg+='<span class="event_type you_killed">You killed </span>';
                 if (is_player(data.payload.character_id)) {
                 //if (data.payload.character_id==window.char) {
                     // suicide
@@ -302,7 +303,7 @@ function display_event(data) {
                     // player kill
                     //say_or_play('ha','per_kill');
                     if (is_tk(data)) {
-                        msg = "You teamkilled "
+                        msg = "<span class='event_type you_teamkilled'>You teamkilled </span>"
                         cls+=' tk ';
                     }
                     cls+=' kill ';
@@ -318,10 +319,10 @@ function display_event(data) {
                     else if (data.payload.attacker_vehicle_id!='0') {
                         // maybe got squished
                         vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
-                        msg+= ' with your ' + vehicle_name + '</span>';
+                        msg+= ' with your ' + vehicle_name + '';
                     }
                     else {
-                        msg+= ' using just your mind!</span> ';
+                        msg+= ' using just your mind! ';
                     }
                 }
             }
@@ -330,11 +331,11 @@ function display_event(data) {
                 cls+=' death ';
                 
                 if (is_tk(data)) {
-                    msg += "You were teamkilled by "
+                    msg += "<span class='event_type tk killed_by'>You were teamkilled by </span>"
                     cls+=' tk ';
                 }
                 else {
-                    msg += 'You were killed by ';
+                    msg += '<span class="event_type killed_by">You were killed by </span>';
                 }
                 msg+=print_character(data.payload.attacker_character_id, data);
                 // get weapon
@@ -359,45 +360,45 @@ function display_event(data) {
                     // teamkill 
                     cls+=' tk ';
                     if (vehicle_name) {
-                        msg+='Your <span>'+vehicle_name+'</span> was put to sleep by ';
+                        msg+='Your '+vehicle_name+' was put to sleep by ';
                     }
                     else {
-                        msg+='Your <span>[unknown]</span> was put to sleep by ';
+                        msg+='Your [unknown] was put to sleep by ';
                     }
                 }
                 else {
                     // legit enemy killed your vehicle
                     if (vehicle_name) {
-                        msg+='Your <span>'+vehicle_name+'</span> was destroyed by ';
+                        msg+='Your '+vehicle_name+' was destroyed by ';
                     }
                     else {
-                        msg+='Your <span>[unknown]</span> was destroyed by ';
+                        msg+='Your [unknown] was destroyed by ';
                     }
                 }
                 msg+=print_character(data.payload.attacker_character_id, data);
             }
             else {
                 // you killed a vehicle
-                msg+='You destroyed ';
+                msg+='<span class="event_type vehicle_destroy"> You destroyed </span> ';
                 vehicle_name = get_vehicle_name(data.payload.vehicle_id);
                 if (is_same_faction(data.payload.character_id, data.payload.attacker_character_id)) {
                     // teamkill 
                     cls+=' tk ';
                     if (data.payload.character_id=="0") {
-                        msg += "(for humane reasons) a friendly " +vehicle_name+'</span> ';
+                        msg += "(for humane reasons) a friendly " +vehicle_name+' ';
                     }
                     else {
                         msg+=print_character(data.payload.character_id, data);
-                        msg+="'s<span> friendly "+vehicle_name+'</span>. Woopsy!';
+                        msg+="'s friendly "+vehicle_name+'. Woopsy!';
                     }
                 }
                 else {
                     if (data.payload.character_id=="0") {
-                        msg += " a " +vehicle_name+'</span> ';
+                        msg += " a " +vehicle_name+' ';
                     }
                     else {
                         msg+=print_character(data.payload.character_id, data);
-                        msg+="'s<span> "+vehicle_name+'</span> ';
+                        msg+="'s "+vehicle_name+' ';
                     }
                 }
                 
@@ -422,6 +423,7 @@ function display_event(data) {
             row.classList.add('hideme');
             row.className += cls;
             var time = row.insertCell();
+            time.classList.add('timestamp');
             var event = row.insertCell();
             var special = row.insertCell();
             time.innerHTML = nice_date(data.payload.timestamp);
