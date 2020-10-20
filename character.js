@@ -52,6 +52,10 @@ function is_same_faction (char_id_1, char_id_2) {
 }
 
 function get_local_character(character_id) {
+    if (!characters.hasOwnProperty(character_id)) {
+        console.log ('Character ', character_id, ' not available locally');
+        return null;
+    }
     if (!characters[character_id].hasOwnProperty('character_list')) {
         console.log ('Character ', character_id, ' has no character list array');
         return null;

@@ -308,7 +308,6 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					<tr>
 						<th>Time</th>
 						<th>Event</th>
-						<th>Special</th>
 					</tr>
 				</thead>
 				<tbody id='events_body'>

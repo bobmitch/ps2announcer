@@ -126,6 +126,7 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.soundfiles.forEach(s => {
         this.volumes.push(100);
     });
+    this.needs_player_info=false;
     this.priority=priority;
     this.interruptable = interruptable;
     this.enabled = true;
@@ -268,7 +269,7 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
         }
     }
     return false;
-},['Just Pout.ogg'],15);
+},['Just Pout.ogg'],15); revenge.needs_player_info=true;
 
 // https://dl.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3
 
@@ -344,7 +345,7 @@ var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who le
         }
     }
     return false;
-},['solong.mp3'],5);
+},['solong.mp3'],5); ragequit.needs_player_info=true;
 
 var decikills = new Achievement('pentakill','PentaKill!','5 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
@@ -701,7 +702,7 @@ var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the
        }
     }
     return false;
-},['Whats Up_ Whattya been doin_.ogg'],9);
+},['Whats Up_ Whattya been doin_.ogg'],9); repeat.needs_player_info=true;
 
 var nemesis = new Achievement('nemesis','Nemesis!','You were killed by the same person more than 3 times!', function (event) {
     if (event.is_death && !event.is_tk) {
@@ -711,7 +712,7 @@ var nemesis = new Achievement('nemesis','Nemesis!','You were killed by the same 
        }
     }
     return false;
-},['crowd-scream-no_M1xhZ_Nd_NWM.mp3'],15);
+},['crowd-scream-no_M1xhZ_Nd_NWM.mp3'],15); nemesis.needs_player_info=true;
 
 var spraypray = new Achievement('spraypray','Spray & Pray!','You killed 5 people in a row with body shots!', function (event) {
     if (event.is_kill && !event.is_tk) {
@@ -768,7 +769,7 @@ var hatebombs = new Achievement('hatebombs','Bomb Disposal!','You killed someone
     return false;
 },['mine_long.mp3']);
 
-var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', function (event) {
+var tk_sounda = new Achievement('teamkill','Teamkill!','You killed a friendly!', function (event) {
     if (event.payload.event_name=="Death") {
         if (event.is_kill && event.is_tk) {
             return true;
@@ -777,7 +778,7 @@ var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', 
     return false;
 },['My Bad! Thats on me.ogg','count_sorry.mp3','no_friends_count.mp3']);
 
-var tk_sound = new Achievement('badteamkill','Blue on blue!','You were killed by a friendly!', function (event) {
+var tk_soundb = new Achievement('badteamkill','Blue on blue!','You were killed by a friendly!', function (event) {
     if (event.payload.event_name=="Death") {
         if (!event.is_kill && event.is_tk) {
             return true;
@@ -799,7 +800,7 @@ var welcome = new Achievement('welcome','Welcome To Planetside!','You killed som
         }
     }
     return false;
-},['Prospective Investor.ogg']);
+},['Prospective Investor.ogg']); welcome.needs_player_info=true;
 
 
 var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with a good KDR!', function (event) {
@@ -818,7 +819,7 @@ var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with
         }
     }
     return false;
-},['Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],5);
+},['Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],5); shitter.needs_player_info=true;
 
 var mutual = new Achievement('mutual','Mutually Assured Destruction!','You killed another player at the same time as he killed you!', function (event) {
     if (event.payload.event_name=="Death") {
@@ -856,7 +857,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
         }
     }
     return false;
-},['aallrighty.mp3'],10);
+},['aallrighty.mp3'],10); 
 
 var spitty = new Achievement('spitty','Lazy!','Spitfire Turret Got The Kill!', function (event) {
     if (event.is_kill) {

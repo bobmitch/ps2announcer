@@ -90,7 +90,7 @@ function insert_row (data, msg) {
         row.className += cls;
         var time = row.insertCell();
         var event = row.insertCell();
-        var special = row.insertCell();
+        //var special = row.insertCell();
         if (data) {
             time.innerHTML = nice_date(data.payload.timestamp);
         }
@@ -106,7 +106,7 @@ function insert_row (data, msg) {
             `;
         });
 
-        special.innerHTML = pills;
+        //special.innerHTML = pills;
     }
 }
 
@@ -164,7 +164,7 @@ function print_character(character_id, event) {
     char = '';
     loadout_id = null;
     if (!character) {
-        char = '[UNKNOWN]';
+        char = '<span class="replaceme_'+character_id+'" data-char_id="'+character_id+'">[UNKNOWN]</span>';
         // todo: check if looks like valid character_id
         // and run get_character on it for future events to work
     }
@@ -234,6 +234,16 @@ function print_character(character_id, event) {
     return char;
 }
 
+function update_character_display(character_id, event) {
+    // in = string char_id
+    markup = print_character(character_id, event);
+    temp_chars = document.querySelectorAll('.replaceme_'+character_id);
+    temp_chars.forEach(char => {
+        char.innerHTML = markup;
+        char.className = ""; // remove replace_ class (and others!)
+    });
+}
+
 
 
 function display_event(data) {
@@ -252,7 +262,7 @@ function display_event(data) {
         data.payload.attacker_character_id="0";
         data.payload.attacker_weapon_id="0";
     }
-    var other_id=0;
+    var other_id="0";
     if (data.payload.hasOwnProperty('other_id')) {
         if (data.payload.other_id.length > 17) {
             // could be character - if shorter, probably other internal id
@@ -263,146 +273,69 @@ function display_event(data) {
         // all promised data available, show event
         //console.log ('All promises handled, doing logic now');
 
-        process_event(data);
+        // process_event(data);
+        process_event_have_playerinfo(data);
+
         update_stats();
-        
-        // can also access triggered achievements by this event here: window.cur_achievements - this is cleared next event
 
-        var events_table = document.getElementById('events_body');          
-        //var events_table = document.getElementById('events');
-        var cls='';
-        var msg='';
-        var pills='';
-
-        
-        if (data.payload.event_name=="GainExperience") {
-            // do messages for none-displayed achievements
-            if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.character_id)) {
-                msg+='You revived ';
-                cls+=' info ';
-                msg+=print_character(data.payload.other_id, data);
-                revive_count_streak++;
-            }
-            else if (data.payload.experience_id=='2' && is_player(data.payload.character_id)) {
-                assist_streak++;
-            }
-        }		
-        if (data.payload.event_name=='Death') {
-
-            //console.log ('Comparing ' + data.payload.attacker_character_id + ' to ' + window.char);
-            if (is_player(data.payload.attacker_character_id)) {
-                msg+='You killed ';
-                if (is_player(data.payload.character_id)) {
-                //if (data.payload.character_id==window.char) {
-                    // suicide
-                    cls+=' death ';
-                    msg+=' yourself ';
-                }
-                else {
-                    // player kill
-                    //say_or_play('ha','per_kill');
-                    if (is_tk(data)) {
-                        msg = "You teamkilled "
-                        cls+=' tk ';
-                    }
-                    cls+=' kill ';
-                    msg+= print_character(data.payload.character_id, data);
-                    if (data.payload.is_headshot=="1") {
-                        cls+=' headshot ';
-                        //pills+='<span class="tag is-dark">headshot</span> '; // should be populated by achievement tag
-                    }
-                    // get weapon
-                    if (data.payload.attacker_weapon_id!="0") {
-                        msg += display_weapon_and_type(data.payload.attacker_weapon_id);
-                    }
-                    else if (data.payload.attacker_vehicle_id!='0') {
-                        // maybe got squished
-                        vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
-                        msg+= ' with your ' + vehicle_name + '</span>';
-                    }
-                    else {
-                        msg+= ' using just your mind!</span> ';
-                    }
-                }
-            }
-            else {
-            
-                cls+=' death ';
-                
-                if (is_tk(data)) {
-                    msg += "You were teamkilled by "
-                    cls+=' tk ';
-                }
-                else {
-                    msg += 'You were killed by ';
-                }
-                msg+=print_character(data.payload.attacker_character_id, data);
-                // get weapon
-                if (data.payload.attacker_weapon_id!='0') {
-                    msg += display_weapon_and_type(data.payload.attacker_weapon_id);
-                }
-                else if (data.payload.attacker_vehicle_id!='0') {
-                    // maybe got squished
-                    vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
-                    msg+= ' in their ' + vehicle_name + '</span>';
-                }
-                else {
-                    msg+=' with nothing at all!';
-                }
-            }
+        if (data.payload.character_id!="0") {
+            update_character_display(data.payload.character_id, data);
         }
-        if (data.payload.event_name=='VehicleDestroy') {
+        if (data.payload.attacker_character_id!="0") {
+            update_character_display(data.payload.attacker_character_id, data);
+        }
+        if (other_id!="0") {
+            update_character_display(other_id, data);
+        }
+    });
+
+    process_event(data); // do everything possible without having exact player information
+    
+        
+    // can also access triggered achievements by this event here: window.cur_achievements - this is cleared next event
+
+    var events_table = document.getElementById('events_body');          
+    //var events_table = document.getElementById('events');
+    var cls='';
+    var msg='';
+
+    
+    if (data.payload.event_name=="GainExperience") {
+        // do messages for none-displayed achievements
+        if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.character_id)) {
+            msg+='You revived ';
+            cls+=' info ';
+            msg+=print_character(data.payload.other_id, data);
+            revive_count_streak++;
+        }
+        else if (data.payload.experience_id=='2' && is_player(data.payload.character_id)) {
+            assist_streak++;
+        }
+    }		
+    if (data.payload.event_name=='Death') {
+
+        //console.log ('Comparing ' + data.payload.attacker_character_id + ' to ' + window.char);
+        if (is_player(data.payload.attacker_character_id)) {
+            msg+='You killed ';
             if (is_player(data.payload.character_id)) {
             //if (data.payload.character_id==window.char) {
-                vehicle_name = get_vehicle_name(data.payload.vehicle_id);
-                if (is_same_faction(data.payload.character_id, data.payload.attacker_character_id)) {
-                    // teamkill 
-                    cls+=' tk ';
-                    if (vehicle_name) {
-                        msg+='Your <span>'+vehicle_name+'</span> was put to sleep by ';
-                    }
-                    else {
-                        msg+='Your <span>[unknown]</span> was put to sleep by ';
-                    }
-                }
-                else {
-                    // legit enemy killed your vehicle
-                    if (vehicle_name) {
-                        msg+='Your <span>'+vehicle_name+'</span> was destroyed by ';
-                    }
-                    else {
-                        msg+='Your <span>[unknown]</span> was destroyed by ';
-                    }
-                }
-                msg+=print_character(data.payload.attacker_character_id, data);
+                // suicide
+                cls+=' death ';
+                msg+=' yourself ';
             }
             else {
-                // you killed a vehicle
-                msg+='You destroyed ';
-                vehicle_name = get_vehicle_name(data.payload.vehicle_id);
-                if (is_same_faction(data.payload.character_id, data.payload.attacker_character_id)) {
-                    // teamkill 
+                // player kill
+                //say_or_play('ha','per_kill');
+                if (is_tk(data)) {
+                    msg = "You teamkilled "
                     cls+=' tk ';
-                    if (data.payload.character_id=="0") {
-                        msg += "(for humane reasons) a friendly " +vehicle_name+'</span> ';
-                    }
-                    else {
-                        msg+=print_character(data.payload.character_id, data);
-                        msg+="'s<span> friendly "+vehicle_name+'</span>. Woopsy!';
-                    }
                 }
-                else {
-                    if (data.payload.character_id=="0") {
-                        msg += " a " +vehicle_name+'</span> ';
-                    }
-                    else {
-                        msg+=print_character(data.payload.character_id, data);
-                        msg+="'s<span> "+vehicle_name+'</span> ';
-                    }
+                cls+=' kill ';
+                msg+= print_character(data.payload.character_id, data);
+                if (data.payload.is_headshot=="1") {
+                    cls+=' headshot ';
                 }
-                
-                
-                
+                // get weapon
                 if (data.payload.attacker_weapon_id!="0") {
                     msg += display_weapon_and_type(data.payload.attacker_weapon_id);
                 }
@@ -412,32 +345,123 @@ function display_event(data) {
                     msg+= ' with your ' + vehicle_name + '</span>';
                 }
                 else {
-                    msg+= ' using just your mind.';
+                    msg+= ' using just your mind!</span> ';
+                }
+            }
+        }
+        else {
+        
+            cls+=' death ';
+            
+            if (is_tk(data)) {
+                msg += "You were teamkilled by "
+                cls+=' tk ';
+            }
+            else {
+                msg += 'You were killed by ';
+            }
+            msg+=print_character(data.payload.attacker_character_id, data);
+            // get weapon
+            if (data.payload.attacker_weapon_id!='0') {
+                msg += display_weapon_and_type(data.payload.attacker_weapon_id);
+            }
+            else if (data.payload.attacker_vehicle_id!='0') {
+                // maybe got squished
+                vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
+                msg+= ' in their ' + vehicle_name + '</span>';
+            }
+            else {
+                msg+=' with nothing at all!';
+            }
+        }
+    }
+    if (data.payload.event_name=='VehicleDestroy') {
+        if (is_player(data.payload.character_id)) {
+        //if (data.payload.character_id==window.char) {
+            vehicle_name = get_vehicle_name(data.payload.vehicle_id);
+            if (is_same_faction(data.payload.character_id, data.payload.attacker_character_id)) {
+                // teamkill 
+                cls+=' tk ';
+                if (vehicle_name) {
+                    msg+='Your <span>'+vehicle_name+'</span> was put to sleep by ';
+                }
+                else {
+                    msg+='Your <span>[unknown]</span> was put to sleep by ';
+                }
+            }
+            else {
+                // legit enemy killed your vehicle
+                if (vehicle_name) {
+                    msg+='Your <span>'+vehicle_name+'</span> was destroyed by ';
+                }
+                else {
+                    msg+='Your <span>[unknown]</span> was destroyed by ';
+                }
+            }
+            msg+=print_character(data.payload.attacker_character_id, data);
+        }
+        else {
+            // you killed a vehicle
+            msg+='You destroyed ';
+            vehicle_name = get_vehicle_name(data.payload.vehicle_id);
+            if (is_same_faction(data.payload.character_id, data.payload.attacker_character_id)) {
+                // teamkill 
+                cls+=' tk ';
+                if (data.payload.character_id=="0") {
+                    msg += "(for humane reasons) a friendly " +vehicle_name+'</span> ';
+                }
+                else {
+                    msg+=print_character(data.payload.character_id, data);
+                    msg+="'s<span> friendly "+vehicle_name+'</span>. Woopsy!';
+                }
+            }
+            else {
+                if (data.payload.character_id=="0") {
+                    msg += " a " +vehicle_name+'</span> ';
+                }
+                else {
+                    msg+=print_character(data.payload.character_id, data);
+                    msg+="'s<span> "+vehicle_name+'</span> ';
                 }
             }
             
+            
+            
+            if (data.payload.attacker_weapon_id!="0") {
+                msg += display_weapon_and_type(data.payload.attacker_weapon_id);
+            }
+            else if (data.payload.attacker_vehicle_id!='0') {
+                // maybe got squished
+                vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
+                msg+= ' with your ' + vehicle_name + '</span>';
+            }
+            else {
+                msg+= ' using just your mind.';
+            }
         }
-        if (msg) {
-            var row=events_table.insertRow();
-            row.classList.add('hideme');
-            row.className += cls;
-            var time = row.insertCell();
-            var event = row.insertCell();
-            var special = row.insertCell();
-            time.innerHTML = nice_date(data.payload.timestamp);
-            event.innerHTML = msg;
+        
+    }
+    if (msg) {
+        var row=events_table.insertRow();
+        row.classList.add('hideme');
+        row.className += cls;
+        var time = row.insertCell();
+        var event = row.insertCell();
+       // var special = row.insertCell();
+        time.innerHTML = nice_date(data.payload.timestamp);
+        event.innerHTML = msg;
 
-            cur_achievements.forEach(achievement_on_stack => {
-                //console.log('putting pill for achievement ', achievement_on_stack);
-                pills += `
-                <span class='tag is-dark'>${achievement_on_stack.name}</span>
-                `;
-            });
+        cur_achievements.forEach(achievement_on_stack => {
+            //console.log('putting pill for achievement ', achievement_on_stack);
+            pills += `
+            <span class='tag is-dark'>${achievement_on_stack.name}</span>
+            `;
+        });
 
-            special.innerHTML = pills;
-        }
+        //special.innerHTML = pills;
+    }
 
-    });
+    
 }
 
 
@@ -565,11 +589,91 @@ function update_kd() {
 
 }
 
+function process_event_have_playerinfo(event) {
+    if (event.payload.event_name=='Death') {
+
+        // TK debug / loadout debug
+        /* var attacker_loadout_id=event.payload.attacker_loadout_id;
+        var victim_loadout_id=event.payload.character_loadout_id;
+        console.log('new tk event test');
+        console.log(event);
+        console.log(attacker_loadout_id);
+        console.log(victim_loadout_id);
+        // loadout 31 = profile 193 - 4th fac engie */
+        // END TK DEBUG
+
+        if (is_player(event.payload.character_id)) {
+            if (!is_player(event.payload.attacker_character_id)) {
+                // not suicide
+                // update character with killcount for revenge/repeat etc
+                char = get_local_character(event.payload.attacker_character_id);
+                if (char) {
+                    char.killstreak=0;
+                    if (char.hasOwnProperty('deathcount')) {
+                        char.deathcount++;
+                        char.deathstreak++;
+                        
+                    }
+                    else {
+                        char.deathcount=1;
+                        char.deathstreak=1;
+                    }
+                    char.primed_for_revenge = true;
+                }
+                else {
+                    console.log('Local character not available for attacker in event: ',event);
+                }
+            }
+        }
+        else {
+            if (!is_tk(event)) {
+                char = get_local_character(event.payload.character_id);
+                char.deathstreak=0;
+                if (char.hasOwnProperty('killcount')) {
+                    char.killcount++;
+                    char.killstreak++;
+                }
+                else {
+                    char.killcount=1;
+                    char.killstreak=1;
+                }
+                //char.primed_for_revenge = false; // has to be cleared by achievement itself
+            }
+            else {
+                //say ('Teamkill');
+            }
+        }
+    }
+    // run achievement tests
+    window.cur_achievements = []; // clear stack
+    window.new_achievements.forEach(achievement => {
+        /* console.log('Checking if achievement triggered: ');
+        console.log(achievement); */
+        // create list of achievements triggered by current event
+        if (achievement.needs_player_info==true) {
+            if (achievement.triggered(event)) {
+                window.cur_achievements.push(achievement);
+            }
+        }
+    });
+    // sort by priority
+    // and trigger top enabled audio, let the rest trigger notifications
+    var notifications_only = false;
+    window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
+    for (sorted_index=0; sorted_index<window.cur_achievements.length; sorted_index++) {
+        if (window.cur_achievements[sorted_index].enabled) {
+            window.cur_achievements[sorted_index].trigger(notifications_only);
+            notifications_only = true; // loop through rest and trigger, but no audio pls
+        }
+    }
+}
+
 function process_event(event) {
 
     event.is_kill = is_kill(event);
     event.is_death = is_death(event);
     event.is_tk = is_tk(event);
+    
     
     if (event.payload.event_name=="PlayerLogin") {
         c = get_local_character(event.payload.character_id);
@@ -584,6 +688,7 @@ function process_event(event) {
             set_player_offline(event.payload.character_id);
         }
     }
+    
     // update global values based on event
     if (event.payload.event_name=='Death') {
 
@@ -609,27 +714,7 @@ function process_event(event) {
             multikills=0;
             window.deaths++;
             update_kd();
-            if (!is_player(event.payload.attacker_character_id)) {
-                // not suicide
-                // update character with killcount for revenge/repeat etc
-                char = get_local_character(event.payload.attacker_character_id);
-                if (char) {
-                    char.killstreak=0;
-                    if (char.hasOwnProperty('deathcount')) {
-                        char.deathcount++;
-                        char.deathstreak++;
-                        
-                    }
-                    else {
-                        char.deathcount=1;
-                        char.deathstreak=1;
-                    }
-                    char.primed_for_revenge = true;
-                }
-                else {
-                    console.log('Local character not available for attacker in event: ',event);
-                }
-            }
+            
         }
         else {
             if (!is_tk(event)) {
@@ -673,32 +758,16 @@ function process_event(event) {
                 // and add timestamp to watchlist
                 subscribe_to_character_logout(event.payload.character_id);
                 ragequit_watchlist[event.payload.character_id] = event.payload.timestamp;
-                // update character with killcount for revenge/repeat etc
-                char = get_local_character(event.payload.character_id);
-                char.deathstreak=0;
-                if (char.hasOwnProperty('killcount')) {
-                    char.killcount++;
-                    char.killstreak++;
-                }
-                else {
-                    char.killcount=1;
-                    char.killstreak=1;
-                }
-                //char.primed_for_revenge = false; // has to be cleared by achievement itself
-            }
-            else {
-                //say ('Teamkill');
             }
         }
     }
     // run achievement tests
     window.cur_achievements = []; // clear stack
     window.new_achievements.forEach(achievement => {
-        /* console.log('Checking if achievement triggered: ');
-        console.log(achievement); */
-        // create list of achievements triggered by current event
-        if (achievement.triggered(event)) {
-            window.cur_achievements.push(achievement);
+        if (achievement.needs_player_info==false) {
+            if (achievement.triggered(event)) {
+                window.cur_achievements.push(achievement);
+            }
         }
     });
 
