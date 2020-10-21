@@ -670,10 +670,50 @@ var nobeacon = new Achievement('nobeacon','Light The Beacons!','You killed the f
     return false;
 },["wheres-the-damn-beacon-oh-i-see-it.mp3"],20);
 
-var repeat = new Achievement('repeatcustomer','Repeat Customer!','You killed the same person 2 times in a row!', function (event) {
+var repeat = new Achievement('repeatcustomer','Repeat Customer x 3!','You killed the same person 3 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
        char = get_local_character(event.payload.character_id);
-       if (char.killstreak==2) {
+       if (char.killstreak==3) {
+           return true;
+       }
+    }
+    return false;
+},['Whats Up_ Whattya been doin_.ogg'],9);
+
+var learn = new Achievement('learn','Repeat Customer x 4!','You killed the same person 4 times in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+       char = get_local_character(event.payload.character_id);
+       if (char.killstreak==4) {
+           return true;
+       }
+    }
+    return false;
+},['Whats Up_ Whattya been doin_.ogg'],9);
+
+var domination = new Achievement('domination','Repeat Customer x 5!','You killed the same person 5 times in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+       char = get_local_character(event.payload.character_id);
+       if (char.killstreak==5) {
+           return true;
+       }
+    }
+    return false;
+},['Whats Up_ Whattya been doin_.ogg'],9);
+
+var recursion = new Achievement('recursion','Repeat Customer x 6!','You killed the same person 6 times in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+       char = get_local_character(event.payload.character_id);
+       if (char.killstreak==6) {
+           return true;
+       }
+    }
+    return false;
+},['Whats Up_ Whattya been doin_.ogg'],9);
+
+var recursionrecursion = new Achievement('recursionrecursion','Repeat Customer x 10!','You killed the same person 10 times in a row!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+       char = get_local_character(event.payload.character_id);
+       if (char.killstreak==6) {
            return true;
        }
     }

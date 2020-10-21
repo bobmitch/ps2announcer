@@ -27,8 +27,8 @@ body {
     display:flex;
 }
 .br, .weapon_type {
-    font-size: 75%;
-    opacity: 0.5;
+    font-size: 85%;
+    opacity: 0.7;
 }
 
 p.info {
@@ -390,6 +390,10 @@ table tbody td.event_info {
     display:flex;
     align-items:center;
 }
+.obs td.event_info {
+    background: rgba(0,0,0,0.7);
+    border-radius: 0.5em;
+}
 .obs table td {
     border:none !important;
 }
@@ -517,7 +521,7 @@ span.char.faction {
     padding:0.3em 0.6em;
     background:rgba(0,0,0,0.7);
     border-radius:0.2rem;
-    font-size:70%;
+    font-size:85%;
 }
 
 span.event_type {
@@ -529,16 +533,16 @@ span.event_type {
     background-size: contain;
     background-repeat: no-repeat;
     margin-right: 0.5em;
-    background-color: rgba(0,0,0,0.5);
-    border-radius: 4rem;
+    /* background-color: rgba(0,0,0,0.5);
+    border-radius: 4rem; */
     /* padding: 1em; */
     background-size: 80%;
 }
 span.profile_name {
     text-indent: -9999px;
     display: inline-block;
-    width: 32px;
-    height: 32px;
+    width: 2em;
+    height: 2em;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

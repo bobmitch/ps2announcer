@@ -299,6 +299,12 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<span data-variable='kd' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
+				<div class="control">
+					<div class="tags has-addons">
+						<span class="tag is-dark">KPM</span>
+						<span data-variable='kpm' class="autoupdate tag is-info">0</span>
+					</div>
+				</div>
 				
 			</div>
 			
@@ -571,7 +577,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		  </div>
 
 		<section id='notifications' class='moveable'>
-		<h5 class='label'>NOTIFICATIONS</h5>
+		<h5 class='label'>IMAGES</h5>
 		</section>
 
 		<!-- <div id='animations' class='obs_only'>

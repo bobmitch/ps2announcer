@@ -3,6 +3,22 @@
 
 // load options
 
+setInterval(function(){
+    
+    if (window.hasOwnProperty('session_start_time')) {
+        var curtime = Math.floor((new Date()).getTime() / 1000);
+        var time_since_session_start = curtime - window.session_start_time;
+        //console.log('curtime: ',curtime);
+        //console.log('session start time: ',window.session_start_time);
+        if (time_since_session_start>0) {
+            //console.log('updating kpm');
+            //console.log('time since session start: ',time_since_session_start);
+            window.kpm = (window.kills / (time_since_session_start/60)).toFixed(2);
+            update_stats();
+        }
+    }
+}, 2000);
+
 // window.obsstudio property available if within OBS
 
 if (window.hasOwnProperty('obsstudio')) {
@@ -41,6 +57,7 @@ test_audio = new Audio('audio/ting.mp3');
 window.mute_test = false;
 
 // setup global vars
+var session_start_time = Math.floor((new Date()).getTime() / 1000);
 var event_counter = 0;
 var killstreak=0; // reset by death
 var spamstreak=0;
@@ -49,6 +66,7 @@ var multikills_was=0;
 var kills=0;
 var deaths=0;
 var kd=1;
+var kpm=0;
 var max_killstreak=0;
 var bodyshotkillstreak=0;
 var headshotstreak=0;
@@ -114,6 +132,7 @@ function insert_row (data, msg) {
 load_config(); // important - do this after previous built-in hardcoded achievements have been created :)
 
 function reset_stats() {
+    window.kpm=0;
     window.event_counter = 0;
     window.killstreak=0; // reset by death
     window.spamstreak=0;
@@ -594,7 +613,7 @@ function update_kd() {
             kd=kills;
         }
         else {
-            kd = (kills/deaths).toFixed(2);;
+            kd = (kills/deaths).toFixed(2);
         }
     }
     else {
@@ -613,6 +632,7 @@ function process_event(event) {
         c = get_local_character(event.payload.character_id);
         notify(c.name.first + ' logged in');
         say('Player logged in');
+        window.session_start_time = Math.floor((new Date()).getTime() / 1000);
     }
     if (event.payload.event_name=="PlayerLogout") {
         if (is_player(event.payload.character_id)) {
