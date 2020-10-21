@@ -397,7 +397,7 @@ var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick s
         }
     }
     return false;
-},['two.mp3'],3);  
+},['two.mp3'],6);  
 var triplekill = new Achievement('triplekill','Triple Kill!','3 kills in quick succession!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (multikills==2) {
@@ -405,7 +405,7 @@ var triplekill = new Achievement('triplekill','Triple Kill!','3 kills in quick s
         }
     }
     return false;
-},['three.mp3'],3);
+},['three.mp3'],5);
 var multikill = new Achievement('multikill','Multi Kill!','4 kills in quick succession!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (multikills==3) {
@@ -413,7 +413,7 @@ var multikill = new Achievement('multikill','Multi Kill!','4 kills in quick succ
         }
     }
     return false;
-},['four.mp3'],3);
+},['four.mp3'],4);
 var megakill = new Achievement('megakill','Mega Kill!','5 kills in quick succession!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (multikills==4) {
@@ -833,7 +833,7 @@ var mutual = new Achievement('mutual','Mutually Assured Destruction!','You kille
         }
     }
     return false;
-},['aallrighty.mp3'],10);
+},['aallrighty.mp3'],4);
 
 var spitty = new Achievement('spitty','Lazy!','Spitfire Turret Got The Kill!', function (event) {
     if (event.is_kill) {

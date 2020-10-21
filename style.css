@@ -309,8 +309,8 @@ span.code {
 
 
 @keyframes hide {
-    0%   {opacity: 1; max-height:3em;}
-    90%  {opacity: 1; max-height:3em;}
+    0%   {opacity: 1; max-height:4em;}
+    90%  {opacity: 1; max-height:4em;}
     100% {opacity: 0; max-height:0em;}
 }
 .obsonly {
@@ -359,6 +359,8 @@ body.testobs {
     width:100%;
     border:none;
     max-height:3em;
+    font-size: 80%;
+    justify-content: flex-end;
 }
 .obs #events td {
     display: flex;
@@ -384,6 +386,10 @@ body.testobs {
     max-height:3em;
     background:transparent !important;
 }
+table tbody td.event_info {
+    display:flex;
+    align-items:center;
+}
 .obs table td {
     border:none !important;
 }
@@ -392,11 +398,16 @@ body.testobs {
 }
 span.char.faction {
     padding-right: 1em;
+    display: flex;
+    align-items: center;
 }
 .obs .br {
     background: rgba(0,0,0,0.5);
     padding: 0.3rem 0.5rem;
     border-radius: 0.2rem;
+}
+.br {
+    margin-left: 0.5rem;
 }
 
 #playerstatus .fas, #soundpack .fas {
@@ -467,32 +478,33 @@ span.char.faction {
     width:100vw;
     height:100vh;
     display:flex;
-    max-width:60ch;
+    max-width:69ch;
     flex-direction: column;
 }
-.obs #notifications {
+/* .obs #notifications {
     max-width:45%;
-}
+} */
 #notifications .notification {
     pointer-events: all;
     position:relative;
     display:flex;
 }
 #notifications img {
-    display:inline-block;
-    width:30rem;
-    height:15rem;
+    display: inline-block;
+    min-width: 30rem;
+    /* height: 35rem; */
+    max-height: 20rem;
     object-fit: contain;
-    object-position: top right;
-    right:0;
-    margin-left:auto; /* keep image right aligned inside flex notification */
+    object-position: right center;
+    right: 0;
+    margin-left: auto; /* keep inside */
 }
 .achievement_notification {
     display:none !important;
 }
-.obs .achievement_notification, .obs .custom_image_notification {
+/* .obs .achievement_notification, .obs .custom_image_notification {
     display:block !important;
-}
+} */
 .notification.custom_image_notification {
     background:transparent !important;
 }
@@ -505,19 +517,54 @@ span.char.faction {
     padding:0.3em 0.6em;
     background:rgba(0,0,0,0.7);
     border-radius:0.2rem;
+    font-size:70%;
 }
 
 span.event_type {
     text-indent: -9999px;
     display: inline-block;
-    width: 3rem;
-    height: 3rem;
+    width: 2rem;
+    height: 2rem;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
-    margin-right: 1rem;
+    margin-right: 0.5em;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 4rem;
+    /* padding: 1em; */
+    background-size: 80%;
 }
-.profile_name, .weapon_type {
+span.profile_name {
+    text-indent: -9999px;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 0.5em;
+    filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.5));
+}
+span.profile_name.Engineer {
+    background-image:url(icons/Icon_Engineer.png);
+}
+span.profile_name.Infiltrator {
+    background-image:url(icons/Icon_Infiltrator.png);
+}
+span.profile_name.Heavy {
+    background-image:url(icons/Icon_Heavy_Assault.png);
+}
+span.profile_name.Medic {
+    background-image:url(icons/Icon_Combat_Medic.png);
+}
+span.profile_name.Light {
+    background-image:url(icons/Icon_Light_Assault.png);
+}
+span.profile_name.MAX {
+    background-image:url(icons/Icon_MAX.png);
+}
+
+.weapon_type {
     display:none;
 }
 .event_type.you_revived {
@@ -600,6 +647,58 @@ body:not(.authorized) .card.checked {
 }
 
 @media screen and (min-width: 769px) {
-.modal-content, .modal-card {
-    width: 720px !important;
+    .modal-content, .modal-card {
+        width: 720px !important;
+    }
+}
+.obs #stats {
+    justify-content: center;
+}
+.obs, body {
+    position:relative;
+}
+.obs:hover .moveable {
+    outline:2px dotted #aaa;
+    cursor:move;
+}
+
+.obs .moveable {
+    position:absolute !important;
+}
+.obs .moveable:hover {
+    outline:2px dotted red;
+}
+body.obs {
+    overflow-y:hidden;
+    overflow-x:hidden;
+}
+.obs #notifications {
+    pointer-events:auto;
+}
+.obs table {
+    min-height:300px;
+    display:flex;
+}
+h5.label {
+    display:none;
+}
+.obs:hover h5.label {
+    display:block;
+    position:absolute;
+    top:0.5em;
+    left:0.5em;
+    font-size:1.5rem;
+    color:#aaa;
+}
+.obs_example {
+    display:none !important;
+}
+.obs:hover .obs_example {
+    display:flex !important;
+}
+.obs .charname {
+    font-size: 110%;
+}
+.obs tbody#events_body {
+    width: 100%;
 }

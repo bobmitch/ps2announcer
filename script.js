@@ -50,7 +50,6 @@ var kills=0;
 var deaths=0;
 var kd=1;
 var max_killstreak=0;
-var assist_streak=0;
 var bodyshotkillstreak=0;
 var headshotstreak=0;
 var revive_count_streak=0; // reset by death
@@ -92,7 +91,7 @@ function insert_row (data, msg) {
         var event = row.insertCell();
         var special = row.insertCell();
         if (data) {
-            time.innerHTML = nice_date(data.payload.timestamp);
+            time.innerHTML = "<span class='nice_timestamp'>" + nice_date(data.payload.timestamp) + "</span>";
         }
         else {
             time.innerHTML = Date();
@@ -114,8 +113,43 @@ function insert_row (data, msg) {
 
 load_config(); // important - do this after previous built-in hardcoded achievements have been created :)
 
-function reset_streaks() {
-    revive_count_streak=0;
+function reset_stats() {
+    window.event_counter = 0;
+    window.killstreak=0; // reset by death
+    window.spamstreak=0;
+    window.killstreak_was=0;
+    window.multikills_was=0;
+    window.kills=0;
+    window.deaths=0;
+    window.kd=1;
+    window.max_killstreak=0;
+    window.bodyshotkillstreak=0;
+    window.headshotstreak=0;
+    window.revive_count_streak=0; // reset by death
+    window.mines_destroyed=0;
+    window.proxy_kills_streak=0; // reset by death
+    window.assist_streak=0; // reset by death
+    window.rocket_kills_streak=0; // reset by death
+    window.ground_vs_infantry_streak=0; // reset by death
+    window.ground_vs_infantry=0; 
+    window.air_vs_air_streak=0; // reset by death
+    window.air_vs_air=0; 
+    window.air_vs_ground_streak=0; // reset by death
+    window.air_vs_ground;
+    window.spot_kill_count=0;
+    window.motion_sensor_kills=0;
+    window.characters={};
+    window.synth = window.speechSynthesis;
+    window.shotgun_killstreak = 0; // reset by death and non-shotgun kill
+    window.shotgun_killstreak_timestamp = 0;
+
+    window.cur_achievements = []; // per event stack of triggered achievements - sorted by 
+
+    window.last_kill_timestamp = 0;
+    window.multikills = 0;
+    window.multikill_window = 10; // secs to multikill reset
+    window.ragequit_watchlist = {};
+    update_stats();
 }
 
 function update_stats() {
@@ -319,7 +353,7 @@ function display_event(data) {
                     else if (data.payload.attacker_vehicle_id!='0') {
                         // maybe got squished
                         vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
-                        msg+= ' with your ' + vehicle_name + '';
+                        msg+= ' <span class="squished">' + vehicle_name + '</span>';
                     }
                     else {
                         msg+= ' using just your mind! ';
@@ -345,7 +379,7 @@ function display_event(data) {
                 else if (data.payload.attacker_vehicle_id!='0') {
                     // maybe got squished
                     vehicle_name = get_vehicle_name(data.payload.attacker_vehicle_id);
-                    msg+= ' in their ' + vehicle_name + '</span>';
+                    msg+= ' <span class="squished_by">' + vehicle_name + '</span>';
                 }
                 else {
                     msg+=' with nothing at all!';
@@ -389,7 +423,7 @@ function display_event(data) {
                     }
                     else {
                         msg+=print_character(data.payload.character_id, data);
-                        msg+="'s friendly "+vehicle_name+'. Woopsy!';
+                        msg += vehicle_name+'. Woopsy!';
                     }
                 }
                 else {
@@ -397,8 +431,8 @@ function display_event(data) {
                         msg += " a " +vehicle_name+' ';
                     }
                     else {
-                        msg+=print_character(data.payload.character_id, data);
-                        msg+="'s "+vehicle_name+' ';
+                        msg += print_character(data.payload.character_id, data);
+                        msg += vehicle_name+' ';
                     }
                 }
                 
@@ -425,8 +459,10 @@ function display_event(data) {
             var time = row.insertCell();
             time.classList.add('timestamp');
             var event = row.insertCell();
+            event.classList.add('event_info');
             var special = row.insertCell();
-            time.innerHTML = nice_date(data.payload.timestamp);
+            special.classList.add('pills');
+            time.innerHTML = "<span class='nice_timestamp'>" + nice_date(data.payload.timestamp) + "</span>";
             event.innerHTML = msg;
 
             cur_achievements.forEach(achievement_on_stack => {
@@ -661,7 +697,7 @@ function process_event(event) {
                 }
                 window.kills++;
                 update_kd();
-                assist_streak=0; // end assist streak
+                window.assist_streak=0; // end assist streak
                 time_since_last_kill = parseInt(event.payload.timestamp) - parseInt(last_kill_timestamp);
                 //console.log('time since last kill = ',time_since_last_kill);
                 if (time_since_last_kill <= multikill_window) {
@@ -714,17 +750,43 @@ function process_event(event) {
         // just one trigger and its a headshot
         say_kills = true;
     }
+    
     if (say_kills) {
         say(killstreak.toString());
     }
+
+    if (window.user=='n7jpicard') {
+        // do count
+        if (is_kill(event)) {
+            if (killstreak==2) {
+                doublekill.play();
+            }
+            if (killstreak==3) {
+                triplekill.play();
+            }
+            if (killstreak==4) {
+                multikill.play();
+            }
+            if (killstreak==5) {
+                megakill.play();
+            }
+        }
+    }
+
     // sort by priority
     // and trigger top enabled audio, let the rest trigger notifications
     var notifications_only = false;
-    window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
+    window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1);
+    var triggered_count=0;
     for (sorted_index=0; sorted_index<window.cur_achievements.length; sorted_index++) {
         if (window.cur_achievements[sorted_index].enabled) {
+            if (triggered_count>1) {
+                // early exit - only play/show at most 2 triggers
+                break;
+            }
             window.cur_achievements[sorted_index].trigger(notifications_only);
-            notifications_only = true; // loop through rest and trigger, but no audio pls
+            triggered_count++;
+            notifications_only = true; // loop through rest and trigger notifications, but no audio pls
         }
     }
     update_stats();
@@ -740,6 +802,55 @@ document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
         }
     }
 });
+
+// Make the elements moveable:
+
+moveables = document.querySelectorAll('.moveable');
+moveables.forEach(moveable => {
+    dragElement(moveable);
+});
+
+function dragElement(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  if (document.getElementById(elmnt.id + "header")) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+  } else {
+    // otherwise, move the DIV from anywhere inside the DIV:
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+// end moveable
 
 
 
@@ -864,6 +975,7 @@ window.onload = function() {
         if (data.hasOwnProperty('payload')) {
             if (data.payload.event_name=="PlayerLogout") {
                 set_player_offline (data.payload.character_id);
+                reset_stats();
             }
             if (data.payload.event_name=="PlayerLogin") {
                 set_player_online (data.payload.character_id);

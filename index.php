@@ -194,7 +194,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<nav id='nav' class="navbar" role="navigation" aria-label="main navigation">
 				<div class="navbar-brand">
 				  <a class="navbar-item" href="https://bobmitch.com/ps2">
-					<h3 class='title is-3'>Planetside Announcer TEST</h3>
+					<h3 class='title is-3'>Planetside Announcer</h3>
 				  </a>
 
 				  <div class='navbar-item' id="playerstatus">
@@ -261,7 +261,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 			
 
-			<div id='stats' class="field is-grouped is-grouped-multiline">
+			<div id='stats' class="field is-grouped is-grouped-multiline moveable">
+				<h5 class='label'>STATS</h5>
 				<div class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">Bodyshot Streak</span>
@@ -303,7 +304,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			
 			<ul id="messages"></ul>
 
-			<table class='table is-fullwidth' id='events'>
+			<table class='table is-fullwidth moveable' id='events'>
+			
 				<thead>
 					<tr>
 						<th>Time</th>
@@ -312,7 +314,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					</tr>
 				</thead>
 				<tbody id='events_body'>
+					<tr class="obs_example kill"><td class="timestamp"><span class="nice_timestamp">8:44:28</span></td><td class="event_info"><span class="event_type you_killed">You killed </span><span class="profile_name Combat Medic">Combat Medic</span><span class="char faction faction2"> <span class="charname"><span class="outfit">SF8</span>&nbsp;MrExampleLongName</span> <span class="br">BR:13</span> <span class="br kdr">KD: 0.53</span></span><span class="weapon_name">Some Cheesy Weapon Probably</span> <span class="weapon_type"> (Grenade)</span> </td><td class="pills"></td></tr>
 				</tbody>
+				
 			</table>
 
 			
@@ -398,6 +402,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				
 			  </header>
 			  <section class="modal-card-body">
+			  	<p>OBS - Quick guide: Add Browser source in OBS, use your soundpack URL. Set browser size to 1920x1080. Right click, select interactive, then move elements around to suit.</p>
+			  	<hr>
 				<p>Any external audio files must be hosted on HTTPS (secure) sites. Dropbox links can be used by changing up the shared URL slightly:</p>
 				<p>If the original shared URL is:</p>
 				<p><em>https://www.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3?dl=0</em></p>
@@ -564,12 +570,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			</div>
 		  </div>
 
-		<section id='notifications'>
+		<section id='notifications' class='moveable'>
+		<h5 class='label'>NOTIFICATIONS</h5>
 		</section>
 
-		<div id='animations' class='obs_only'>
+		<!-- <div id='animations' class='obs_only'>
 
-		</div>
+		</div> -->
 
 		<script>
 			window.user = "<?php if ($user) {echo $user;} else {echo 'bobmitch';}?>"; // load bobmitch if no user passed
