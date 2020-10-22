@@ -34,6 +34,9 @@ else {
     document.getElementsByTagName('body')[0].classList.add('testobs');
 }
 
+var count_one = new Audio();
+count_one.src = 'audio/one.mp3';
+
 // obs default setup - overridden with values from localstorage 
 var obs_config={};
 obs_config.stats={}; obs_config.events={}; obs_config.notifications={};
@@ -47,7 +50,6 @@ obs_config.events.top = 145;
 obs_config.events.left = 630;
 obs_config.notifications.top = -50;
 obs_config.notifications.left = 440;
-// localStorage.obs_config = JSON.stringify(obs_config); // force resave for new stats etc
 ls_obs_string = localStorage.getItem('obs_config');
 if (ls_obs_string) {
     // load saved
@@ -848,6 +850,10 @@ function process_event(event) {
     if (window.user=='n7jpicard') {
         // do count
         if (is_kill(event)) {
+            if (killstreak==1) {
+                count_one.volume = parseFloat(document.getElementById('volume').value)/100.0;
+                count_one.play();
+            }
             if (killstreak==2) {
                 doublekill.play();
             }
@@ -859,6 +865,21 @@ function process_event(event) {
             }
             if (killstreak==5) {
                 megakill.play();
+            }
+            if (killstreak==6) {
+                ultrakill.play();
+            }
+            if (killstreak==7) {
+                monsterkill.play();
+            }
+            if (killstreak==8) {
+                ludicrous.play();
+            }
+            if (killstreak==9) {
+                holyshit.play();
+            }
+            if (killstreak==10) {
+                decakills.play();
             }
         }
     }
