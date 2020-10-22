@@ -351,6 +351,9 @@ body.testobs {
 .obs #stats {
     background:transparent;
 }
+.obs #stats .control:hover {
+    cursor:pointer;
+}
 .obs thead {
     display:none;
 }
@@ -656,7 +659,7 @@ body:not(.authorized) .card.checked {
     }
 }
 .obs #stats {
-    justify-content: center;
+    justify-content: flex-end;
 }
 .obs, body {
     position:relative;
@@ -705,4 +708,23 @@ h5.label {
 }
 .obs tbody#events_body {
     width: 100%;
+}
+
+
+  .hide_obs {
+    display:none;
+}
+.obs:hover #stats .hide_obs {
+    opacity:0.3;
+    display:block;
+}
+
+body:not(.obs) .moveable {
+    top:0 !important;
+    left:0 !important;
+    transform:scale(1) !important;
+}
+body:not(.obs) #notifications {
+    right:0 !important;
+    left:auto !important;
 }

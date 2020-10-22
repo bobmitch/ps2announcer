@@ -34,6 +34,68 @@ else {
     document.getElementsByTagName('body')[0].classList.add('testobs');
 }
 
+// obs default setup - overridden with values from localstorage 
+var obs_config={};
+obs_config.stats={}; obs_config.events={}; obs_config.notifications={};
+obs_config.stats.hidden_stats = [];
+obs_config.stats.scale = 1.0;
+obs_config.events.scale = 1.0;
+obs_config.notifications.scale = 1.0;
+obs_config.stats.top = 48;
+obs_config.stats.left = 530;
+obs_config.events.top = 145;
+obs_config.events.left = 630;
+obs_config.notifications.top = -50;
+obs_config.notifications.left = 440;
+// localStorage.obs_config = JSON.stringify(obs_config); // force resave for new stats etc
+ls_obs_string = localStorage.getItem('obs_config');
+if (ls_obs_string) {
+    // load saved
+    obs_config = JSON.parse(ls_obs_string);
+}
+else {
+    // save default
+    localStorage.obs_config = JSON.stringify(obs_config);
+}
+
+function set_obs_values(el_id) {
+    el = document.getElementById(el_id);
+    if (el) {
+        el.style.top = parseInt(obs_config[el_id].top);
+        el.style.left = parseInt(obs_config[el_id].left);
+        scale = parseFloat(obs_config[el_id].scale);
+        el.style.transform = `scale(${scale})`;
+    }
+}
+
+set_obs_values('stats');
+set_obs_values('events');
+set_obs_values('notifications');
+console.log(obs_config);
+obs_config.stats.hidden_stats.forEach(stat => {
+    document.getElementById(stat).classList.add('hide_obs');
+});
+
+// stats visibility handlers
+document.getElementById('stats').addEventListener('click',function(e){
+    c = e.target.closest('.control');
+    if (c) {
+        stat_id = c.id;
+        if (c.classList.contains('hide_obs')) {
+            // unhide
+            obs_config.stats.hidden_stats = obs_config.stats.hidden_stats.filter(e => e !== stat_id); 
+        }
+        else {
+            // hide
+            obs_config.stats.hidden_stats.push(stat_id);
+        }
+        c.classList.toggle('hide_obs');
+        localStorage.obs_config = JSON.stringify(obs_config);
+    }
+});
+
+// end obs config setup
+
 var countkills = false;
 countkills = JSON.parse(localStorage.getItem('ps2_countkills'));
 document.getElementById('countkills').checked = countkills;
@@ -831,11 +893,25 @@ document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
     }
 });
 
-// Make the elements moveable:
+// Make the elements moveable AND scaleable:
 
 moveables = document.querySelectorAll('.moveable');
 moveables.forEach(moveable => {
     dragElement(moveable);
+    moveable.addEventListener('wheel',function(e){
+        m = e.target.closest('.moveable');
+        if (!m.dataset.hasOwnProperty('scale')) {
+            m.dataset.scale = 1.0;
+        }
+        scale = parseFloat(m.dataset.scale);
+        scale += e.deltaY * -0.0001;
+        m.dataset.scale = scale;
+        scale = Math.min(Math.max(.5, scale), 3);
+        m.style.transform = `scale(${scale})`;
+        // save obs_config
+        obs_config[m.id].scale = scale;
+        localStorage.obs_config = JSON.stringify(obs_config);
+    });
 });
 
 function dragElement(elmnt) {
@@ -870,6 +946,11 @@ function dragElement(elmnt) {
     // set the element's new position:
     elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    id = elmnt.id;
+    // save in obs_config
+    obs_config[id].top = elmnt.offsetTop - pos2;
+    obs_config[id].left = elmnt.offsetLeft - pos1;
+    localStorage.obs_config = JSON.stringify(obs_config);
   }
 
   function closeDragElement() {

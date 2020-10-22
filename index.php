@@ -263,7 +263,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 			<div id='stats' class="field is-grouped is-grouped-multiline moveable">
 				<h5 class='label'>STATS</h5>
-				<div id='bs_stat' class="control">
+				<div id='bs_stat' class="control ">
 					<div class="tags has-addons">
 						<span class="tag is-dark">Bodyshot Streak</span>
 						<span data-variable='bodyshotkillstreak' class="autoupdate tag is-info">0</span>
