@@ -87,6 +87,7 @@ var characters={};
 var synth = window.speechSynthesis;
 var shotgun_killstreak = 0; // reset by death and non-shotgun kill
 var shotgun_killstreak_timestamp = 0;
+var last_res_timestamp = 0;
 
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
 
@@ -339,6 +340,13 @@ function display_event(data) {
             }
             else if (data.payload.experience_id=='2' && is_player(data.payload.character_id)) {
                 assist_streak++;
+            }
+            else if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.other_id)) {
+                msg+='<span class="event_type you_revived">You were revived by </span>';
+                console.log(msg);
+                cls+=' info ';
+                msg+=print_character(data.payload.character_id, data);
+                window.last_res_timestamp = data.payload.timestamp;
             }
         }		
         if (data.payload.event_name=='Death') {

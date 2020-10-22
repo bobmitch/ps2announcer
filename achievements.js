@@ -660,6 +660,19 @@ var reviver = new Achievement('revive','Revive!','You revived someone!', functio
     return false;
 },['xp.mp3','Bwup!.ogg'],20);
 
+var badres = new Achievement('badres','Bad Rez!','That was a bad rez!', function (event) {
+    if (event.is_death) {
+        // 7 = revive, 57 = squad revive
+        var death_time_int = parseInt(event.payload.timestamp);
+        var last_res_time_int = parseInt(window.last_res_timestamp);
+        var time_since_last_res = death_time_int-last_res_time_int;
+        if (time_since_last_res>0 && time_since_last_res<3) {
+            return true;
+        }
+    }
+    return false;
+},['risky.mp3'],5);
+
 var nobeacon = new Achievement('nobeacon','Light The Beacons!','You killed the fight!', function (event) {
     if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
         // 7 = revive, 57 = squad revive
@@ -688,7 +701,7 @@ var learn = new Achievement('learn','Repeat Customer x 4!','You killed the same 
        }
     }
     return false;
-},['Whats Up_ Whattya been doin_.ogg'],9);
+},['seeyouagainchancho.mp3'],9);
 
 var domination = new Achievement('domination','Repeat Customer x 5!','You killed the same person 5 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
@@ -698,7 +711,7 @@ var domination = new Achievement('domination','Repeat Customer x 5!','You killed
        }
     }
     return false;
-},['Whats Up_ Whattya been doin_.ogg'],9);
+},['seeyouagain.mp3'],9);
 
 var recursion = new Achievement('recursion','Repeat Customer x 6!','You killed the same person 6 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
@@ -708,7 +721,7 @@ var recursion = new Achievement('recursion','Repeat Customer x 6!','You killed t
        }
     }
     return false;
-},['Whats Up_ Whattya been doin_.ogg'],9);
+},['seeyouagainmancub.mp3'],8);
 
 var recursionrecursion = new Achievement('recursionrecursion','Repeat Customer x 10!','You killed the same person 10 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
@@ -718,7 +731,7 @@ var recursionrecursion = new Achievement('recursionrecursion','Repeat Customer x
        }
     }
     return false;
-},['Whats Up_ Whattya been doin_.ogg'],9);
+},['embarassing.mp3'],5);
 
 var nemesis = new Achievement('nemesis','Nemesis!','You were killed by the same person more than 3 times!', function (event) {
     if (event.is_death && !event.is_tk) {

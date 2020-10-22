@@ -263,13 +263,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 			<div id='stats' class="field is-grouped is-grouped-multiline moveable">
 				<h5 class='label'>STATS</h5>
-				<div class="control">
+				<div id='bs_stat' class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">Bodyshot Streak</span>
 						<span data-variable='bodyshotkillstreak' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
-				<div class="control">
+				<div id='hs_stat' class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">HS Streak</span>
 						<span data-variable='headshotstreak' class="autoupdate tag is-info">0</span>
@@ -281,7 +281,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<span data-variable='killstreak' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
-				<div class="control">
+				<div id='ass_stat' class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">Assist-streak</span>
 						<span data-variable='assist_streak' class="autoupdate tag is-info">0</span>
@@ -293,13 +293,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<span data-variable='multikills' class="autoupdate tag is-info">0</span>
 					</div>
 				</div> -->
-				<div class="control">
+				<div id='kd_stat' class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">K/D</span>
 						<span data-variable='kd' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
-				<div class="control">
+				<div id='kpm_stat' class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">KPM</span>
 						<span data-variable='kpm' class="autoupdate tag is-info">0</span>
