@@ -27,7 +27,9 @@ Note - all sounds (and images) must be loaded from an HTTPS source, with CORS en
 
 ## Can I Use This With OBS?
 
-Sure - just add the site as a browser source!  If OBS is detected, the site will start in OBS mode - to go back to regular mode simply tap 'space' while in 'interactive mode' in OBS. You can switch to OBS mode at any time by clicking on the more menu, and choose 'OBS View'. 
+Sure - just add the site as a browser source!  If OBS is detected, the site will start in OBS mode - to go back to regular mode simply tap 'space' while in 'interactive mode' in OBS. You can switch to OBS mode at any time by clicking on the more menu, and choose 'OBS View'. Items can be moved/scaled in OBS view while in interactive mode as well.
+
+[Quick Setup Guide](https://docs.google.com/document/d/1x0GS700wFmZqSRidfKzLpTQ5AhIdwTP2_XxK_7ozA5U/edit?usp=sharing)
 
 ## Are You Looking For Suggestions?
 
