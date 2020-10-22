@@ -552,7 +552,10 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					<p>At the time of writing, this site is not intended for widespread public consumption - bugs are plentiful and the experience may break at any second, so don't get mad if things don't work, and don't share this <em>too</em> far and wide until it becomes a bit more polished! </p>
 					<p>Please use the feedback for to give suggestions or report problems - thanks!</p>
 					<hr>
-					Special thanks to <a href="https://twitch.tv/myian" target="_blank">Myian</a> for help with testing, debugging and suggestions.
+					<h4 class='is-4 title'>Thank You!</h4>
+					<p>Special thanks to <a href="https://twitch.tv/myian" target="_blank">Myian</a> for help with testing, coding, debugging and suggestions.</p>
+					<p>Cheers to <a href="https://www.twitch.tv/n7jpicard" target="_blank">N7jpicard</a> for help with overlay testing and end-user feedback.</p>
+					<p>Thanks to <a href="https://www.twitch.tv/aeflic" target="_blank">Aeflic</a> for occasionally remembering to use this announcer and having the best beard in the game.</p>
 					<hr>
 					<p>[BAX] BobMitch</p>
 					<br>

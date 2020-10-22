@@ -52,6 +52,9 @@ p.info {
     font-weight:bold;
     padding:0.2em 0.5em;
     border-radius:0.2em;
+    max-width: 40ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 #config_export {
     width:100%;
