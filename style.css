@@ -335,7 +335,7 @@ span.code {
     display:none !important;
 }
 .obs .hideme {
-    animation: hide 8s forwards;
+    animation: hide 10s forwards;
 }
 
 .authorized .claimedonly {
@@ -430,7 +430,7 @@ span.char.faction {
     100% {opacity: 0; transform:scale(0) translateX(1000vw);}
 }
 .animation.showanimation {
-    animation: showanimation 6s forwards;
+    animation: showanimation 10s forwards;
 }
 
 #animations {
@@ -476,7 +476,7 @@ span.char.faction {
     font-size:75%;
 }
 .notification.notify {
-    animation: notify 7s forwards;
+    animation: notify 10s forwards;
 }
 #notifications {
     position:fixed;

@@ -21,7 +21,7 @@ function get_local_weapon (weapon_id) {
 
 function display_weapon_and_type(weapon_id) {
     weapon = get_local_weapon(weapon_id);
-    if (weapon) {
+    if (weapon && weapon.hasOwnProperty('name')) {
         type = get_weapon_type (weapon.item_category_id);
     }
     else {

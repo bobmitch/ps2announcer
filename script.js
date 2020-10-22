@@ -411,6 +411,7 @@ function display_event(data) {
                 cls+=' info ';
                 msg+=print_character(data.payload.character_id, data);
                 window.last_res_timestamp = data.payload.timestamp;
+                window.deaths--;
             }
         }		
         if (data.payload.event_name=='Death') {
@@ -1517,7 +1518,7 @@ function notify(msg, classtext='is-primary') {
     notification.appendChild(button);
     setTimeout(function(e){
         delete_me(e);
-    },7000,notification_id);
+    },10100,notification_id);
     notifications = document.getElementById('notifications');
     notifications.appendChild(notification);
 }

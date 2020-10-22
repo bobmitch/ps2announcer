@@ -666,7 +666,7 @@ var badres = new Achievement('badres','Bad Rez!','That was a bad rez!', function
         var death_time_int = parseInt(event.payload.timestamp);
         var last_res_time_int = parseInt(window.last_res_timestamp);
         var time_since_last_res = death_time_int-last_res_time_int;
-        if (time_since_last_res>0 && time_since_last_res<3) {
+        if (time_since_last_res>0 && time_since_last_res<5) {
             return true;
         }
     }
