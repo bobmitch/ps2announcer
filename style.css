@@ -681,6 +681,23 @@ body:not(.authorized) .card.checked {
 .obs .moveable:hover {
     outline:2px dotted red;
 }
+
+.obs .moveable:not(.enabled) {
+    display:none;
+}
+.obs:hover .moveable:not(.enabled) {
+    display:flex;
+    opacity:0.5;
+    background:#ddd !important;
+}
+/* .obs:hover #events.moveable:not(.enabled) {
+    display:table;
+}
+.obs:hover #notifcations.moveable:not(.enabled), .obs:hover #stats.moveable:not(.enabled) {
+    display:flex;
+} */
+
+
 body.obs {
     overflow-y:hidden;
     overflow-x:hidden;
@@ -695,13 +712,20 @@ body.obs {
 h5.label {
     display:none;
 }
-.obs:hover h5.label {
+table#events::before {
+    display:none;
+}
+.obs:hover h5.label, .obs:hover table#events::before {
     display:block;
     position:absolute;
     top:0.5em;
     left:0.5em;
     font-size:1.5rem;
     color:#aaa;
+    font-weight:bold;
+}
+table#events::before {
+    content: 'KILLBOARD';
 }
 .obs_example {
     display:none !important;

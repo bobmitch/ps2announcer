@@ -46,10 +46,13 @@ obs_config.events.scale = 1.0;
 obs_config.notifications.scale = 1.0;
 obs_config.stats.top = 48;
 obs_config.stats.left = 530;
+obs_config.stats.enabled = true;
 obs_config.events.top = 145;
 obs_config.events.left = 630;
+obs_config.events.enabled = true;
 obs_config.notifications.top = -50;
 obs_config.notifications.left = 440;
+obs_config.notifications.enabled = true;
 ls_obs_string = localStorage.getItem('obs_config');
 if (ls_obs_string) {
     // load saved
@@ -66,7 +69,18 @@ function set_obs_values(el_id) {
         el.style.top = parseInt(obs_config[el_id].top);
         el.style.left = parseInt(obs_config[el_id].left);
         scale = parseFloat(obs_config[el_id].scale);
+        enabled = obs_config[el_id].enabled;
+        if (!obs_config[el_id].hasOwnProperty('enabled')) {
+            enabled = true;
+        }
         el.style.transform = `scale(${scale})`;
+        if (!enabled) {
+            el.classList.remove('enabled');
+        }
+        else {
+            el.classList.add('enabled');
+        }
+        localStorage.obs_config = JSON.stringify(obs_config); // save obs config
     }
 }
 
@@ -92,7 +106,7 @@ document.getElementById('stats').addEventListener('click',function(e){
             obs_config.stats.hidden_stats.push(stat_id);
         }
         c.classList.toggle('hide_obs');
-        localStorage.obs_config = JSON.stringify(obs_config);
+        localStorage.obs_config = JSON.stringify(obs_config); // save obs config
     }
 });
 
@@ -274,7 +288,7 @@ function nice_date(timestamp) {
     var date = new Date(timestamp*1000);
     //var iso = date.toISOString().match(/(\d{4}\-\d{2}\-\d{2})T(\d{2}:\d{2}:\d{2})/);
     //return (iso[1] + ' ' + iso[2]);
-    return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    return (date.getHours()<10?'0':'') + date.getHours() + ':' + (date.getMinutes()<10?'0':'') + date.getMinutes() + ':' + (date.getSeconds()<10?'0':'') + date.getSeconds();
 }
 
 function print_character(character_id, event) {
@@ -933,6 +947,19 @@ moveables.forEach(moveable => {
         // save obs_config
         obs_config[m.id].scale = scale;
         localStorage.obs_config = JSON.stringify(obs_config);
+    });
+    moveable.addEventListener('contextmenu',function(e){
+        e.preventDefault();
+        m = e.target.closest('.moveable');
+        m.classList.toggle('enabled');
+        if (m.classList.contains('enabled')) {
+            obs_config[m.id].enabled = true;
+        }
+        else {
+            obs_config[m.id].enabled = false;
+        }
+        localStorage.obs_config = JSON.stringify(obs_config); // save obs config
+        return false;
     });
 });
 

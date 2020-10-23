@@ -245,7 +245,7 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
         }
     }
     return false;
-},['Just Pout.ogg'],15);
+},['Just Pout.ogg'],9);
 
 // https://dl.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3
 
