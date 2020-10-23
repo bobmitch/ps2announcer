@@ -462,6 +462,9 @@ span.char.faction {
     object-position: top right;
 
 }
+html {
+    overflow: hidden;
+}
 
 
 @keyframes notify {

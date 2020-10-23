@@ -1118,7 +1118,8 @@ window.onload = function() {
                 window.allevents.push(data);
             }
             else {
-                window.gainexperienceevents.push(data); // push onto experience stack for debugging
+                // push experience
+                //window.gainexperienceevents.push(data); // remove when live to limit mem use
             }
             // display event nice, get english names first
             display_event(data);

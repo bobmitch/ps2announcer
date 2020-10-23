@@ -239,8 +239,8 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
     // latest event is current
     char = get_local_character(event.payload.character_id);
     if (event.is_kill && !event.is_tk) {
-        if (char.is_primed_for_revenge) {
-            char.is_primed_for_revenge=false;
+        if (char.primed_for_revenge) {
+            char.primed_for_revenge=false;
             return true;
         }
     }
