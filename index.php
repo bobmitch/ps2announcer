@@ -557,6 +557,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					<p>Cheers to <a href="https://www.twitch.tv/n7jpicard" target="_blank">N7jpicard</a> for help with overlay testing and end-user feedback.</p>
 					<p>Thanks to <a href="https://www.twitch.tv/aeflic" target="_blank">Aeflic</a> for occasionally remembering to use this announcer and having the best beard in the game.</p>
 					<hr>
+					<h5>Donations</h5>
+					<p>I really don't need the money, but if you want to say <a target='_blank' href='https://paypal.me/rddm1976?locale.x=en_US'>thanks</a>, that's cool!</p>
+					<p>Even better, go buy some of my wife's <a target='_blank' href='https://marcymitchellart.com'>awesome art</a>!</p>
 					<p>[BAX] BobMitch</p>
 					<br>
 			  </section>
