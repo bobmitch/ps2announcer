@@ -521,6 +521,9 @@ html {
 } */
 .notification.custom_image_notification {
     background:transparent !important;
+    margin:0 !important;
+    margin-bottom:1rem !important;
+    padding:0 !important;
 }
 .notification.achievement_notification {
     background-color:rgba(0,0,0,0.6) !important;
