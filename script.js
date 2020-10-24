@@ -1,7 +1,7 @@
 
 
 
-// load options
+// update k/s every 10 seconds
 
 setInterval(function(){
     
@@ -17,7 +17,7 @@ setInterval(function(){
             update_stats();
         }
     }
-}, 2000);
+}, 10000);
 
 // window.obsstudio property available if within OBS
 
@@ -33,6 +33,8 @@ if (window.hasOwnProperty('obsstudio')) {
 else {
     document.getElementsByTagName('body')[0].classList.add('testobs');
 }
+
+// load options
 
 var count_one = new Audio();
 count_one.src = 'audio/one.mp3';
@@ -180,9 +182,15 @@ function insert_row (data, msg) {
     var cls='';
     var pills='';
 
+    if (!data) {
+        data = {};
+        data.payload= {};
+        data.payload.timestamp = new Date().getTime();
+    }
+
     if (msg) {
         var row=events_table.insertRow();
-        row.classList.add('hideme');
+        row.classList.add('hideme','message_row');
         row.className += cls;
         var time = row.insertCell();
         var event = row.insertCell();
@@ -194,13 +202,14 @@ function insert_row (data, msg) {
             time.innerHTML = Date();
         }
         event.innerHTML = msg;
-
-        cur_achievements.forEach(achievement_on_stack => {
-            //console.log('putting pill for achievement ', achievement_on_stack);
-            pills += `
-            <span class='tag is-dark'>${achievement_on_stack.name}</span>
-            `;
-        });
+        if (data) {
+            cur_achievements.forEach(achievement_on_stack => {
+                //console.log('putting pill for achievement ', achievement_on_stack);
+                pills += `
+                <span class='tag is-dark'>${achievement_on_stack.name}</span>
+                `;
+            });
+        }
 
         special.innerHTML = pills;
     }
@@ -258,10 +267,14 @@ function update_stats() {
         if (value||value===0) {
             auto.innerText = value.toString();
         }
+        // add value to stat wrapper for css purposes
+        wrap = auto.closest('.control');
+        wrap.dataset.value = value;
+
         if (variable=='killstreak') {
             //console.log('killstreak update');
             var ksw = document.getElementById('killstreak_wrap');
-            if (value>4) {
+            if (value>0) {
                 ksw.classList.add('overfive');
             }
             else {
@@ -561,6 +574,7 @@ function display_event(data) {
         if (msg) {
             var row=events_table.insertRow();
             row.classList.add('hideme');
+            row.classList.add('killboard_entry');
             row.className += cls;
             var time = row.insertCell();
             time.classList.add('timestamp');
@@ -744,6 +758,10 @@ function process_event(event) {
 
         if (is_player(event.payload.character_id)) {
             // you died
+            if (window.killstreak>1) {
+                insert_row (null, 'You died! Your killstreak was ' + window.killstreak.toString());
+            }
+
             window.shotgun_killstreak=0;
             window.killstreak_was = window.killstreak;
             window.multikills_was = window.multikills;
@@ -820,14 +838,16 @@ function process_event(event) {
                 ragequit_watchlist[event.payload.character_id] = event.payload.timestamp;
                 // update character with killcount for revenge/repeat etc
                 char = get_local_character(event.payload.character_id);
-                char.deathstreak=0;
-                if (char.hasOwnProperty('killcount')) {
-                    char.killcount++;
-                    char.killstreak++;
-                }
-                else {
-                    char.killcount=1;
-                    char.killstreak=1;
+                if (char) {
+                    char.deathstreak=0;
+                    if (char.hasOwnProperty('killcount')) {
+                        char.killcount++;
+                        char.killstreak++;
+                    }
+                    else {
+                        char.killcount=1;
+                        char.killstreak=1;
+                    }
                 }
                 //char.primed_for_revenge = false; // has to be cleared by achievement itself
             }
@@ -929,6 +949,16 @@ document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
     }
 });
 
+document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
+    // toggle obs view if space pressed in obs view
+    var code = e.which;
+    if(code==70) {
+        ksw = document.getElementById('killstreak_wrap');
+        ksw.classList.toggle('overfive');
+    }
+});
+
+
 // Make the elements moveable AND scaleable:
 
 moveables = document.querySelectorAll('.moveable');
@@ -949,17 +979,20 @@ moveables.forEach(moveable => {
         localStorage.obs_config = JSON.stringify(obs_config);
     });
     moveable.addEventListener('contextmenu',function(e){
-        e.preventDefault();
-        m = e.target.closest('.moveable');
-        m.classList.toggle('enabled');
-        if (m.classList.contains('enabled')) {
-            obs_config[m.id].enabled = true;
+        if (document.body.classList.contains('obs')) {
+            // only in obs mode
+            e.preventDefault();
+            m = e.target.closest('.moveable');
+            m.classList.toggle('enabled');
+            if (m.classList.contains('enabled')) {
+                obs_config[m.id].enabled = true;
+            }
+            else {
+                obs_config[m.id].enabled = false;
+            }
+            localStorage.obs_config = JSON.stringify(obs_config); // save obs config
+            return false;
         }
-        else {
-            obs_config[m.id].enabled = false;
-        }
-        localStorage.obs_config = JSON.stringify(obs_config); // save obs config
-        return false;
     });
 });
 

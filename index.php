@@ -275,7 +275,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<span data-variable='headshotstreak' class="autoupdate tag is-info">0</span>
 					</div>
 				</div>
-				<div id='killstreak_wrap' class="control">
+				<div id='killstreak_wrap' data-value='0' class="control">
 					<div class="tags has-addons">
 						<span class="tag is-dark">Killstreak</span>
 						<span data-variable='killstreak' class="autoupdate tag is-info">0</span>

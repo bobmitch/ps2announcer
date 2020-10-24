@@ -130,6 +130,7 @@ function Achievement(id, name, description, trigger, soundfiles=['ting.mp3'], pr
     this.interruptable = interruptable;
     this.enabled = true;
     this.custom_image = "images/noimage.png";
+    this.text_in_killboard = false;
     this.custom_weapon_trigger = null;
     if (trigger) {
         this.triggered = trigger;
@@ -202,13 +203,19 @@ Achievement.prototype.trigger = function(notification_only) {
     if (this.hasOwnProperty('custom_image')) {
         if (this.custom_image!='' && this.custom_image!=null) {
             if (this.custom_image.includes('noimage.png')) {
-                notify( this.name + '&nbsp' + this.description,'achievement_notification');
+                //notify( this.name + '&nbsp' + this.description,'achievement_notification');
+                
                 return false; // make true for testing with noimage image
             }
             else {
                 notify('<img src="' + this.custom_image + '">','custom_image_notification');
                 return false; // make true for testing with noimage image
             }
+        }
+    }
+    if (this.hasOwnProperty.text_in_killboard) {
+        if (this.text_in_killboard==true) {
+            insert_row (null, this.description);
         }
     }
 };
@@ -233,7 +240,7 @@ var roadkill = new Achievement('roadkill','Roadkill!','Squished someone with a g
         }
     }
     return false;
-},['roadkill.mp3'],15);
+},['roadkill.mp3'],3);
 
 var revenge = new Achievement('revenge','Revenge!','Killed someone who killed you before!', function (event) {
     // latest event is current
@@ -512,6 +519,7 @@ var accuracy = new Achievement('accuracy','Accuracy!','5 headshots in a row!', f
     }
     return false;
 },['pew.mp3'],6);
+accuracy.text_in_killboard = true;
 
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
@@ -682,16 +690,19 @@ var nobeacon = new Achievement('nobeacon','Light The Beacons!','You killed the f
     }
     return false;
 },["wheres-the-damn-beacon-oh-i-see-it.mp3"],20);
+nobeacon.text_in_killboard = true;
 
 var repeat = new Achievement('repeatcustomer','Repeat Customer x 3!','You killed the same person 3 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
-       char = get_local_character(event.payload.character_id);
-       if (char.killstreak==3) {
-           return true;
-       }
+        char = get_local_character(event.payload.character_id);
+        if (char.killstreak==3) {
+            insert_row (null, 'You killed ' + char.name.first + ' 3 times!');
+            return true;
+        }
     }
     return false;
 },['Whats Up_ Whattya been doin_.ogg'],9);
+repeat.text_in_killboard = true;
 
 var learn = new Achievement('learn','Repeat Customer x 4!','You killed the same person 4 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
@@ -702,6 +713,7 @@ var learn = new Achievement('learn','Repeat Customer x 4!','You killed the same 
     }
     return false;
 },['seeyouagainchancho.mp3'],9);
+learn.text_in_killboard = true;
 
 var domination = new Achievement('domination','Repeat Customer x 5!','You killed the same person 5 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
@@ -782,6 +794,7 @@ var blinder = new Achievement('blinder','Blinded, With Science!','You blinded so
     }
     return false;
 },['SheBlindedMe.mp3']);
+
 
 var hatebombs = new Achievement('hatebombs','Bomb Disposal!','You killed someones explosive device!', function (event) {
     if (event.payload.event_name=="GainExperience") {
