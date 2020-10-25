@@ -247,6 +247,7 @@ var revenge = new Achievement('revenge','Revenge!','Killed someone who killed yo
     char = get_local_character(event.payload.character_id);
     if (event.is_kill && !event.is_tk) {
         if (char.primed_for_revenge) {
+            insert_row (null, "You got revenge by killing " + char.name.first);
             char.primed_for_revenge=false;
             return true;
         }

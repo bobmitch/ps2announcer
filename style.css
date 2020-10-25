@@ -462,8 +462,7 @@ span.char.faction {
     object-position: top right;
 
 }
-html {
-    overflow: hidden;
+html.obs {
     overflow-y:hidden !important;
 }
 
