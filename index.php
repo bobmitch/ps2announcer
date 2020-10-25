@@ -260,6 +260,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			  </nav>
 
 			
+			
 
 			<div id='stats' class="field is-grouped is-grouped-multiline moveable">
 				<h5 class='label'>STATS</h5>
@@ -324,6 +325,36 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				</tbody>
 				
 			</table>
+
+			<div id='pop' class="moveable">
+				<h5 class='label'>POPULATION</h5>
+				<!-- <select id='world' name='world'>
+					<option value=''>Please Select</option>
+					<option value='1'>Connery</option>
+					<option value='17'>Emerald</option>
+					<option value='13'>Cobalt</option>
+					<option value='10'>Miller</option>
+					<option value='40'>SolTech</option>
+				</select> -->
+				
+				<div class='pop_info_wrap'>
+					<h1 class='pop_server'>Connery</h1>
+					<h2 class='pop_total'>1</h2>
+				</div>
+				<div class='pop_per_faction'>
+					<div class='pop_faction nc'>
+						<span id='nc_pop'>1</span>
+					</div>
+					<div class='pop_faction tr'>
+						<span id='tr_pop'>1</span>
+					</div>
+					<div class='pop_faction vs'>
+						<span id='vs_pop'>1</span>
+					</div>
+				</div>
+
+				
+			</div>
 
 			
 		</div>

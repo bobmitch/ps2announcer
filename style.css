@@ -693,6 +693,10 @@ body:not(.authorized) .card.checked {
     opacity:0.5;
     background:#ddd !important;
 }
+.obs:hover #pop.moveable:not(.enabled) {
+    display:block !important;
+    opacity:0.3;
+}
 /* .obs:hover #events.moveable:not(.enabled) {
     display:table;
 }
@@ -770,3 +774,57 @@ body:not(.obs) #notifications {
 div#stats .tags {
     filter: drop-shadow(0px 0px 0.25rem black);
 } */
+
+
+#pop {
+    width:35rem;
+    position:relative;
+    opacity:0.7;
+}
+.pop_info_wrap {
+    background: rgba(0,0,0,0.9);
+    color: white;
+    text-align:center;
+    text-transform: uppercase;
+    padding:1em;
+}
+.pop_per_faction {
+    display:flex;
+    background:rgba(0,0,0,0.9);
+    color:white;
+}
+.pop_faction {
+    display:flex;
+    flex-shrink:0;
+    flex-grow:1;
+    width:33%;
+    height:2rem;
+    font-weight:bold;
+    justify-content: center;
+    align-items:center;
+}
+.pop_server {
+    font-size:1em;
+}
+.pop_total {
+    font-size:2em;
+    font-weight:bold;
+}
+.pop_faction.nc {
+    background-color:rgba(0,0,255,0.6);
+}
+.pop_faction.tr {
+    background-color:rgba(255,0,0,0.6);
+}
+.pop_faction.vs {
+    background-color:rgba(255,0,255,0.5);
+}
+#world {
+    display:none;
+}
+#world option {
+    padding:0.5;
+}
+#pop:hover #world {
+    display:inline-block;
+}

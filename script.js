@@ -1,5 +1,7 @@
 
-
+// fisu stats
+window._worldId = 1; // connery 1
+window._environment=0;
 
 // update k/s every 10 seconds
 
@@ -41,7 +43,14 @@ count_one.src = 'audio/one.mp3';
 
 // obs default setup - overridden with values from localstorage 
 var obs_config={};
-obs_config.stats={}; obs_config.events={}; obs_config.notifications={};
+
+obs_config.stats={}; obs_config.events={}; obs_config.notifications={}; obs_config.pop={};
+
+obs_config.pop.world = 1; // default connery for picard
+obs_config.pop.top = 348;
+obs_config.pop.left = 0;
+obs_config.pop.scale = 1.0;
+obs_config.pop.enabled = false;
 obs_config.stats.hidden_stats = [];
 obs_config.stats.scale = 1.0;
 obs_config.events.scale = 1.0;
@@ -58,12 +67,18 @@ obs_config.notifications.enabled = true;
 ls_obs_string = localStorage.getItem('obs_config');
 if (ls_obs_string) {
     // load saved
-    obs_config = JSON.parse(ls_obs_string);
+    // overwrite current values with any in saved - new props will be saved and loaded next time
+    obs_config_loaded = JSON.parse(ls_obs_string);
+    for (const property in obs_config_loaded) {
+        obs_config[property] = obs_config_loaded[property];
+    };
 }
 else {
     // save default
     localStorage.obs_config = JSON.stringify(obs_config);
 }
+
+set_world(obs_config.pop.world);
 
 function set_obs_values(el_id) {
     el = document.getElementById(el_id);
@@ -89,10 +104,43 @@ function set_obs_values(el_id) {
 set_obs_values('stats');
 set_obs_values('events');
 set_obs_values('notifications');
+set_obs_values('pop');
 console.log(obs_config);
 obs_config.stats.hidden_stats.forEach(stat => {
     document.getElementById(stat).classList.add('hide_obs');
 });
+
+function set_world(id) {
+    console.log('setting world to ',id);
+    _worldId = parseInt(id);
+    worldname = "Connery";
+    if (id==1) {
+        worldname = "Connery";
+    }
+    else if (id==17) {
+        worldname = "Emerald";
+    }
+    else if (id==40) {
+        worldname = "SolTech";
+    }
+    else if (id==10) {
+        worldname = "Miller";
+    }
+    else if (id==13) {
+        worldname = "Cobalt";
+    }
+    else if (id==25) {
+        worldname = "Briggs";
+    }
+    obs_config.pop.world = id;
+    document.querySelector('.pop_server').innerText = worldname;
+    localStorage.obs_config = JSON.stringify(obs_config); // save obs config
+}
+
+/* document.getElementById('world').addEventListener('change',function(e){
+    v = e.target.value;
+    set_world(v);
+}); */
 
 // stats visibility handlers
 document.getElementById('stats').addEventListener('click',function(e){
@@ -220,6 +268,7 @@ function insert_row (data, msg) {
 load_config(); // important - do this after previous built-in hardcoded achievements have been created :)
 
 function reset_stats() {
+    
     window.kpm=0;
     window.event_counter = 0;
     window.killstreak=0; // reset by death
@@ -640,7 +689,7 @@ function set_player_offline (char_id) {
 }
 
 function get_player_online_state(char_id) {
-    var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:resolve=online_status&character_id="+char_id+"&c:limit=1&callback=?";
+    var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:resolve=world,online_status&character_id="+char_id+"&c:limit=1&callback=?";
     jQuery.getJSON(url,function(json){
         var search = json;
         if (search.hasOwnProperty('errorCode')) {
@@ -658,6 +707,7 @@ function get_player_online_state(char_id) {
             }
             else {
                 set_player_online(char_id, search.character_list[0].name.first);
+                set_world(search.character_list[0].world_id);
             }
         }
     });
@@ -884,7 +934,7 @@ function process_event(event) {
 
     if (window.user=='n7jpicard') {
         // do count
-        if (is_kill(event)) {
+        if (is_kill(event) && !is_tk(event)) {
             if (killstreak==1) {
                 count_one.volume = parseFloat(document.getElementById('volume').value)/100.0;
                 count_one.play();
@@ -966,6 +1016,9 @@ moveables = document.querySelectorAll('.moveable');
 moveables.forEach(moveable => {
     dragElement(moveable);
     moveable.addEventListener('wheel',function(e){
+        if (!document.body.classList.contains('obs')) {
+            return false;
+        }
         m = e.target.closest('.moveable');
         if (!m.dataset.hasOwnProperty('scale')) {
             m.dataset.scale = 1.0;
@@ -982,6 +1035,9 @@ moveables.forEach(moveable => {
     moveable.addEventListener('contextmenu',function(e){
         if (document.body.classList.contains('obs')) {
             // only in obs mode
+            if (!document.body.classList.contains('obs')) {
+                return true;
+            }
             e.preventDefault();
             m = e.target.closest('.moveable');
             m.classList.toggle('enabled');
@@ -1008,6 +1064,9 @@ function dragElement(elmnt) {
   }
 
   function dragMouseDown(e) {
+    if (!document.body.classList.contains('obs')) {
+        return true;
+    }
     e = e || window.event;
     e.preventDefault();
     // get the mouse cursor position at startup:
@@ -1019,6 +1078,9 @@ function dragElement(elmnt) {
   }
 
   function elementDrag(e) {
+    if (!document.body.classList.contains('obs')) {
+        return true;
+    }
     e = e || window.event;
     e.preventDefault();
     // calculate the new cursor position:
@@ -1037,6 +1099,9 @@ function dragElement(elmnt) {
   }
 
   function closeDragElement() {
+    if (!document.body.classList.contains('obs')) {
+        return false;
+    }
     // stop moving when mouse button is released:
     document.onmouseup = null;
     document.onmousemove = null;
@@ -1119,10 +1184,58 @@ window.onload = function() {
         localStorage.setItem('ps2_players', playerlist_json);
     });
 
-    
+    function add_population(json) {
+        console.log('add_population');
+        console.log(json);
+        connery_online_count = json.ServerOnline[_worldId];
+        document.querySelector('.pop_total').innerText = connery_online_count.toString();
+        connery_nc_online_count = json.FactionOnline[_worldId][2];
+        connery_tr_online_count = json.FactionOnline[_worldId][3];
+        connery_vs_online_count = json.FactionOnline[_worldId][1];
+        document.querySelector('#nc_pop').innerText = connery_nc_online_count.toString();
+        document.querySelector('#tr_pop').innerText = connery_tr_online_count.toString();
+        document.querySelector('#vs_pop').innerText = connery_vs_online_count.toString();
+    }
+    function add_continent_population(json) {
+        console.log('add_continent_population');
+        console.log(json);
+    }
 
     window.socket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax');
     window.logoutsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax');
+    window.ws = new WebSocket("wss://ps2.fisu.pw:36211/"); // stats from fisu
+    ws.onmessage = function(evt) {
+        var json = JSON.parse(evt.data);
+        switch (json.Type) {
+        /* case "ActivityStatistics":
+            parse_activity(json);
+            break;
+        case "OnlineCountHistory":
+            parse_population(json);
+            break; */
+        case "OnlineCount":
+            add_population(json);
+            break;
+        case "PlayerCount":
+            add_continent_population(json.CountFaction[_worldId]);
+            break;
+        default:
+            break
+        }
+    }
+    ;
+    ws.onopen = function() {
+        ws.send(JSON.stringify({
+            Type: "Init",
+            Action: "Activity",
+            Environment: _environment,
+            WorldId: _worldId
+        }))
+    }
+    ;
+    ws.onerror = function(evt) {
+        console.log(evt)
+    }
 
 
     logoutsocket.onmessage = function(data) {
@@ -1171,6 +1284,7 @@ window.onload = function() {
             }
             if (data.payload.event_name=="PlayerLogin") {
                 set_player_online (data.payload.character_id);
+                set_world(data.payload.world_id);
             }
             //messagesList.innerHTML += '<hr>';
             //messagesList.innerHTML += '<li class="received"><span>Received:</span>' + message + '</li>';
