@@ -462,7 +462,7 @@ span.char.faction {
     object-position: top right;
 
 }
-html {
+html.isobs {
     overflow-y:hidden !important;
 }
 

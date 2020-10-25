@@ -995,7 +995,7 @@ document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
         if (document.getElementsByTagName('body')[0].classList.contains('obs')) {
             e.preventDefault();
             document.getElementsByTagName('body')[0].classList.toggle('obs');
-            //document.getElementsByTagName('html')[0].classList.toggle('obs');
+            document.getElementsByTagName('html')[0].classList.toggle('isobs');
         }
     }
 });
@@ -1364,7 +1364,7 @@ document.querySelector('#add_custom_trigger').addEventListener('click',function(
 
 document.getElementById('toggle_view').addEventListener('click',function(){
     document.getElementsByTagName('body')[0].classList.toggle('obs');
-    //document.getElementsByTagName('html')[0].classList.toggle('obs');
+    document.getElementsByTagName('html')[0].classList.toggle('isobs');
 });
 
 
