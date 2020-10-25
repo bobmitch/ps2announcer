@@ -1185,8 +1185,8 @@ window.onload = function() {
     });
 
     function add_population(json) {
-        console.log('add_population');
-        console.log(json);
+        //console.log('add_population');
+        //console.log(json);
         connery_online_count = json.ServerOnline[_worldId];
         document.querySelector('.pop_total').innerText = connery_online_count.toString();
         connery_nc_online_count = json.FactionOnline[_worldId][2];
@@ -1197,8 +1197,8 @@ window.onload = function() {
         document.querySelector('#vs_pop').innerText = connery_vs_online_count.toString();
     }
     function add_continent_population(json) {
-        console.log('add_continent_population');
-        console.log(json);
+        //console.log('add_continent_population');
+        //console.log(json);
     }
 
     window.socket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax');
