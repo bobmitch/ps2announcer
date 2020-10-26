@@ -27,6 +27,7 @@ if (window.hasOwnProperty('obsstudio')) {
     // do whatever is needed!
     //alert('obs');
     document.getElementsByTagName('body')[0].classList.add('obs');
+    document.getElementsByTagName('html')[0].classList.add('isobs');
     document.getElementsByTagName('body')[0].classList.add('obshost');
     splash = document.getElementById('splash');
     splash.parentNode.removeChild(splash);
@@ -994,8 +995,8 @@ document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
     if(code==32) {
         if (document.getElementsByTagName('body')[0].classList.contains('obs')) {
             e.preventDefault();
-            document.getElementsByTagName('body')[0].classList.toggle('obs');
-            document.getElementsByTagName('html')[0].classList.toggle('isobs');
+            document.getElementsByTagName('body')[0].classList.remove('obs');
+            document.getElementsByTagName('html')[0].classList.remove('isobs');
         }
     }
 });
@@ -1363,8 +1364,8 @@ document.querySelector('#add_custom_trigger').addEventListener('click',function(
 });
 
 document.getElementById('toggle_view').addEventListener('click',function(){
-    document.getElementsByTagName('body')[0].classList.toggle('obs');
-    document.getElementsByTagName('html')[0].classList.toggle('isobs');
+    document.getElementsByTagName('body')[0].classList.add('obs');
+    document.getElementsByTagName('html')[0].classList.add('isobs');
 });
 
 
