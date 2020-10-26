@@ -338,6 +338,10 @@ span.code {
     animation: hide 10s forwards;
 }
 
+.obsonly.bobmitchonly {
+    display:block;
+}
+
 .authorized .claimedonly {
     display:none;
 }
@@ -400,6 +404,12 @@ table tbody td.event_info {
     background: rgba(0,0,0,0.7);
     border-radius: 0.5em;
 }
+.obs tr.death td.event_info {
+    background: rgba(88,0,0,0.5);
+}
+.obs tr.revive td.event_info {
+    background: rgba(0,88,0,0.6);
+}
 .obs table td {
     border:none !important;
 }
@@ -424,17 +434,9 @@ span.char.faction {
     opacity:0.5;
 }
 
-@keyframes showanimation {
-    0%   {opacity: 1; transform:scale(0.8) translateX(-30vw); }
-    90%  {opacity: 1; transform:scale(0.5) translateX(0vw);}
-    100% {opacity: 0; transform:scale(0) translateX(1000vw);}
-}
-.animation.showanimation {
-    animation: showanimation 10s forwards;
-}
-
 #animations {
-    display:none;
+    pointer-events: none;
+    z-index:1000; /* 1 higher than notifications! */
 }
 .obs #animations {
     display:block;
@@ -450,18 +452,12 @@ span.char.faction {
     left:0;
     width:100vw;
     height:100vh;
-    opacity:0;
-    display:flex;
-    justify-content: flex-end;
-    align-items: center;
+    display:none;
 }
-.animation .animation_image {
-    max-width:30vw;
-    max-height:30vh;
-    object-fit: contain;
-    object-position: top right;
+.animation.active {
+    display:block;
+}
 
-}
 html.isobs {
     overflow-y:hidden !important;
 }
@@ -828,3 +824,67 @@ div#stats .tags {
 #pop:hover #world {
     display:inline-block;
 }
+
+
+
+/* animations */
+body:not(.bobmitch) #animations {
+    display:none;
+}
+.animation * {
+    position:absolute;
+    display:block;
+    background-position:center;
+    background-size:contain;
+    background-repeat: no-repeat;
+}
+.animation img {
+    object-fit: contain;
+}
+/* roadkill */
+#roadkill_harasser {
+    width:50vmin;
+    left:-50vmin;
+    top:50vh;
+}
+#roadkill_tr_player {
+    width:20vmin;
+    left:50vw;
+    top:36vh;
+    opacity:0;
+}
+#animation_roadkill.active #roadkill_harasser {
+    animation-duration:2s;
+    animation-timing-function: linear;
+    animation-name:harrasser_left_to_right;
+}
+@keyframes harrasser_left_to_right{
+    from {left:-70vmin;}
+    to {left:120vw;}
+}
+#animation_roadkill.active #roadkill_tr_player {
+    animation-duration:2s;
+    animation-timing-function: linear;
+    animation-name:roadkill_fly;
+}
+@keyframes roadkill_fly{
+    5% {opacity:1; transform:rotate(0deg) ;}
+    40% {left:50vw; transform:rotate(0deg);}
+    to {left:120vw; transform:rotate(90deg); opacity:1; }
+}
+/* headshot */
+#headshot_headshot {
+    width:50vmin;
+    left:-50vmin;
+    top:35vh;
+    opacity:0.7;
+}
+#animation_headshot.active #headshot_headshot {
+    animation-duration:3s;
+    animation-name:headshot_ltr;
+}
+@keyframes headshot_ltr{
+    from {left:-50vw;}
+    to {left:120vw;  }
+}
+/* end animations */

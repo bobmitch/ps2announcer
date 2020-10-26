@@ -181,7 +181,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		</script>
 
 	</head>
-	<body class='<?php if ($server_claim_code) {echo " claimed ";}?> <?php if (!$server_claim_code) {echo " unclaimed ";}?> <?php if (!$user) {echo " vanilla ";}?>'>
+	<body class='<?php if ($server_claim_code) {echo " claimed ";}?> <?php if (!$server_claim_code) {echo " unclaimed ";}?> <?php if (!$user) {echo " vanilla ";} else { echo " " . $user . " ";}?>'>
 		<div id='splash' class='notobs'>
 			<div class='contain'>
 				<h1 class='splashtitle'>Planetside 2 Announcer</h1>
@@ -617,9 +617,15 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<h5 class='label'>IMAGES</h5>
 		</section>
 
-		<!-- <div id='animations' class='obs_only'>
-
-		</div> -->
+		<div id='animations' class='obs_only bobmitch_only'>
+			<div class='animation' id='animation_roadkill'>
+				<img src='/ps2/images/harasser.png' id='roadkill_harasser'></img>
+				<img src='/ps2/images/tr_player.png' id='roadkill_tr_player'></img>
+			</div>
+			<div class='animation' id='animation_headshot'>
+				<img src='/ps2/images/headshot.png' id='headshot_headshot'></img>
+			</div>
+		</div>
 
 		<script>
 			window.user = "<?php if ($user) {echo $user;} else {echo 'bobmitch';}?>"; // load bobmitch if no user passed

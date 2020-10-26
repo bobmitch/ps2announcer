@@ -475,7 +475,7 @@ function display_event(data) {
             if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.character_id)) {
                 msg+='<span class="event_type you_revived">You revived </span>';
                 console.log(msg);
-                cls+=' info ';
+                cls+=' revive info ';
                 msg+=print_character(data.payload.other_id, data);
                 revive_count_streak++;
             }
@@ -485,7 +485,7 @@ function display_event(data) {
             else if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.other_id)) {
                 msg+='<span class="event_type you_revived">You were revived by </span>';
                 console.log(msg);
-                cls+=' info ';
+                cls+=' revive info ';
                 msg+=print_character(data.payload.character_id, data);
                 window.last_res_timestamp = data.payload.timestamp;
                 window.deaths--;
@@ -980,6 +980,19 @@ function process_event(event) {
             if (triggered_count>1) {
                 // early exit - only play/show at most 2 triggers
                 break;
+            }
+            if (triggered_count==0) {
+                trigger_id = window.cur_achievements[sorted_index].id;
+                animation_el = document.getElementById('animation_' + trigger_id); // e.g. animation_roadkill
+                if (animation_el) {
+                    // ooh, we have an animation
+                    // todo - check if animations are turned on
+                    animation_el.classList.remove('active'); // remove first to re-trigger anim if already playing
+                    animation_el.classList.add('active');
+                    setTimeout(function(el){
+                        el.classList.remove('active');
+                    },4000,animation_el); // max animation length of 4 seconds, then active removed
+                }
             }
             window.cur_achievements[sorted_index].trigger(notifications_only);
             triggered_count++;

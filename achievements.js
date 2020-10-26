@@ -485,7 +485,7 @@ var sneaker_death = new Achievement('sneakerdeath','Long Range Wanker!','You wer
         }
     }
     return false;
-},['invisibleman.mp3'],4);
+},['invisibleman.mp3'],8);
 
 
 var max_kill = new Achievement('minmax','Min Max!','You killed a tiny brain person in a really big suit!', function (event) {
