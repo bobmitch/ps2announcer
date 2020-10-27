@@ -727,12 +727,12 @@ var repeat = new Achievement('repeatcustomer','Repeat Customer x 3!','You killed
     }
     return false;
 },['Whats Up_ Whattya been doin_.ogg'],9);
-repeat.text_in_killboard = true;
 
 var learn = new Achievement('learn','Repeat Customer x 4!','You killed the same person 4 times in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
        char = get_local_character(event.payload.character_id);
        if (char.killstreak==4) {
+        insert_row (null, 'You killed ' + char.name.first + ' 4 times!');
            return true;
        }
     }
@@ -744,6 +744,7 @@ var domination = new Achievement('domination','Repeat Customer x 5!','You killed
     if (event.is_kill && !event.is_tk) {
        char = get_local_character(event.payload.character_id);
        if (char.killstreak==5) {
+            insert_row (null, 'You killed ' + char.name.first + ' 5 times!');
            return true;
        }
     }
@@ -754,6 +755,7 @@ var recursion = new Achievement('recursion','Repeat Customer x 6!','You killed t
     if (event.is_kill && !event.is_tk) {
        char = get_local_character(event.payload.character_id);
        if (char.killstreak==6) {
+        insert_row (null, 'You killed ' + char.name.first + ' 6 times!');
            return true;
        }
     }
@@ -764,6 +766,7 @@ var recursionrecursion = new Achievement('recursionrecursion','Repeat Customer x
     if (event.is_kill && !event.is_tk) {
        char = get_local_character(event.payload.character_id);
        if (char.killstreak==6) {
+        insert_row (null, 'You killed ' + char.name.first + ' 10 times!');
            return true;
        }
     }
@@ -774,6 +777,7 @@ var nemesis = new Achievement('nemesis','Nemesis!','You were killed by the same 
     if (event.is_death && !event.is_tk) {
        char = get_local_character(event.payload.character_id);
        if (char.deathstreak>2) {
+            insert_row (null, 'You were killed by ' + char.name.first + ' ' + char.deathstreak.toString() + ' times!');
            return true;
        }
     }
