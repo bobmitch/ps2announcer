@@ -1054,4 +1054,22 @@ body:not(.bobmitch) #animations {
     }
 }
 
+/* mozzie */
+#mozzie {
+    width:25vw;
+    top:35vh;
+    right:-25vw;
+    animation-name:mozzie_rtl;
+    animation-duration:4s;
+    animation-timing-function: linear;
+}
+@keyframes mozzie_rtl {
+    from {
+        right:-45vw;
+    }
+    to {
+        right:125vw;
+    }
+}
+
 /* end animations */

@@ -570,6 +570,24 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
 
+var mozzie = new Achievement('mozzie','Blood Sucker!','You got killed by a Mosquito Banshee!', function (event) {
+    if (!event.is_kill && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=="0") {
+            return false;
+        }
+        weapon = weapons[event.payload.attacker_weapon_id];
+        if (weapon) {
+            if (weapon.item_id=="4906") {
+                return true;
+            }
+        }
+        else {
+            console.log('unknown weapon for event',event);
+        }
+    }
+    return false;
+},['rudeness.mp3','bus-driver-crap.mp3']);
+
 var shotgun_shogun = new Achievement('shotgun_shogun','Shotgun Shogun!','4 shotgun kills in a row, within 5 seconds of each other!', function (event) {
     if (event.is_tk) {
         return false;

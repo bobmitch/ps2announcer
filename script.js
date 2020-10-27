@@ -1011,15 +1011,20 @@ function process_event(event) {
     var notifications_only = false;
     window.cur_achievements.sort((a, b) => (a.priority > b.priority) ? 1 : -1);
     var triggered_count=0;
+    var triggered_animation_count=0;
     for (sorted_index=0; sorted_index<window.cur_achievements.length; sorted_index++) {
         if (window.cur_achievements[sorted_index].enabled) {
             if (triggered_count>1) {
                 // early exit - only play/show at most 2 triggers
                 break;
             }
-            if (triggered_count==0) {
+            if (triggered_animation_count==0) {
                 // for highest priority trigger, play the animation (if available)
-                trigger_animation(window.cur_achievements[sorted_index].id);
+                animation_el = document.getElementById('animation_' + window.cur_achievements[sorted_index].id); // e.g. animation_roadkill
+                if (animation_el) {
+                    trigger_animation(window.cur_achievements[sorted_index].id);
+                    triggered_animation_count++;
+                }
             }
             window.cur_achievements[sorted_index].trigger(notifications_only);
             triggered_count++;
