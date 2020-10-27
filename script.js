@@ -170,8 +170,13 @@ document.getElementById('stats').addEventListener('click',function(e){
 // end obs config setup
 
 var countkills = false;
+var fullscreenanimations = false;
+
 countkills = JSON.parse(localStorage.getItem('ps2_countkills'));
 document.getElementById('countkills').checked = countkills;
+
+fullscreenanimations = JSON.parse(localStorage.getItem('ps2_fullscreenanimations'));
+document.getElementById('fullscreenanimations').checked = fullscreenanimations;
 
 var stored_playerlist = JSON.parse(localStorage.getItem('ps2_players'));
 if (stored_playerlist) {
@@ -317,6 +322,9 @@ function reset_stats() {
 }
 
 function trigger_animation(trigger_id) {
+    if (!window.fullscreenanimations) {
+        return false;
+    }
     // make animation, if available, active 
     animation_el = document.getElementById('animation_' + trigger_id); // e.g. animation_roadkill
     if (animation_el) {
@@ -1759,6 +1767,12 @@ document.getElementById('countkills').addEventListener('change',function(e) {
     window.countkills = e.target.checked;
     localStorage.setItem('ps2_countkills',window.countkills);
 });
+
+document.getElementById('fullscreenanimations').addEventListener('change',function(e) {
+    window.fullscreenanimations = e.target.checked;
+    localStorage.setItem('ps2_fullscreenanimations',window.fullscreenanimations);
+});
+
 
 // glogal volume
 

@@ -415,6 +415,11 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					</label>
 				</div>
 				<p class='info'>TTS says killcount in absence of any other audio triggers</p>
+				<div class='control flex'>
+					<label class='checkbox' for='fullscreenanimations'>OBS Fullscreen Animations
+						<input type='checkbox' id='fullscreenanimations'/>
+					</label>
+				</div>
 				<hr>
 				<div id='achievments_list'></div>
 				<p class='vanillaonly'>
@@ -631,6 +636,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			</div>
 			<div class='animation' id='animation_streakend'>
 				<img src='/ps2/images/sadfrog.png' id='sadfrog'></img>
+			</div>
+			<div class='animation' id='animation_decikills'>
+				<img src='/ps2/images/combine.png' id='combine'></img>
 			</div>
 			<div class='animation' id='animation_badres'>
 				<img src='/ps2/images/tf2medic.png' id='tf2medic'></img>

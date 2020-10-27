@@ -907,7 +907,8 @@ body:not(.loading) #spinner {
 
 /* animations */
 body:not(.bobmitch) #animations {
-    display:none;
+    /* removing for now - new options for animations in manage triggers */
+    /* display:none; */
 }
 .animation * {
     position:absolute;
@@ -1057,6 +1058,24 @@ body:not(.bobmitch) #animations {
     }
     to {
         left:125vw;
+    }
+}
+
+/* decikills five in a row */
+#combine {
+    width:50vw;
+    bottom:0;
+    animation-name:combine_ltr;
+    animation-duration:4s;
+    animation-timing-function: linear;
+    left:-50vw;
+}
+@keyframes combine_ltr {
+    from {
+        left:-50vw;
+    }
+    to {
+        left:150vw;
     }
 }
 
