@@ -932,7 +932,7 @@ body:not(.bobmitch) #animations {
     opacity:0;
 }
 #animation_roadkill.active #roadkill_harasser {
-    animation-duration:2s;
+    animation-duration:3s;
     animation-timing-function: linear;
     animation-name:harrasser_left_to_right;
 }
@@ -941,7 +941,7 @@ body:not(.bobmitch) #animations {
     to {left:120vw;}
 }
 #animation_roadkill.active #roadkill_tr_player {
-    animation-duration:2s;
+    animation-duration:3s;
     animation-timing-function: linear;
     animation-name:roadkill_fly;
 }
@@ -952,17 +952,106 @@ body:not(.bobmitch) #animations {
 }
 /* headshot */
 #headshot_headshot {
-    width:50vmin;
-    left:-50vmin;
+    width:50vw;
+    left:-50vw;
     top:35vh;
     opacity:0.7;
 }
 #animation_headshot.active #headshot_headshot {
-    animation-duration:3s;
+    animation-duration:4s;
     animation-name:headshot_ltr;
+    animation-timing-function: ease-in-out;
 }
 @keyframes headshot_ltr{
     from {left:-50vw;}
+    20% {left:24vw;}
+    /* 50% {left:25vw;} */
+    80% {left:26vw;}
     to {left:120vw;  }
 }
+/* welcome */
+#welcome_image {
+    width:75vw;
+    top:35vh;
+    scale:0;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    animation-name:welcome_anim;
+    animation-duration:4s;
+    opacity:0;
+    transform:scale(0);
+}
+@keyframes welcome_anim {
+    from {
+        transform:scale(0) rotate(-360deg);
+        opacity:0;
+    }
+    50% {
+        transform:scale(1) rotate(0);
+        opacity:1;
+    }
+    70% {
+        transform:scale(1) rotate(0);
+        opacity:1;
+    }
+    75% {
+        transform:scale(1) rotate(0); opacity:1;
+    }
+    to {
+        transform:scale(10) rotate(360deg); opacity:0;
+    }
+}
+
+/* streakend */
+#sadfrog {
+    width:25vw;
+    bottom:0;
+    animation-name:streak_ltr;
+    animation-duration:4s;
+    animation-timing-function: linear;
+    left:-25vw;
+}
+@keyframes streak_ltr {
+    from {
+        left:-25vw;
+    }
+    to {
+        left:125vw;
+    }
+}
+
+/* badres */
+#tf2medic {
+    width:45vw;
+    bottom:-10vw;
+    right:-45vw;
+    animation-name:medic_shake;
+    animation-duration:4s;
+    animation-timing-function: ease-in-out;
+}
+@keyframes medic_shake {
+    from {
+        right:-45vw;
+        bottom:-15vw;
+        transform:rotate(0deg);
+    }
+    40% {
+        right:0vw;
+        bottom:-5vw;
+        transform:rotate(-10deg);
+    }
+    60% {
+        right:0vw;
+        bottom:-5vw;
+        transform:rotate(-10deg);
+    }
+    to {
+        right:-45vw;
+        bottom:-10vw;
+        transform:rotate(0deg);
+    }
+}
+
 /* end animations */

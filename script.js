@@ -272,7 +272,8 @@ function insert_row (data, msg) {
 
 
 
-load_config(); // important - do this after previous built-in hardcoded achievements have been created :)
+load_config(true); // important - do this after previous built-in hardcoded achievements have been created :)
+// true is passed to signify intitial load - this allows us to add new hardcoded sounds that are not overwritten by old saves
 
 function reset_stats() {
     
@@ -1631,7 +1632,7 @@ function load_config() {
                     }
                     if (ach) {
                         // found config for an achievement
-                        // loop through sounds and add
+                        // TODO make this work for newly added default sounds
                         ach.soundfiles=[];
                         ach.sounds=[];
                         ach.volumes=[];

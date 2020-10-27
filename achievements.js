@@ -548,7 +548,7 @@ var norobots = new Achievement('norobots',"Kill The Toasters!",'You killed a spi
         }
     }
     return false;
-},['wallescream.mp3','antispitty1.mp3']);
+},['wallescream.mp3','antispitty1.mp3','badrobot.mp3']);
 
 var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by a shotgun!', function (event) {
     
