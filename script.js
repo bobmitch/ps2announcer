@@ -3,6 +3,15 @@
 window._worldId = 1; // connery 1
 window._environment=0;
 
+window.addEventListener('load', function () {
+    document.body.classList.remove('loading');
+    if (window.hasOwnProperty('obsstudio')) {
+        // hide splash in obs once loaded
+        splash = document.getElementById('splash');
+        splash.parentNode.removeChild(splash);
+    }
+})
+
 // update k/s every 10 seconds
 
 setInterval(function(){
@@ -29,9 +38,6 @@ if (window.hasOwnProperty('obsstudio')) {
     document.getElementsByTagName('body')[0].classList.add('obs');
     document.getElementsByTagName('html')[0].classList.add('isobs');
     document.getElementsByTagName('body')[0].classList.add('obshost');
-    splash = document.getElementById('splash');
-    splash.parentNode.removeChild(splash);
-    
 }
 else {
     document.getElementsByTagName('body')[0].classList.add('testobs');
@@ -307,6 +313,35 @@ function reset_stats() {
     window.multikill_window = 10; // secs to multikill reset
     window.ragequit_watchlist = {};
     update_stats();
+}
+
+function trigger_animation(trigger_id) {
+    // make animation, if available, active 
+    animation_el = document.getElementById('animation_' + trigger_id); // e.g. animation_roadkill
+    if (animation_el) {
+        // ooh, we have an animation
+        // todo - check if animations are turned on
+        animation_el.classList.add('active');
+        // retrigger css animation by cloning element - https://css-tricks.com/restart-css-animation/
+        var newone = animation_el.cloneNode(true);
+        animation_el.parentNode.replaceChild(newone, animation_el);
+
+        // remove active after 4 seconds
+        // check for previous timer and clear and replace
+        index = 'animation_timeout_for_'+trigger_id;
+        //console.log(index);
+        if (window.hasOwnProperty(index)) {
+            if (window[index]!==null) {
+                //console.log('clearing running animation timeout');
+                clearTimeout(window[index]); // clear old timer, extending 4 second window
+            }
+        }
+        window[index] = setTimeout(function(trigger_id){
+            animation_el = document.getElementById('animation_' + trigger_id);
+            animation_el.classList.remove('active');
+            window['animation_timeout_for_'+trigger_id]=null; // clear anim for starting again
+        }, 4000, trigger_id); // max animation length of 4 seconds, then active removed
+    }
 }
 
 function update_stats() {
@@ -982,17 +1017,8 @@ function process_event(event) {
                 break;
             }
             if (triggered_count==0) {
-                trigger_id = window.cur_achievements[sorted_index].id;
-                animation_el = document.getElementById('animation_' + trigger_id); // e.g. animation_roadkill
-                if (animation_el) {
-                    // ooh, we have an animation
-                    // todo - check if animations are turned on
-                    animation_el.classList.remove('active'); // remove first to re-trigger anim if already playing
-                    animation_el.classList.add('active');
-                    setTimeout(function(el){
-                        el.classList.remove('active');
-                    },4000,animation_el); // max animation length of 4 seconds, then active removed
-                }
+                // for highest priority trigger, play the animation (if available)
+                trigger_animation(window.cur_achievements[sorted_index].id);
             }
             window.cur_achievements[sorted_index].trigger(notifications_only);
             triggered_count++;

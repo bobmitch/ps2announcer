@@ -181,11 +181,12 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		</script>
 
 	</head>
-	<body class='<?php if ($server_claim_code) {echo " claimed ";}?> <?php if (!$server_claim_code) {echo " unclaimed ";}?> <?php if (!$user) {echo " vanilla ";} else { echo " " . $user . " ";}?>'>
-		<div id='splash' class='notobs'>
+	<body class='loading <?php if ($server_claim_code) {echo " claimed ";}?> <?php if (!$server_claim_code) {echo " unclaimed ";}?> <?php if (!$user) {echo " vanilla ";} else { echo " " . $user . " ";}?>'>
+		<div id='splash' class=' loading'>
 			<div class='contain'>
 				<h1 class='splashtitle'>Planetside 2 Announcer</h1>
-				<button onclick='document.querySelector("#splash").classList.add("hide");allow_voicepack();' class='button btn is-warning is-large'>Enable Audio / Start</button>
+				<div id='spinner' class='loadingonly spinner'></div>
+				<button id='start_button' onclick='document.querySelector("#splash").classList.add("hide");allow_voicepack();' class='loaded button btn is-warning is-large'>Enable Audio / Start</button>
 				<p class='splashabout'>By [BAX] BobMitch</p>
 			</div>
 		</div>
