@@ -1023,7 +1023,7 @@ function process_event(event) {
                 animation_el = document.getElementById('animation_' + window.cur_achievements[sorted_index].id); // e.g. animation_roadkill
                 if (animation_el) {
                     trigger_animation(window.cur_achievements[sorted_index].id);
-                    triggered_animation_count++;
+                    //triggered_animation_count++; // infinite animations for now!!
                 }
             }
             window.cur_achievements[sorted_index].trigger(notifications_only);

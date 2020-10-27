@@ -919,6 +919,7 @@ body:not(.bobmitch) #animations {
 .animation img {
     object-fit: contain;
 }
+
 /* roadkill */
 #roadkill_harasser {
     width:50vmin;
@@ -950,6 +951,42 @@ body:not(.bobmitch) #animations {
     40% {left:50vw; transform:rotate(0deg);}
     to {left:120vw; transform:rotate(90deg); opacity:1; }
 }
+
+/* nocar */
+#nocar_harasser {
+    width:50vmin;
+    left:-50vmin;
+    top:50vh;
+}
+#nocar_boom {
+    width: 40vmin;
+    left: 44vw;
+    top: 41vh;
+    opacity: 0;
+    transform: scale(0);
+}
+#animation_nocar.active #nocar_harasser {
+    animation-duration:2s;
+    animation-timing-function: linear;
+    animation-name:nocar_left_to_right;
+}
+@keyframes nocar_left_to_right {
+    from {left:-70vmin;}
+    98% {left:40vw; opacity:1;}
+    to {left:40vw; opacity:0;}
+}
+#animation_nocar.active #nocar_boom {
+    animation-duration:2s;
+    animation-delay:2s;
+    animation-timing-function: linear;
+    animation-name:nocar_boom;
+}
+@keyframes nocar_boom {
+    from {opacity:0; transform:scale(0.5);}
+    5% {opacity:1; transform:scale(1) ;}
+    to {opacity:0; transform:scale(2);}
+}
+
 /* headshot */
 #headshot_headshot {
     width:50vw;
@@ -969,6 +1006,7 @@ body:not(.bobmitch) #animations {
     80% {left:26vw;}
     to {left:120vw;  }
 }
+
 /* welcome */
 #welcome_image {
     width:75vw;

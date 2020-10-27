@@ -334,6 +334,7 @@ var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who le
 var decikills = new Achievement('pentakill','PentaKill!','5 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==5) {
+            insert_row (event, "5 Kills In A Row!");
             return (true);
         }
     }
@@ -343,6 +344,7 @@ var decikills = new Achievement('pentakill','PentaKill!','5 unanswered kills in 
 var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==10) {
+            insert_row (event, "10 Kills In A Row!");
             return (true);
         }
     }
@@ -352,6 +354,7 @@ var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a
 var decakills2 = new Achievement('decakill2','20 in a row!','20 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==20) {
+            insert_row (event, "20 Kills In A Row!");
             return (true);
         }
     }
@@ -361,6 +364,7 @@ var decakills2 = new Achievement('decakill2','20 in a row!','20 unanswered kills
 var decakills3 = new Achievement('decakill3','30 in a row!!','30 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==30) {
+            insert_row (event, "30 Kills In A Row!");
             return (true);
         }
     }
@@ -370,6 +374,7 @@ var decakills3 = new Achievement('decakill3','30 in a row!!','30 unanswered kill
 var decakills4 = new Achievement('decakill4','40 in a row!!','40 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==40) {
+            insert_row (event, "40 Kills In A Row!");
             return (true);
         }
     }
@@ -379,6 +384,7 @@ var decakills4 = new Achievement('decakill4','40 in a row!!','40 unanswered kill
 var decakills5 = new Achievement('decakill5','50 in a row!!','50 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==50) {
+            insert_row (event, "50 Kills In A Row!");
             return (true);
         }
     }
@@ -790,7 +796,6 @@ var assister = new Achievement('helper','Santas Little Helper!','You assisted ki
             assist_streak++;
             if (assist_streak%5==0 && assist_streak>0) {
                 var msg = "You are Santa's Little Helper! 5 assists in a row without any kills yourself!";
-                //msg += print_character(event.character_id);
                 insert_row (event, msg);
                 return true;
             }

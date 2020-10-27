@@ -638,6 +638,10 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class='animation' id='animation_mozzie'>
 				<img src='/ps2/images/mozzie.png' id='mozzie'></img>
 			</div>
+			<div class='animation' id='animation_nocar'>
+				<img src='/ps2/images/harasser.png' id='nocar_harasser'></img>
+				<img src='/ps2/images/boom.png' id='nocar_boom'></img>
+			</div>
 		</div>
 
 		<script>
