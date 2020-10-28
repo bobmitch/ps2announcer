@@ -140,7 +140,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 <html>
 	<head>
-		<title>Planetside Announcer - beta!</title>
+		<title>Planetside Announcer</title>
 		<meta charset="UTF-8">
 		<meta name="description" content="Planetside 2 Announcer">
 		<meta name="keywords" content="planetside, announcer, funny">
@@ -231,9 +231,6 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 							  </a>
 							<a id='show_about_modal' class="navbar-item">
 							  About
-							</a>
-							<a id='show_feedback_modal' class="navbar-item">
-							  Feedback
 							</a>
 							<!-- <a id='show_export_modal' class="navbar-item">
 								Export/Import Soundpack
@@ -445,7 +442,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				
 			  </header>
 			  <section class="modal-card-body">
-			  	<p>OBS - Quick guide: Add Browser source in OBS, use your soundpack URL. Set browser size to 1920x1080. Right click, select interactive, then move elements around to suit.</p>
+			  	<p>For all help/discussion/support for this tool, go to <a href="https://discord.gg/JMEnq4a">BobMitch's discord</a>.</p>
+				<hr>
+			  	<p>OBS - <a href="https://docs.google.com/document/d/1x0GS700wFmZqSRidfKzLpTQ5AhIdwTP2_XxK_7ozA5U/edit?usp=sharing">Quick guide</a></p>
 			  	<hr>
 				<p>Any external audio files must be hosted on HTTPS (secure) sites. Dropbox links can be used by changing up the shared URL slightly:</p>
 				<p>If the original shared URL is:</p>
@@ -457,26 +456,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				<p>For Apache add: <span class='code'>Header set Access-Control-Allow-Origin "https://bobmitch.com"</span> to your .htaccess file.</p>
 				<p>For nginx see <a target='_blank' href='https://enable-cors.org/server_nginx.html'>these instructions</a>. Be sure to replace the wildcard '*' with 'bobmitch.com' for added security.</p>
 				<hr>
-				<p><strong>Any custom sounds add to built-in triggers will prevent default sounds from playing!</strong></p>
+				<p><strong>Any custom sounds added to built-in triggers will prevent default sounds from playing!</strong></p>
 			  </section>
 			  
 			</div>
 		  </div>
 
-		  <div id='feedback_modal' class="modal">
-			<div class="modal-background"></div>
-			<div class="modal-card">
-			  <header class="modal-card-head">
-				<p class="modal-card-title">Feedback</p>
-				<button class="delete" aria-label="close"></button>
-				
-			  </header>
-			  <section class="modal-card-body">
-				<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScsWiI1_GUhgXrBiK4fN7JqBZpHCzOfmbL4VvC2S8m_BnHnpA/viewform?embedded=true" width="640" height="737" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-			  </section>
-			  
-			</div>
-		  </div>
+		  
 
 		  <div id='custom_trigger_modal' class="modal">
 			<div class="modal-background"></div>
@@ -583,11 +569,11 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				
 			  </header>
 			  <section class="modal-card-body">
-					<p>First of all, this is <em>not</em> a replacement for Recursion's stat tracker application - there is no  crosshair overlay, permanent stat tracking, achievement logging, or any of the myriad cool things that software offers - 
+					<p>First of all, this is <em>not</em> a replacement for Recursion's stat tracker application - there is no  crosshair overlay, in-game overlayed stats/popups, permanent stat tracking, achievement logging, or any of the myriad cool things that software offers - 
 					this is simply just fun little web project to make funny noises when funny things happen in Planetside 2 without having to install any applications or 
 					register with any third-party sites.</p>
-					<p>At the time of writing, this site is not intended for widespread public consumption - bugs are plentiful and the experience may break at any second, so don't get mad if things don't work, and don't share this <em>too</em> far and wide until it becomes a bit more polished! </p>
-					<p>Please use the feedback for to give suggestions or report problems - thanks!</p>
+					
+					<p>For help or to discuss this tool, <a href="https://discord.gg/JMEnq4a">come to my discord server</a>.</p>
 					<hr>
 					<h4 class='is-4 title'>Thank You!</h4>
 					<p>Special thanks to <a href="https://twitch.tv/myian" target="_blank">Myian</a> for help with testing, coding, debugging and suggestions.</p>

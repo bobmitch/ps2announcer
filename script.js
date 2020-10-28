@@ -321,8 +321,8 @@ function reset_stats() {
     update_stats();
 }
 
-function trigger_animation(trigger_id) {
-    if (!window.fullscreenanimations) {
+function trigger_animation(trigger_id, force=false) {
+    if (!window.fullscreenanimations && !force) {
         return false;
     }
     // make animation, if available, active 
@@ -1052,6 +1052,10 @@ document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
             document.getElementsByTagName('html')[0].classList.remove('isobs');
         }
     }
+    if (e.key=='r' && document.body.classList.contains('obs')) {
+        trigger_animation('nocar',true);
+    }
+
 });
 
 document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
@@ -1370,10 +1374,7 @@ document.querySelector('#playername').addEventListener('click',function(e){
     document.querySelector('#playermodal').classList.toggle('is-active');
 });
 
-document.querySelector('#show_feedback_modal').addEventListener('click',function(e){
-    e.preventDefault();
-    document.querySelector('#feedback_modal').classList.toggle('is-active');
-});
+
 
 document.querySelector('#show_about_modal').addEventListener('click',function(e){
     e.preventDefault();
