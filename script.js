@@ -349,7 +349,7 @@ function trigger_animation(trigger_id, force=false) {
             animation_el = document.getElementById('animation_' + trigger_id);
             animation_el.classList.remove('active');
             window['animation_timeout_for_'+trigger_id]=null; // clear anim for starting again
-        }, 4000, trigger_id); // max animation length of 4 seconds, then active removed
+        }, 5000, trigger_id); // max animation length of 4 seconds, then active removed
     }
 }
 
@@ -1053,7 +1053,7 @@ document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
         }
     }
     if (e.key=='r' && document.body.classList.contains('obs')) {
-        trigger_animation('nocar',true);
+        trigger_animation('badres',true);
     }
 
 });

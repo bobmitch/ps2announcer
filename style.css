@@ -934,7 +934,7 @@ body:not(.bobmitch) #animations {
     opacity:0;
 }
 #animation_roadkill.active #roadkill_harasser {
-    animation-duration:3s;
+    animation-duration:5s;
     animation-timing-function: linear;
     animation-name:harrasser_left_to_right;
 }
@@ -943,7 +943,7 @@ body:not(.bobmitch) #animations {
     to {left:120vw;}
 }
 #animation_roadkill.active #roadkill_tr_player {
-    animation-duration:3s;
+    animation-duration:5s;
     animation-timing-function: linear;
     animation-name:roadkill_fly;
 }
@@ -967,7 +967,7 @@ body:not(.bobmitch) #animations {
     transform: scale(0);
 }
 #animation_nocar.active #nocar_harasser {
-    animation-duration:2s;
+    animation-duration:2.5s;
     animation-timing-function: linear;
     animation-name:nocar_left_to_right;
 }
@@ -977,8 +977,8 @@ body:not(.bobmitch) #animations {
     to {left:40vw; opacity:0;}
 }
 #animation_nocar.active #nocar_boom {
-    animation-duration:2s;
-    animation-delay:2s;
+    animation-duration:2.5s;
+    animation-delay:2.5s;
     animation-timing-function: linear;
     animation-name:nocar_boom;
 }
@@ -996,7 +996,7 @@ body:not(.bobmitch) #animations {
     opacity:0.7;
 }
 #animation_headshot.active #headshot_headshot {
-    animation-duration:4s;
+    animation-duration:5s;
     animation-name:headshot_ltr;
     animation-timing-function: ease-in-out;
 }
@@ -1018,7 +1018,7 @@ body:not(.bobmitch) #animations {
     margin-left: auto; 
     margin-right: auto; 
     animation-name:welcome_anim;
-    animation-duration:4s;
+    animation-duration:5s;
     opacity:0;
     transform:scale(0);
 }
@@ -1048,7 +1048,7 @@ body:not(.bobmitch) #animations {
     width:25vw;
     bottom:0;
     animation-name:streak_ltr;
-    animation-duration:4s;
+    animation-duration:5s;
     animation-timing-function: linear;
     left:-25vw;
 }
@@ -1066,7 +1066,7 @@ body:not(.bobmitch) #animations {
     width:50vw;
     bottom:0;
     animation-name:combine_ltr;
-    animation-duration:4s;
+    animation-duration:5s;
     animation-timing-function: linear;
     left:-50vw;
 }
@@ -1085,7 +1085,7 @@ body:not(.bobmitch) #animations {
     bottom:-10vw;
     right:-45vw;
     animation-name:medic_shake;
-    animation-duration:4s;
+    animation-duration:5s;
     animation-timing-function: ease-in-out;
 }
 @keyframes medic_shake {
@@ -1117,7 +1117,7 @@ body:not(.bobmitch) #animations {
     top:35vh;
     right:-25vw;
     animation-name:mozzie_rtl;
-    animation-duration:4s;
+    animation-duration:5s;
     animation-timing-function: linear;
 }
 @keyframes mozzie_rtl {
