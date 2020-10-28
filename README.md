@@ -33,7 +33,7 @@ Sure - just add the site as a browser source!  If OBS is detected, the site will
 
 ## Are You Looking For Suggestions?
 
-Always. :) Either add issues here on github, or fill out the [feedback form](https://docs.google.com/forms/d/17hE2xnjiPU2DXJNRkMrO557ZeeYTCnx6lZJ7kxDYCqc/).
+Always. :) Either add issues here on github, or join myself and all the testers/users at [my Discord server](https://discord.gg/m9cm26).
 
 ## Why Can't I Upload My Sounds/Images To Your Server?
 
