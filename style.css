@@ -1111,6 +1111,38 @@ body:not(.bobmitch) #animations {
     }
 }
 
+/* kobe */
+#kobe {
+    width:55vw;
+    bottom:-10vw;
+    left:-55vw;
+    animation-name:kobe;
+    animation-duration:5s;
+    animation-timing-function: ease-in-out;
+}
+@keyframes kobe {
+    from {
+        left:-55vw;
+        bottom:-15vw;
+        transform:rotate(0deg);
+    }
+    40% {
+        left:0vw;
+        bottom:-5vw;
+        transform:rotate(10deg);
+    }
+    60% {
+        left:0vw;
+        bottom:-5vw;
+        transform:rotate(10deg);
+    }
+    to {
+        left:-55vw;
+        bottom:-10vw;
+        transform:rotate(0deg);
+    }
+}
+
 /* mozzie */
 #mozzie {
     width:25vw;

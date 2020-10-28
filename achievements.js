@@ -576,6 +576,26 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
 
+var grenade_kill = new Achievement('kobe','Kobe!','You tossed up a winner!', function (event) {
+    
+    if (event.is_kill && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=="0") {
+            return false;
+        }
+        weapon = weapons[event.payload.attacker_weapon_id];
+        if (weapon) {
+            type = get_weapon_type (weapon.item_category_id);
+            if (type=="Grenade") {
+                return true;
+            }
+        }
+        else {
+            console.log('unknown weapon for event',event);
+        }
+    }
+    return false;
+},['kobe.mp3']);
+
 var mozzie = new Achievement('mozzie','Blood Sucker!','You got killed by a Mosquito Banshee!', function (event) {
     if (!event.is_kill && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=="0") {
@@ -700,6 +720,7 @@ var badres = new Achievement('badres','Bad Rez!','That was a bad rez!', function
         var last_res_time_int = parseInt(window.last_res_timestamp);
         var time_since_last_res = death_time_int-last_res_time_int;
         if (time_since_last_res>0 && time_since_last_res<5) {
+            insert_row (event, "You should have stayed down...");
             return true;
         }
     }

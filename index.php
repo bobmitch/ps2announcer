@@ -629,6 +629,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class='animation' id='animation_badres'>
 				<img src='/ps2/images/tf2medic.png' id='tf2medic'></img>
 			</div>
+			<div class='animation' id='animation_kobe'>
+				<img src='/ps2/images/kobe.png' id='kobe'></img>
+			</div>
 			<div class='animation' id='animation_mozzie'>
 				<img src='/ps2/images/mozzie.png' id='mozzie'></img>
 			</div>
