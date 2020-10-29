@@ -97,11 +97,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			echo '{"success":0,"msg":"Changes not saved - enter your password if you think this is your URL!"}';
 			exit(0);
 		}
-		if ($submitted_claim_code!=$server_claim_code) {
-			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
-			exit(0);
-		}
-		else {
+		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
 			$config = get_post('config');
 			$valid_json = json_decode($config);
 			if ($valid_json) {
@@ -112,9 +108,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				echo '{"success":0,"msg":"invalid config"}';
 			}
 		}
+		else {
+			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
+			exit(0);
+		}
 	}
 	elseif ($action=='test_claim') {
-		if ($submitted_claim_code==$server_claim_code) {
+		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
 			echo '{"success":1,"msg":"Correct password/passphrase!"}';
 			exit(0);
 		}
@@ -125,7 +125,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 	}
 	elseif ($action=='claim') {
 		if ($submitted_claim_code && $user) {
-			file_put_contents ('userconfigs/' . $user . '_claim.txt',$submitted_claim_code);
+			$hash = password_hash ($submitted_claim_code, PASSWORD_DEFAULT);
+			file_put_contents ('userconfigs/' . $user . '_claim.txt', $hash);
 			echo '{"success":1,"msg":"claimed"}';
 		}
 		else {
@@ -418,6 +419,19 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					</label>
 				</div>
 				<hr>
+				<label class="label">Search Triggers</label>
+
+				<div class="field has-addons">
+					<div class="control">
+						<input class="input" id="triggersearch" type="text" placeholder="Search">
+					</div>
+					<div class="control">
+						<a id="triggersearchclear" class="button is-info">
+							Clear
+						</a>
+					</div>
+				</div>
+				
 				<div id='achievments_list'></div>
 				<p class='vanillaonly'>
 				If you want to create your own custom soundpack, simply add a catchy name to the URL with a slash at the beginning. 

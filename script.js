@@ -1847,6 +1847,41 @@ $(window).resize(function(e) {
   }
 });
 
+// trigger search filter
+document.getElementById('triggersearch').addEventListener('keyup',function(e){
+    //console.log('trigger search ', e.target.value);
+    let searchterm = e.target.value;
+    let cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        var hidden = true;
+        var title = card.querySelector('.card-header-title').innerText;
+        // check title first
+        if (title.toLowerCase().includes(searchterm)) {
+            hidden = false;
+        }
+        if (hidden) {
+            // if no title match, check description
+            var description = card.querySelector('.content').innerText;
+            if (description.toLowerCase().includes(searchterm)) {
+                hidden = false;
+            }
+        }
+        if (hidden) {
+            card.classList.add('hidden');
+        }
+        else {
+            card.classList.remove('hidden');
+        }
+    });
+});
+document.getElementById('triggersearchclear').addEventListener('click',function(e){
+    document.getElementById('triggersearch').value = '';
+    let cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.classList.remove('hidden');
+    });
+});
+
 // live click events
 
 document.querySelector('body').addEventListener('error',function(e){

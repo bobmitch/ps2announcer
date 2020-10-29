@@ -98,6 +98,10 @@ span.outfit {
     font-weight:bold;
 }
 
+#achievments_list .card.hidden {
+    display:none;
+}
+
 #achievments_list .card {
     font-size:70%;
 }
