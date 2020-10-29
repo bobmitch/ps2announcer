@@ -201,13 +201,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 				  <div class='navbar-item' id="playerstatus">
 				  		<i class="fas fa-user"></i>&nbsp;
-						<span title='Tracked Player' data-char_id="0" id='playername' class='tag offline'>Player Offline</span>
+					  	<span title='Tracked Player' data-char_id="0" id='playername' class='tag offline'>Player Offline</span>
 				  </div>
 
 				  
 				  <div class='navbar-item' id="soundpack">
-				  		<i class="fas fa-cog"></i>&nbsp;
-						<span title='Currently loaded soundpack' data-char_id="0" id='soundpackname' class='tag is-white is-light'><?php if ($user) {echo $user;} else {echo 'BobMitch';}?></span>
+				  	  	<i class="fas fa-volume-up"></i>&nbsp;
+					  	<span title='Currently loaded soundpack' data-char_id="0" id='soundpackname' class='tag is-white is-light'><?php if ($user) {echo $user;} else {echo 'BobMitch';}?></span>
 				  </div>
 			  
 				  <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -247,7 +247,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						
 						
 						<a id='show_achievements_modal' class="button is-info">
-							<strong><i class="fas fa-volume-up"></i> Manage Triggers</strong>
+							<strong><i class="fas fa-cog"></i> Manage Triggers</strong>
 						  </a>
 						  <a id='show_player_modal' class="button is-primary">
 							<strong><i class="fas fa-users"></i> Manage Players</strong>
