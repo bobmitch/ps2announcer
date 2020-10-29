@@ -1053,7 +1053,7 @@ document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
         }
     }
     if (e.key=='r' && document.body.classList.contains('obs')) {
-        trigger_animation('badres',true);
+        trigger_animation('decikills',true);
     }
 
 });
@@ -1864,6 +1864,16 @@ document.getElementById('triggersearch').addEventListener('keyup',function(e){
             var description = card.querySelector('.content').innerText;
             if (description.toLowerCase().includes(searchterm)) {
                 hidden = false;
+            }
+        }
+        if (hidden) {
+            // still no match, try mp3 src
+            var mp3_spans = card.querySelectorAll('.tags span.tag');
+            for (var n=0; n<mp3_spans.length; n++) {
+                if (mp3_spans[n].innerText.toLowerCase().includes(searchterm)) {
+                    hidden=false;
+                    break; 
+                }
             }
         }
         if (hidden) {
