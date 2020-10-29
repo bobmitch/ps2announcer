@@ -1847,50 +1847,84 @@ $(window).resize(function(e) {
   }
 });
 
-// trigger search filter
+// trigger search filters
 document.getElementById('triggersearch').addEventListener('keyup',function(e){
-    //console.log('trigger search ', e.target.value);
-    let searchterm = e.target.value;
+    apply_all_filters();
+});
+document.getElementById('triggersearchclear').addEventListener('click',function(e){
+    document.getElementById('triggersearch').value = "";
+    apply_all_filters();
+});
+// trigger filter
+var trigger_filters = document.querySelectorAll('#filter_wrap input[name=showtriggers]');
+trigger_filters.forEach(filter => {
+    filter.addEventListener('change',function(e){
+        apply_all_filters();
+    });
+});
+
+function apply_all_filters() {
+    let cur_filter_value = document.querySelector('#filter_wrap input[name=showtriggers]:checked').value; // all, enabled, disabled
+    let cur_search_text = document.getElementById('triggersearch').value;
     let cards = document.querySelectorAll('.card');
     cards.forEach(card => {
-        var hidden = true;
-        var title = card.querySelector('.card-header-title').innerText;
-        // check title first
-        if (title.toLowerCase().includes(searchterm)) {
-            hidden = false;
-        }
-        if (hidden) {
-            // if no title match, check description
-            var description = card.querySelector('.content').innerText;
-            if (description.toLowerCase().includes(searchterm)) {
-                hidden = false;
-            }
-        }
-        if (hidden) {
-            // still no match, try mp3 src
-            var mp3_spans = card.querySelectorAll('.tags span.tag');
-            for (var n=0; n<mp3_spans.length; n++) {
-                if (mp3_spans[n].innerText.toLowerCase().includes(searchterm)) {
-                    hidden=false;
-                    break; 
+        let show = false; // hide by default
+        // text search takes precedence
+        if (cur_search_text) {
+            var title = card.querySelector('.card-header-title').innerText;
+            // check title first
+            if (cur_search_text) {
+                if (title.toLowerCase().includes(cur_search_text)) {
+                    show = true;
+                }
+                if (!show) {
+                    // if no title match, check description
+                    var description = card.querySelector('.content').innerText;
+                    if (description.toLowerCase().includes(cur_search_text)) {
+                        show = true;
+                    }
+                }
+                if (!show) {
+                    // still no match, try mp3 src
+                    var mp3_spans = card.querySelectorAll('.tags span.tag');
+                    for (var n=0; n<mp3_spans.length; n++) {
+                        if (mp3_spans[n].innerText.toLowerCase().includes(cur_search_text)) {
+                            show = true;
+                            break; 
+                        }
+                    }
                 }
             }
         }
-        if (hidden) {
-            card.classList.add('hidden');
-        }
         else {
+            // no search, show all for now
+            show = true;
+        }
+
+        // now do additive filters
+
+        if (cur_filter_value=='enabled') {
+            val = card.querySelector('.radio input:checked').value;
+            if (val=='off') {
+                if (show) {show = false};
+            }
+        }
+        if (cur_filter_value=='disabled') {
+            val = card.querySelector('.radio input:checked').value;
+            if (val=='on') {
+                if (show) {show = false};
+            }
+        }
+
+        if (show) {
             card.classList.remove('hidden');
         }
+        else {
+            card.classList.add('hidden');
+        }
+        
     });
-});
-document.getElementById('triggersearchclear').addEventListener('click',function(e){
-    document.getElementById('triggersearch').value = '';
-    let cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        card.classList.remove('hidden');
-    });
-});
+}
 
 // live click events
 
@@ -2032,6 +2066,7 @@ document.querySelector('body').addEventListener('click',function(e){
         else {
             ach.enabled=false;
         }
+        apply_all_filters();
         save_config();
     }
 

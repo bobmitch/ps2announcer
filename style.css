@@ -662,6 +662,17 @@ body:not(.authorized) .card.checked {
     display:none !important;
 }
 
+.authorized_only {
+    display:none;
+}
+body.authorized .authorized_only {
+    display:block;
+}
+
+#filter_wrap {
+    margin-left:2rem;
+}
+
 @media screen and (min-width: 769px) {
     .modal-content, .modal-card {
         width: 720px !important;

@@ -419,16 +419,36 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					</label>
 				</div>
 				<hr>
-				<label class="label">Search Triggers</label>
-
-				<div class="field has-addons">
-					<div class="control">
-						<input class="input" id="triggersearch" type="text" placeholder="Search">
+				<div class='flex'>
+					<div>
+						<label class="label">Search Triggers</label>
+					
+						<div class="field has-addons">
+							<div class="control">
+								<input class="input" id="triggersearch" type="text" placeholder="Search">
+							</div>
+							<div class="control">
+								<a id="triggersearchclear" class="button is-info">
+									Clear
+								</a>
+							</div>
+						</div>
 					</div>
-					<div class="control">
-						<a id="triggersearchclear" class="button is-info">
-							Clear
-						</a>
+
+					<div id='filter_wrap' class="control authorized_only">
+						<label class="label">Filter</label>
+						<label class="radio">
+						<input value='all' checked type="radio" name="showtriggers">
+						All
+						</label>
+						<label class="radio">
+						<input value='enabled' type="radio" name="showtriggers">
+						Enabled
+						</label>
+						<label class="radio" >
+						<input value='disabled' type="radio" name="showtriggers" >
+						Disabled
+						</label>
 					</div>
 				</div>
 				
