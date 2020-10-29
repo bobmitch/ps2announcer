@@ -9,6 +9,7 @@ function render_all_achievement_cards() {
         markup = render_achievement_card(a);
         list.innerHTML = list.innerHTML + markup;
     });
+    apply_all_filters();
 }
 
 function get_achievment_index (ach_id) {
@@ -331,7 +332,7 @@ var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who le
     return false;
 },['solong.mp3'],5);
 
-var decikills = new Achievement('pentakill','PentaKill!','5 unanswered kills in a row!', function (event) {
+var pentakill = new Achievement('pentakill','PentaKill!','5 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==5) {
             insert_row (event, "5 Kills In A Row!");
@@ -351,7 +352,7 @@ var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a
     return false;
 },['No One Could have Survived.ogg'],4);
 
-var decakills2 = new Achievement('decakill2','20 in a row!','20 unanswered kills in a row!', function (event) {
+var decakill2 = new Achievement('decakill2','20 in a row!','20 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==20) {
             insert_row (event, "20 Kills In A Row!");
@@ -361,7 +362,7 @@ var decakills2 = new Achievement('decakill2','20 in a row!','20 unanswered kills
     return false;
 },['twenty-real-lemmons.mp3'],1);
 
-var decakills3 = new Achievement('decakill3','30 in a row!!','30 unanswered kills in a row!', function (event) {
+var decakill3 = new Achievement('decakill3','30 in a row!!','30 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==30) {
             insert_row (event, "30 Kills In A Row!");
@@ -371,7 +372,7 @@ var decakills3 = new Achievement('decakill3','30 in a row!!','30 unanswered kill
     return false;
 },['relentless.mp3'],1);
 
-var decakills4 = new Achievement('decakill4','40 in a row!!','40 unanswered kills in a row!', function (event) {
+var decakill4 = new Achievement('decakill4','40 in a row!!','40 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==40) {
             insert_row (event, "40 Kills In A Row!");
@@ -381,7 +382,7 @@ var decakills4 = new Achievement('decakill4','40 in a row!!','40 unanswered kill
     return false;
 },['how-do-you-kill-a-god.mp3'],1);
 
-var decakills5 = new Achievement('decakill5','50 in a row!!','50 unanswered kills in a row!', function (event) {
+var decakill5 = new Achievement('decakill5','50 in a row!!','50 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==50) {
             insert_row (event, "50 Kills In A Row!");
