@@ -1023,6 +1023,26 @@ body:not(.bobmitch) #animations {
     to {left:120vw;  }
 }
 
+/* teamkill */
+#sorry {
+    height:50vh;
+    bottom:-50vh;
+    left:45vw;
+}
+#animation_teamkill.active #sorry {
+    animation-duration:6s;
+    animation-name:sorry_btt;
+    animation-timing-function: ease-in-out;
+}
+@keyframes sorry_btt{
+    from {bottom:-50vh; left:45vw;}
+    20% {left:55vw;}
+    40% {left:45vw;}
+    60% {left:55vw;}
+    80% {left:45vw;}
+    to {bottom:150vh; left:55vw;}
+}
+
 /* welcome */
 #welcome_image {
     width:75vw;
@@ -1125,6 +1145,39 @@ body:not(.bobmitch) #animations {
         transform:rotate(0deg);
     }
 }
+
+/* knifey */
+#knifey {
+    width:30vw;
+    bottom:-10vw;
+    right:-45vw;
+    animation-name:knifey;
+    animation-duration:5s;
+    animation-timing-function: ease-in-out;
+}
+@keyframes knifey {
+    from {
+        right:-30vw;
+        bottom:-15vw;
+        transform:rotate(0deg);
+    }
+    40% {
+        right:0vw;
+        bottom:-5vw;
+        transform:rotate(-10deg);
+    }
+    60% {
+        right:0vw;
+        bottom:-5vw;
+        transform:rotate(-10deg);
+    }
+    to {
+        right:-30vw;
+        bottom:-10vw;
+        transform:rotate(0deg);
+    }
+}
+
 
 /* kobe */
 #kobe {

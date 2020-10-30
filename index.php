@@ -657,17 +657,23 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class='animation' id='animation_streakend'>
 				<img src='/ps2/images/sadfrog.png' id='sadfrog'></img>
 			</div>
-			<div class='animation' id='animation_decikills'>
+			<div class='animation' id='animation_pentakill'>
 				<img src='/ps2/images/combine.png' id='combine'></img>
 			</div>
 			<div class='animation' id='animation_badres'>
 				<img src='/ps2/images/tf2medic.png' id='tf2medic'></img>
+			</div>
+			<div class='animation' id='animation_knifey'>
+				<img src='/ps2/images/dundee_lg.png' id='knifey'></img>
 			</div>
 			<div class='animation' id='animation_kobe'>
 				<img src='/ps2/images/kobe.png' id='kobe'></img>
 			</div>
 			<div class='animation' id='animation_mozzie'>
 				<img src='/ps2/images/mozzie.png' id='mozzie'></img>
+			</div>
+			<div class='animation' id='animation_teamkill'>
+				<img src='/ps2/images/sorry.png' id='sorry'></img>
 			</div>
 			<div class='animation' id='animation_nocar'>
 				<img src='/ps2/images/harasser.png' id='nocar_harasser'></img>

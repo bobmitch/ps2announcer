@@ -861,7 +861,7 @@ var hatebombs = new Achievement('hatebombs','Bomb Disposal!','You killed someone
     return false;
 },['mine_long.mp3']);
 
-var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', function (event) {
+var teamkill = new Achievement('teamkill','Teamkill!','You killed a friendly!', function (event) {
     if (event.payload.event_name=="Death") {
         if (event.is_kill && event.is_tk) {
             return true;
@@ -870,7 +870,7 @@ var tk_sound = new Achievement('teamkill','Teamkill!','You killed a friendly!', 
     return false;
 },['My Bad! Thats on me.ogg','count_sorry.mp3','no_friends_count.mp3']);
 
-var tk_sound = new Achievement('badteamkill','Blue on blue!','You were killed by a friendly!', function (event) {
+var badteamkill = new Achievement('badteamkill','Blue on blue!','You were killed by a friendly!', function (event) {
     if (event.payload.event_name=="Death") {
         if (!event.is_kill && event.is_tk) {
             return true;
