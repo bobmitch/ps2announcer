@@ -520,11 +520,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				<hr>
 			  	<p>OBS - <a href="https://docs.google.com/document/d/1x0GS700wFmZqSRidfKzLpTQ5AhIdwTP2_XxK_7ozA5U/edit?usp=sharing">Quick guide</a></p>
 			  	<hr>
-				<p>Any external audio files must be hosted on HTTPS (secure) sites. Dropbox links can be used by changing up the shared URL slightly:</p>
-				<p>If the original shared URL is:</p>
-				<p><em>https://www.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3?dl=0</em></p>
-				<p>just change the www to dl, and remove everything after mp3 - so in this example it would become:</p>
-				<p>https://dl.dropbox.com/s/l8ko7l9c7rxuh7m/payback%27s-a-bitch-ain%27t-it.mp3</p>
+				<p>Any external audio files must be hosted on HTTPS (secure) sites - we recommend Dropbox, their shared URLs can be pasted and used.</p>
 				<hr>
 				<p>If you are serving up audio files from your own webserver, you may need to allow this domain to access your files.</p>
 				<p>For Apache add: <span class='code'>Header set Access-Control-Allow-Origin "https://bobmitch.com"</span> to your .htaccess file.</p>

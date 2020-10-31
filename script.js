@@ -2137,6 +2137,11 @@ document.querySelector('body').addEventListener('click',function(e){
                 alert('Needs to be the full URL, and needs to be HTTPS');
             }
             else {
+                // auto fix dropbox urls
+                if (url.startsWith('https://www.dropbox.com')) {
+                    url = url.replace('https://www.dropbox.com','https://dl.dropbox.com');
+                    url = url.replace('?dl=0','');
+                }
                 ach = null;
                 for (n=0; n<new_achievements.length; n++) {
                     if (new_achievements[n].id==achievement_id) {
