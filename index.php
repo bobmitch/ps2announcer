@@ -133,6 +133,45 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			echo '{"success":0,"msg":"not claimed"}';
 		}
 	}
+	// postAjax('', {"action":"change_password","claim_code":window.claim_code,"new_claim_code":new_claim_code}, function(data) { 
+	elseif ($action=='change_password') {
+		if (!$user) {
+			echo '{"success":0,"msg":"You are in the default URL - go to your own soundpack URL!"}';
+			exit(0);
+		}
+		$new_claim_code = get_post('claim_code');
+		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
+			$hash = password_hash ($new_claim_code, PASSWORD_DEFAULT);
+			file_put_contents ('userconfigs/' . $user . '_claim.txt', $hash);
+			echo '{"success":1,"msg":"Changed password/passphrase!"}';
+			exit(0);
+		}
+		else {
+			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
+			exit(0);
+		}
+	}
+	if ($action=='save') {
+		if (!$submitted_claim_code) {
+			echo '{"success":0,"msg":"Changes not saved - enter your password if you think this is your URL!"}';
+			exit(0);
+		}
+		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
+			$config = get_post('config');
+			$valid_json = json_decode($config);
+			if ($valid_json) {
+				file_put_contents('userconfigs/' . $user . '_config.json',$config);
+				echo '{"success":1,"msg":"saved"}';
+			}
+			else {
+				echo '{"success":0,"msg":"invalid config"}';
+			}
+		}
+		else {
+			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
+			exit(0);
+		}
+	}	
 	exit(0); // don't progress beyond this point if API call :)
 	?>
 <?php endif; ?>
@@ -247,7 +286,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						
 						
 						<a id='show_achievements_modal' class="button is-info">
-							<strong><i class="fas fa-cog"></i> Manage Triggers</strong>
+							<strong><i class="fas fa-cog"></i> Edit Voicepack</strong>
 						  </a>
 						  <a id='show_player_modal' class="button is-primary">
 							<strong><i class="fas fa-users"></i> Manage Players</strong>
@@ -396,7 +435,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				Manage Triggers <i id='unlock' title='URL already claimed' class="claimedonly fas fa-lock"></i> <span class='claimedonly info'>(click to unlock)</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<button id='copy_config' class='button claimed_only btn is-small is-primary'>Copy Soundpack</button>
 				<button id='paste_config' class='button authorized_only btn is-small is-warning'>Paste Soundpack</button>
-				<button id='add_custom_trigger' class='button authorized_only btn is-small is-primary'>Add Custom Weapon Trigger</button></p>
+				<button id='add_custom_trigger' class='button authorized_only btn is-small is-primary'>Add Custom Weapon Trigger</button>
+				<button id='change_password' class='pull-right is-pulled-right button authorized_only btn is-small is-danger'>Change Password</button></p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>

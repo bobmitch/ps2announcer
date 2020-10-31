@@ -1960,6 +1960,25 @@ document.querySelector('body').addEventListener('change',function(e){
 
 document.querySelector('body').addEventListener('click',function(e){
 
+    // reset password / change password
+    if (e.target.id=='change_password') {
+        new_claim_code = prompt('Enter your new password/passphrase:');
+        if (new_claim_code) {
+            postAjax('', {"action":"change_password","claim_code":window.claim_code,"new_claim_code":new_claim_code}, function(data) { 
+                var response = JSON.parse(data);
+                console.log(response);
+                if (response.success==1) {
+                    notify(response.msg,'is-success');
+                    window.claim_code = new_claim_code;
+                    document.body.classList.add('authorized','claimed');
+                }
+                else {
+                    notify(response.msg,'is-warning');
+                }
+            });
+        }
+    }
+
     if (e.target.id=='unlock') {
         temp_claim_code = prompt('Enter your password/passphrase:');
         postAjax('', {"action":"test_claim","claim_code":temp_claim_code}, function(data) { 

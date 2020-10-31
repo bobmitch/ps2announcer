@@ -70,6 +70,10 @@ p.info {
     margin-left: 2rem;
 }
 
+#change_password {
+    margin-right:3rem;
+}
+
 tr.death {
     opacity: 0.7;
     background: rgba(255,0,0,0.1);
