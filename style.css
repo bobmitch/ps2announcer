@@ -1003,6 +1003,47 @@ body:not(.bobmitch) #animations {
     to {opacity:0; transform:scale(2);}
 }
 
+/* rocketman */
+#rocket_rocket {
+    width:50vmin;
+    left:-50vmin;
+    top:50vh;
+}
+#rocket_boom {
+    width: 40vmin;
+    left: 44vw;
+    top: 41vh;
+    opacity: 0;
+    transform: scale(0);
+}
+#rocket_tr_player {
+    width:20vmin;
+    left:60vw;
+    top:36vh;
+    opacity:0;
+}
+#animation_rocketman.active #rocket_rocket {
+    animation-duration:2.5s;
+    animation-timing-function: linear;
+    animation-name:nocar_left_to_right;
+}
+#animation_rocketman.active #rocket_tr_player {
+    animation-duration:2.5s;
+    animation-timing-function: linear;
+    animation-name:disappear;
+}
+#animation_rocketman.active #rocket_boom {
+    animation-duration:2.5s;
+    animation-delay:2.5s;
+    animation-timing-function: linear;
+    animation-name:nocar_boom;
+}
+@keyframes disappear {
+    from {opacity:1;}
+    99% {opacity:1;}
+    to {opacity:0;}
+}
+
 /* headshot */
 #headshot_headshot {
     width:50vw;
@@ -1046,7 +1087,7 @@ body:not(.bobmitch) #animations {
 /* welcome */
 #welcome_image {
     width:75vw;
-    top:35vh;
+    bottom:10vh;
     scale:0;
     left: 0; 
     right: 0; 
@@ -1077,6 +1118,37 @@ body:not(.bobmitch) #animations {
         transform:scale(10) rotate(360deg); opacity:0;
     }
 }
+
+/* spitty */
+#spitty_image {
+    width:20vw;
+    bottom:10vh;
+    scale:0;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    animation-name:welcome_anim;
+    animation-duration:5s;
+    opacity:0;
+    transform:scale(0);
+}
+
+/* ten */
+#ten_image {
+    width:50vw;
+    top:20vh;
+    scale:0;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    animation-name:welcome_anim;
+    animation-duration:5s;
+    opacity:0;
+    transform:scale(0);
+}
+
 
 /* streakend */
 #sadfrog {
@@ -1113,6 +1185,29 @@ body:not(.bobmitch) #animations {
         left:150vw;
     }
 }
+
+/* decikills five in a row */
+#revenge_image {
+    width:50vw;
+    bottom:10vh;
+    animation-name:combine_ltr;
+    animation-duration:5s;
+    animation-timing-function: linear;
+    left:-50vw;
+}
+
+
+/* decikills five in a row */
+#revive_image {
+    width:40vw;
+    bottom:-10vw;
+    animation-name:combine_ltr;
+    animation-duration:5s;
+    animation-timing-function: linear;
+    left:-50vw;
+    opacity:0.8;
+}
+
 
 /* badres */
 #tf2medic {

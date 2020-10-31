@@ -342,7 +342,7 @@ var pentakill = new Achievement('pentakill','PentaKill!','5 unanswered kills in 
     return false;
 },['farming.mp3'],4);
 
-var decakills = new Achievement('decakill','DecaKill!','10 unanswered kills in a row!', function (event) {
+var decakill = new Achievement('decakill','DecaKill!','10 unanswered kills in a row!', function (event) {
     if (event.is_kill && !event.is_tk) {
         if (killstreak==10) {
             insert_row (event, "10 Kills In A Row!");
