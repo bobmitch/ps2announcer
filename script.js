@@ -1958,6 +1958,105 @@ document.querySelector('body').addEventListener('change',function(e){
     } 
 });
 
+
+function upload_audio_form(form) {
+    // called by change in fileinput or submit of form
+    var data = new FormData(form);
+        var request = new XMLHttpRequest()
+        
+        request.onreadystatechange = function(){
+            if(request.readyState === XMLHttpRequest.DONE) {
+                var status = request.status;
+                if (status === 0 || (status >= 200 && status < 400)) {
+                  // The request has been completed successfully
+                  response = JSON.parse(request.responseText);
+                    //console.log(request.responseText);
+                    if (response.success==0) {
+                        notify(response.msg,'is-danger');
+                    }
+                    else {
+                        card = form.closest('.card');
+                        achievement_id = card.dataset.id;
+                        var ach = null;
+                        for (n=0; n<new_achievements.length; n++) {
+                            if (new_achievements[n].id==achievement_id) {
+                                ach = new_achievements[n];
+                                break;
+                            }
+                        };
+                        if (!ach) {
+                            alert('No matching achievement found');
+                        }
+                        else {
+                            var url = response.url;
+                            console.log('Inserting new audio into ach: ',ach);
+                            ach.soundfiles.push(url);
+                            s = new Audio(url);
+                            s.crossOrigin = 'anonymous';
+                            ach.sounds.push(s);
+                            save_config();
+                            index = ach.sounds.length-1;
+                            id = ach.id;
+                            filename = url.split('/').pop();
+                            // update row of entries in card
+                            card_footer_entry = `
+                                <div class="control">
+                                    <div class="tags has-addons">
+                                        <span data-tooltip="${url}" title='${url}' class="tag">${filename}</span>
+                                        <a data-id='${id}' data-index='${index}' class="tag is-light is-primary play_sound">></span>
+                                        <a data-id='${id}' data-index='${index}' class="remove-audio tag is-delete is-danger"></a>
+                                    </div>
+                                </div>
+                            `;
+                            card_footer_entry = `
+                            <div class="control">
+                                <div class="tags has-addons">
+                                    <span title='${url}' class="tag">${filename}</span>
+                                    <a data-id='${id}' data-index='${index}' class="tag iss-light authorized_only is-primary show_volume">
+                                        <i class="fas fa-volume-up"></i>
+                                        <input type="range" class='config_volume' data-id='${id}' data-index='${index}' name="volume" value="90" min="0" max="100">
+                                    </a>
+                                    <a data-id='${id}' data-index='${index}' class="tag iss-light is-info play_sound"><i class="fas fa-play-circle"></i></span></a>
+                                    <a data-id='${id}' data-index='${index}' class="remove-audio tag is-delete is-danger authorized_only"></a>
+                                    
+                                </div>
+                                
+                            </div>
+                        `;
+                            html = card.querySelector('.is-grouped').innerHTML;
+                            html += card_footer_entry;
+                            card.querySelector('.is-grouped').innerHTML = html;
+                        }
+                        notify(response.msg,'is-success');
+                    }
+                  
+                } else {
+                    notify("Unknown error uploading file",'is-success');
+                }
+            }
+        }
+        
+        //request.open(form.method, form.action);
+        request.open(form.method, "/ps2/" + window.user);
+        request.send(data);
+}
+
+document.querySelector('body').addEventListener('change',function(e){
+    console.log(e.target);
+    if (e.target.classList.contains('inputfile')) {
+        console.log('file input changed');
+        var form = e.target.closest('form');
+        upload_audio_form(form);
+    }
+});
+document.querySelector('body').addEventListener('submit',function(e){
+    if (e.target.classList.contains('upload_audio_form')) {
+        e.preventDefault();
+        var form = e.target
+        upload_audio_form(form);
+    }
+});
+
 document.querySelector('body').addEventListener('click',function(e){
 
     // reset password / change password
@@ -1988,6 +2087,7 @@ document.querySelector('body').addEventListener('click',function(e){
                 notify(response.msg,'is-success');
                 window.claim_code = temp_claim_code;
                 document.body.classList.add('authorized','claimed');
+                render_all_achievement_cards();
             }
             else {
                 notify(response.msg,'is-warning');
@@ -2098,9 +2198,19 @@ document.querySelector('body').addEventListener('click',function(e){
             console.log('removing audio id',id,' index ',index);
             ach = get_achievement(id);
             ach.sounds.splice(index,1);
-            ach.soundfiles.splice(index,1);
+            let sound_url = ach.soundfiles.splice(index,1)[0];
             save_config();
             e.target.closest('.control').remove();
+            postAjax('', {"action":"delete_file","claim_code":window.claim_code,"sound_url":sound_url}, function(data) { 
+                var response = JSON.parse(data);
+                console.log(response);
+                if (response.success==1) {
+                    notify(response.msg,'is-success');
+                }
+                else {
+                    notify(response.msg,'is-warning');
+                }
+            });
         }
     }
 

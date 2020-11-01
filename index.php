@@ -92,6 +92,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 	// first check submitted claim code matches stored claim code
 	$submitted_claim_code = get_post('claim_code');
 	$action = get_post('action');
+	
 	if ($action=='save') {
 		if (!$submitted_claim_code) {
 			echo '{"success":0,"msg":"Changes not saved - enter your password if you think this is your URL!"}';
@@ -110,6 +111,76 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		}
 		else {
 			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
+			exit(0);
+		}
+	}
+	elseif ($action=='upload_audio') {
+		if (!$submitted_claim_code) {
+			echo '{"success":0,"msg":"Invalid request"}';
+			exit(0);
+		}
+		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
+			if (!is_dir('./useraudio/' . $user)) {
+				mkdir('./useraudio/' . $user);
+			}
+			if (isset($_FILES['audiofile'])) {
+				$audio_file = $_FILES['audiofile'];
+				if ($audio_file['size']>200000) {
+					echo '{"success":0,"msg":"File too large - must be 200kb or smaller"}';
+					exit(0);
+				}
+				if ($audio_file['type']!='audio/mpeg' && $audio_file['type']!='audio/ogg') {
+					echo '{"success":0,"msg":"File must be mp3 or ogg file"}';
+					exit(0);
+				}
+				// got here, file is good
+				$url = "https://bobmitch.com/ps2/useraudio/" . $user . "/" . $audio_file['name'];
+				$dest = __DIR__ . "/useraudio/" . $user . "/" . $audio_file['name'];
+				if (file_exists($dest)) {
+					echo '{"success":0,"msg":"File already exists."}';
+				}
+				else {
+					move_uploaded_file($audio_file['tmp_name'], $dest);
+					echo '{"success":1,"msg":"Audio uploaded!","url":"'.$url.'"}';
+				}
+			}
+			else {
+				echo '{"success":0,"msg":"No file uploaded"}';
+			}
+		}
+		else {
+			echo '{"success":0,"msg":"You are not authorized to make this change"}';
+		}
+		exit(0);
+	}
+	elseif ($action=="delete_file") {
+		$sound_url = urldecode(get_post('sound_url'));
+		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
+			if (strpos($sound_url, 'https://bobmitch.com/') !== false) {
+				$filename = basename($sound_url);
+				$dest = __DIR__ . "/useraudio/" . $user . "/" . $filename; 
+				if ($user!==explode('/',urldecode($sound_url))[5]) {
+					echo '{"success":0,"msg":"Audio trigger removed, file not deleted - it is from another soundpack."}';
+					exit(0);
+				}
+				if (file_exists($dest)) {
+					if (unlink($dest)) {
+						echo '{"success":1,"msg":"File deleted!"}';
+					}
+					else {
+						echo '{"success":0,"msg":"Unknown error deleting file"}';
+					}
+				}
+				else {
+					echo '{"success":0,"msg":"Error deleting file - not found"}';
+				}
+			}
+			else {
+				echo '{"success":0,"msg":"Custom audio not hosted here - file not deleted"}';
+			}
+		}
+		else {
+			echo '{"success":0,"msg":"You are not authorized to make this change"}';
 			exit(0);
 		}
 	}
@@ -139,7 +210,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			echo '{"success":0,"msg":"You are in the default URL - go to your own soundpack URL!"}';
 			exit(0);
 		}
-		$new_claim_code = get_post('claim_code');
+		$new_claim_code = get_post('new_claim_code');
 		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
 			$hash = password_hash ($new_claim_code, PASSWORD_DEFAULT);
 			file_put_contents ('userconfigs/' . $user . '_claim.txt', $hash);
@@ -151,27 +222,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			exit(0);
 		}
 	}
-	if ($action=='save') {
-		if (!$submitted_claim_code) {
-			echo '{"success":0,"msg":"Changes not saved - enter your password if you think this is your URL!"}';
-			exit(0);
-		}
-		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
-			$config = get_post('config');
-			$valid_json = json_decode($config);
-			if ($valid_json) {
-				file_put_contents('userconfigs/' . $user . '_config.json',$config);
-				echo '{"success":1,"msg":"saved"}';
-			}
-			else {
-				echo '{"success":0,"msg":"invalid config"}';
-			}
-		}
-		else {
-			echo '{"success":0,"msg":"Incorrect password/passphrase!"}';
-			exit(0);
-		}
-	}	
+		
 	exit(0); // don't progress beyond this point if API call :)
 	?>
 <?php endif; ?>
@@ -519,12 +570,6 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			  	<p>For all help/discussion/support for this tool, go to <a href="https://discord.gg/JMEnq4a">BobMitch's discord</a>.</p>
 				<hr>
 			  	<p>OBS - <a href="https://docs.google.com/document/d/1x0GS700wFmZqSRidfKzLpTQ5AhIdwTP2_XxK_7ozA5U/edit?usp=sharing">Quick guide</a></p>
-			  	<hr>
-				<p>Any external audio files must be hosted on HTTPS (secure) sites - we recommend Dropbox, their shared URLs can be pasted and used.</p>
-				<hr>
-				<p>If you are serving up audio files from your own webserver, you may need to allow this domain to access your files.</p>
-				<p>For Apache add: <span class='code'>Header set Access-Control-Allow-Origin "https://bobmitch.com"</span> to your .htaccess file.</p>
-				<p>For nginx see <a target='_blank' href='https://enable-cors.org/server_nginx.html'>these instructions</a>. Be sure to replace the wildcard '*' with 'bobmitch.com' for added security.</p>
 				<hr>
 				<p><strong>Any custom sounds added to built-in triggers will prevent default sounds from playing!</strong></p>
 			  </section>

@@ -350,6 +350,10 @@ span.code {
     display:block;
 }
 
+body:not(.bobmitch) .bobmitchonly {
+    display:none;
+}
+
 .authorized .claimedonly {
     display:none;
 }
@@ -440,6 +444,25 @@ span.char.faction {
 
 #playerstatus .fas, #soundpack .fas {
     opacity:0.5;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+label.audio_upload_label {
+    min-width: 5rem;
+    display: inline-block;
+}
+label.audio_upload_label:hover {
+    cursor:pointer;
+}
+body.claimed:not(.authorized) label.audio_upload_label {
+    display:none;
 }
 
 #animations {

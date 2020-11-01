@@ -109,7 +109,14 @@ function render_achievement_card(a) {
         </div>
         <footer class='card-footer'>
             ${card_footer_markup}
-            <button title="Add Custom Audio File" style='margin:1em' class='authorized_only add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>
+            <form class='upload_audio_form' action="/ps2/foo" method="post" enctype="multipart/form-data">
+                <input type="hidden" value="${window.user}" name="user"/>
+                <input type="hidden" value="${window.claim_code}" name="claim_code"/>
+                <input type="hidden" value="upload_audio" name="action"/>
+                <label class='audio_upload_label' for="inputfile_${friendly_name}" ><i class="fas fa-cloud-upload-alt"></i> Upload file</label>
+                <input id="inputfile_${friendly_name}" class='inputfile' type="file" name="audiofile">
+            </form>
+            <!--<button title="Add Custom Audio File" style='margin:1em' class='authorized_only add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>-->
         </footer>
     </div>
     `;
