@@ -2044,9 +2044,11 @@ function upload_audio_form(form) {
 document.querySelector('body').addEventListener('change',function(e){
     console.log(e.target);
     if (e.target.classList.contains('inputfile')) {
-        console.log('file input changed');
-        var form = e.target.closest('form');
-        upload_audio_form(form);
+        if (e.target.value) {
+            console.log('file input changed');
+            var form = e.target.closest('form');
+            upload_audio_form(form);
+        }
     }
 });
 document.querySelector('body').addEventListener('submit',function(e){

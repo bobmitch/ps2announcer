@@ -129,7 +129,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					echo '{"success":0,"msg":"File too large - must be 200kb or smaller"}';
 					exit(0);
 				}
-				if ($audio_file['type']!='audio/mpeg' && $audio_file['type']!='audio/ogg') {
+				if (explode('/',$audio_file['type'])[0]!=='audio') {
 					echo '{"success":0,"msg":"File must be mp3 or ogg file"}';
 					exit(0);
 				}
