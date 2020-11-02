@@ -1390,7 +1390,10 @@ document.querySelector('#playername').addEventListener('click',function(e){
     document.querySelector('#playermodal').classList.toggle('is-active');
 });
 
-
+document.querySelector('#show_settings_modal').addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelector('#settings_modal').classList.toggle('is-active');
+});
 
 document.querySelector('#show_about_modal').addEventListener('click',function(e){
     e.preventDefault();

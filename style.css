@@ -468,6 +468,13 @@ body.claimed:not(.myian) .myian_only {
     display:none !important;
 }
 
+#settings_modal .control {
+    margin-top:1rem;
+}
+#settings_modal .control:first-child {
+    margin-top:0;
+}
+
 .control.has_custom {
     display:none; /* hide default sounds if ANY custom sounds are included */
 }

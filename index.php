@@ -300,10 +300,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				  </div>
 
 				  
-				  <div class='navbar-item' id="soundpack">
-				  <i class="fas fa-music"></i>&nbsp;
-					  	<span title='Currently loaded soundpack' data-char_id="0" id='soundpackname' class='tag is-white is-light'><?php if ($user) {echo $user;} else {echo 'BobMitch';}?></span>
-				  </div>
+				  <!-- <div class='navbar-item' id="soundpack">
+					  	<span title='Currently loaded soundpack' data-char_id="0" id='soundpackname' class='tag is-white is-light'>Pack: <?php if ($user) {echo $user;} else {echo 'BobMitch';}?></span>
+				  </div> -->
 			  
 				  <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
 					<span aria-hidden="true"></span>
@@ -344,9 +343,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<a id='show_achievements_modal' class="button is-info">
 							<strong><i class="fas fa-cog"></i> Edit Voicepack</strong>
 						  </a>
+						  <a id='show_settings_modal' class="button is-link">
+							<strong><i class="fas fa-cog"></i> Global Settings</strong>
+						  </a>
 						  <a id='show_player_modal' class="button is-primary">
 							<strong><i class="fas fa-users"></i> Manage Players</strong>
 						  </a>
+						  
 					  </div>
 					</div>
 				  </div>
@@ -497,24 +500,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				
 			  </header>
 			  <section class="modal-card-body">
-				<div class='control flex'>
-					<label  for='volume'>Global Volume: </label>
-					<div>
-						<input type="range" id="volume" name="volume" value="100" min="0" max="100"/> 
-					</div>
-				</div>
-				<div class='control flex'>
-					<label class='checkbox' for='countkills'>Say Killcount
-						<input type='checkbox' id='countkills'/>
-					</label>
-				</div>
-				<p class='info'>TTS says killcount in absence of any other audio triggers</p>
-				<div class='control flex'>
-					<label class='checkbox' for='fullscreenanimations'>OBS Fullscreen Animations
-						<input type='checkbox' id='fullscreenanimations'/>
-					</label>
-				</div>
-				<hr>
+				
 				<div class='flex'>
 					<div>
 						<label class="label">Search Triggers</label>
@@ -722,6 +708,37 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			  </header>
 			  <section class="modal-card-body">
 					<p>This thing does nothing if you're not tracking at least one player - so don't forget to click 'manage players', find your player(s), and add them to the list!</p>
+			  </section>
+			  
+			</div>
+		  </div>
+
+		  <div id='settings_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Global Settings!</p>
+				<button class="delete" aria-label="close"></button>
+				
+			  </header>
+			  <section class="modal-card-body">
+				<div class='control flex'>
+						<label  for='volume'>Global Volume: </label>
+						<div>
+							<input type="range" id="volume" name="volume" value="100" min="0" max="100"/> 
+						</div>
+					</div>
+					<div class='control flex'>
+						<label class='checkbox' for='countkills'>Say Killcount
+							<input type='checkbox' id='countkills'/>
+						</label>
+					</div>
+					<p class='info'>TTS says killcount in absence of any other audio triggers. Does not work inside OBS browser source.</p>
+					<div class='control flex'>
+						<label class='checkbox' for='fullscreenanimations'>OBS Fullscreen Animations
+							<input type='checkbox' id='fullscreenanimations'/>
+						</label>
+					</div>
 			  </section>
 			  
 			</div>
