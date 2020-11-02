@@ -1570,6 +1570,8 @@ function save_config() {
         if (response.success==1) {
             notify('Config saved!','is-success');
             document.body.classList.add('claimed','authorized');
+            load_config();
+            //render_all_achievement_cards();
         }
         else {
             notify(response.msg,'is-warning');
@@ -1605,8 +1607,6 @@ document.getElementById('paste_config').addEventListener('click',function(e){
             // set config, resave to server, and re render
             new_achievements = config;
             save_config();
-            //render_all_achievement_cards();
-            load_config(); // this also re-renders all cards
         }
         else {
             notify('Error pastings soundpack - no copied soundpack found!','is-warning'); 

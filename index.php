@@ -102,6 +102,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			$config = get_post('config');
 			$valid_json = json_decode($config);
 			// copy files from source folder to destination if necessary
+			if (!is_dir('./useraudio/' . $user)) {
+				mkdir('./useraudio/' . $user);
+			}
 			foreach($valid_json as $trigger) {
 				foreach ($trigger->soundfiles as &$url) {
 					if (strpos($url,"bobmitch.com")) {
@@ -124,7 +127,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					}
 				}
 			}
-			$converted_json = json_encode($config_php, JSON_UNESCAPED_SLASHES );
+			$converted_json = json_encode($valid_json, JSON_UNESCAPED_SLASHES );
 			if ($converted_json) {
 				file_put_contents('userconfigs/' . $user . '_config.json',$converted_json);
 				echo '{"success":1,"msg":"saved"}';
@@ -710,6 +713,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					<h4 class='is-4 title'>Thank You!</h4>
 					<p>Special thanks to <a href="https://twitch.tv/myian" target="_blank">Myian</a> for help with testing, coding, debugging and suggestions.</p>
 					<p>Cheers to <a href="https://www.twitch.tv/n7jpicard" target="_blank">N7jpicard</a> for help with overlay testing and end-user feedback.</p>
+					<p>Many thanks to Charoplet over at <a href="https://ps2-news.com/">PS2 News</a> for giving great advice, testing, and pushing for improvements.</p>
 					<p>Thanks to <a href="https://www.twitch.tv/aeflic" target="_blank">Aeflic</a> for occasionally remembering to use this announcer and having the best beard in the game.</p>
 					<hr>
 					<h5>Donations</h5>
