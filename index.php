@@ -300,9 +300,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				  </div>
 
 				  
-				  <!-- <div class='navbar-item' id="soundpack">
-					  	<span title='Currently loaded soundpack' data-char_id="0" id='soundpackname' class='tag is-white is-light'>Pack: <?php if ($user) {echo $user;} else {echo 'BobMitch';}?></span>
-				  </div> -->
+				  <div class='navbar-item' id="soundpack">
+					  	<span title='Currently loaded soundpack' data-char_id="0" id='soundpackname' class='tag is-white is-light'><strong>Voicepack:</strong>&nbsp;&nbsp; <?php if ($user) {echo $user;} else {echo 'BobMitch';}?></span>
+				  </div>
 			  
 				  <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
 					<span aria-hidden="true"></span>
@@ -733,7 +733,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 							<input type='checkbox' id='countkills'/>
 						</label>
 					</div>
-					<p class='info'>TTS says killcount in absence of any other audio triggers. Does not work inside OBS browser source.</p>
+					<p class='info'>TTS says killcount in absence of any other audio triggers. <em>TTS does not work inside OBS browser source</em></p>
 					<div class='control flex'>
 						<label class='checkbox' for='fullscreenanimations'>OBS Fullscreen Animations
 							<input type='checkbox' id='fullscreenanimations'/>
