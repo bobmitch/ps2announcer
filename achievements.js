@@ -675,7 +675,7 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
         }
     }
     return false;
-},['rudeness.mp3','bus-driver-crap.mp3']);
+},['rudeness.mp3','bus-driver-crap.mp3'],9);
 
 var grenade_kill = new Achievement('kobe','Kobe!','Pinpoint throw - got a grenade kill!', function (event) {
     

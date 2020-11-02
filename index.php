@@ -101,8 +101,32 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		if (password_verify($submitted_claim_code, $server_claim_code) || $submitted_claim_code==$server_claim_code) {
 			$config = get_post('config');
 			$valid_json = json_decode($config);
-			if ($valid_json) {
-				file_put_contents('userconfigs/' . $user . '_config.json',$config);
+			// copy files from source folder to destination if necessary
+			foreach($valid_json as $trigger) {
+				foreach ($trigger->soundfiles as &$url) {
+					if (strpos($url,"bobmitch.com")) {
+						// uploaded 
+						if (strpos($url,"useraudio")) {
+							// really not a default
+							$parts1 = explode("useraudio",$url); 
+							$parts2 = explode('/',$parts1[1]);
+							$source_user = $parts2[1];
+							$filename = $parts2[2];
+							$src = __DIR__ . "/useraudio/" . $source_user . "/" . $filename;
+							$dest = __DIR__ . "/useraudio/" . $user . "/" . $filename;
+							if ($user!==$source_user) {
+								// copy file from original user audio folder to your audio folder and change config
+								copy($src, $dest);
+								$new_url = "https://bobmitch.com/ps2/useraudio/" . $user . "/" . $filename;
+								$url = $new_url;
+							}
+						}
+					}
+				}
+			}
+			$converted_json = json_encode($config_php, JSON_UNESCAPED_SLASHES );
+			if ($converted_json) {
+				file_put_contents('userconfigs/' . $user . '_config.json',$converted_json);
 				echo '{"success":1,"msg":"saved"}';
 			}
 			else {
