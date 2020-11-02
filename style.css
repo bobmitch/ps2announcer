@@ -483,6 +483,9 @@ body.claimed:not(.myian) .myian_only {
     pointer-events: none;
     z-index:1000; /* 1 higher than notifications! */
 }
+body:not(.obs) #animations {
+    display:none;
+}
 .obs #animations {
     display:block;
     position:fixed;
@@ -756,7 +759,9 @@ body.authorized .authorized_only {
     display:flex;
 } */
 
-
+body:not(.obs) #pop {
+    display:none;
+}
 body.obs {
     overflow-y:hidden;
     overflow-x:hidden;

@@ -339,16 +339,16 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					  <div class="buttons">
 
 						
-						
-						<a id='show_achievements_modal' class="button is-info">
-							<strong><i class="fas fa-cog"></i> Edit Voicepack</strong>
-						  </a>
-						  <a id='show_settings_modal' class="button is-link">
-							<strong><i class="fas fa-cog"></i> Global Settings</strong>
-						  </a>
-						  <a id='show_player_modal' class="button is-primary">
+					  <a id='show_player_modal' class="button is-primary">
 							<strong><i class="fas fa-users"></i> Manage Players</strong>
 						  </a>
+						  <a id='show_settings_modal' class="button is-primary">
+							<strong><i class="fas fa-cog"></i> Global Settings</strong>
+						  </a>
+						  <a id='show_achievements_modal' class="button is-primary">
+							<strong><i class="fas fa-file-audio"></i> Edit Voicepack</strong>
+						  </a>
+						  
 						  
 					  </div>
 					</div>
