@@ -203,6 +203,7 @@ var killstreak=0; // reset by death
 var spamstreak=0;
 var killstreak_was=0;
 var multikills_was=0;
+var c4counter=[];
 var kills=0;
 var deaths=0;
 var kd=1;
@@ -285,9 +286,11 @@ function reset_stats() {
     window.kpm=0;
     window.event_counter = 0;
     window.killstreak=0; // reset by death
+    window.deathstreak=0;
     window.spamstreak=0;
     window.killstreak_was=0;
     window.multikills_was=0;
+    window.c4counter=[];
     window.kills=0;
     window.deaths=0;
     window.kd=1;
@@ -853,10 +856,11 @@ function process_event(event) {
 
         if (is_player(event.payload.character_id)) {
             // you died
+            window.deathstreak++;
             if (window.killstreak>1) {
                 insert_row (null, 'You died! Your killstreak was ' + window.killstreak.toString());
             }
-
+            window.knife_killstreak=0;
             window.shotgun_killstreak=0;
             window.killstreak_was = window.killstreak;
             window.multikills_was = window.multikills;
@@ -904,9 +908,22 @@ function process_event(event) {
                     else {
                         window.shotgun_killstreak=0;
                     }
+                    
+                    if (type=="Knife") {
+                        window.knife_killstreak++;
+                    }
+                    if (event.payload.attacker_weapon_id=='432'||event.payload.attacker_weapon_id=='800623') {
+                        if (window.c4counter.hasOwnProperty(event.payload.timestamp)) {
+                            window.c4counter[event.payload.timestamp]++;
+                        }
+                        else {
+                            window.c4counter[event.payload.timestamp]=1;
+                        }
+                    }
                 }
                 // killstreak
                 window.killstreak++;
+                window.deathstreak=0;
                 if (event.payload.is_headshot=="0") {
                     window.bodyshotkillstreak++;
                     window.headshotstreak=0;
@@ -1022,19 +1039,18 @@ function process_event(event) {
     var triggered_animation_count=0;
     for (sorted_index=0; sorted_index<window.cur_achievements.length; sorted_index++) {
         if (window.cur_achievements[sorted_index].enabled) {
-            if (triggered_count>1) {
-                // early exit - only play/show at most 2 triggers
-                break;
-            }
             if (triggered_animation_count==0) {
                 // for highest priority trigger, play the animation (if available)
                 animation_el = document.getElementById('animation_' + window.cur_achievements[sorted_index].id); // e.g. animation_roadkill
                 if (animation_el) {
                     trigger_animation(window.cur_achievements[sorted_index].id);
-                    //triggered_animation_count++; // infinite animations for now!!
+                    triggered_animation_count++; 
                 }
             }
-            window.cur_achievements[sorted_index].trigger(notifications_only);
+            if (triggered_count>-1) { // trigger all now - test priority
+                // only trigger highest priority
+                window.cur_achievements[sorted_index].trigger(notifications_only);
+            }
             triggered_count++;
             notifications_only = true; // loop through rest and trigger notifications, but no audio pls
         }
@@ -2072,6 +2088,7 @@ document.querySelector('body').addEventListener('click',function(e){
                     notify(response.msg,'is-success');
                     window.claim_code = new_claim_code;
                     document.body.classList.add('authorized','claimed');
+                    render_all_achievement_cards();
                 }
                 else {
                     notify(response.msg,'is-warning');
@@ -2208,6 +2225,7 @@ document.querySelector('body').addEventListener('click',function(e){
                 console.log(response);
                 if (response.success==1) {
                     notify(response.msg,'is-success');
+                    render_all_achievement_cards();
                 }
                 else {
                     notify(response.msg,'is-warning');

@@ -464,6 +464,13 @@ label.audio_upload_label:hover {
 body.claimed:not(.authorized) label.audio_upload_label {
     display:none;
 }
+body.claimed:not(.myian) .myian_only {
+    display:none !important;
+}
+
+.control.has_custom {
+    display:none; /* hide default sounds if ANY custom sounds are included */
+}
 
 #animations {
     pointer-events: none;

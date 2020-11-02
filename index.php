@@ -125,13 +125,18 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			}
 			if (isset($_FILES['audiofile'])) {
 				$audio_file = $_FILES['audiofile'];
-				if ($audio_file['size']>200000) {
-					echo '{"success":0,"msg":"File too large - must be 200kb or smaller"}';
+				if ($audio_file['size']>400000) {
+					echo '{"success":0,"msg":"File too large - must be 400kb or smaller"}';
 					exit(0);
 				}
 				if (explode('/',$audio_file['type'])[0]!=='audio') {
-					echo '{"success":0,"msg":"File must be mp3 or ogg file"}';
-					exit(0);
+					if ($audio_file['type']==="video/ogg") {
+						// we good
+					}
+					else {
+						echo '{"success":0,"msg":"File must be mp3 or ogg file - not '.$audio_file['type'].'"}';
+						exit(0);
+					}
 				}
 				// got here, file is good
 				$url = "https://bobmitch.com/ps2/useraudio/" . $user . "/" . $audio_file['name'];
@@ -296,7 +301,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 				  
 				  <div class='navbar-item' id="soundpack">
-				  	  	<i class="fas fa-volume-up"></i>&nbsp;
+				  <i class="fas fa-music"></i>&nbsp;
 					  	<span title='Currently loaded soundpack' data-char_id="0" id='soundpackname' class='tag is-white is-light'><?php if ($user) {echo $user;} else {echo 'BobMitch';}?></span>
 				  </div>
 			  
@@ -569,6 +574,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			  <section class="modal-card-body">
 			  	<p>For all help/discussion/support for this tool, go to <a href="https://discord.gg/JMEnq4a">BobMitch's discord</a>.</p>
 				<hr>
+				<p>General <a href="https://docs.google.com/document/d/1kgE2FWnYD6nthUEiKCSS2XfFfhOKezTZkYhS9L2Oj7g">Quick Guide</a></p>
 			  	<p>OBS - <a href="https://docs.google.com/document/d/1x0GS700wFmZqSRidfKzLpTQ5AhIdwTP2_XxK_7ozA5U/edit?usp=sharing">Quick guide</a></p>
 				<hr>
 				<p><strong>Any custom sounds added to built-in triggers will prevent default sounds from playing!</strong></p>
@@ -689,6 +695,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					register with any third-party sites.</p>
 					
 					<p>For help or to discuss this tool, <a href="https://discord.gg/JMEnq4a">come to my discord server</a>.</p>
+					<p>Note - this project is updated frequently and bugs are common. :) Don't get mad, just report any issues you find - I'm generally pretty responsive.</p>
 					<hr>
 					<h4 class='is-4 title'>Thank You!</h4>
 					<p>Special thanks to <a href="https://twitch.tv/myian" target="_blank">Myian</a> for help with testing, coding, debugging and suggestions.</p>

@@ -1,6 +1,56 @@
 
 window.new_achievements = [];
 
+window.audio_engine = {
+    'last_trigger':{'priority':100},
+    'last_audio':null,
+    'is_playing':function(){
+        if (this.last_audio) {
+            return !last_audio.paused;
+        }
+        else {
+            return false;
+        }
+    },
+    'stop':function(){
+        if (this.last_audio) {
+            this.last_audio.pause();
+            this.last_audio.currentTime=0;
+            console.log('stopping audio ',last_audio);
+        }
+        else {
+            console.log('no audio to stop');
+        }
+    },
+    'priority_play':function(ach, index) {
+        
+        if (ach.priority < this.last_trigger.priority  || !this.is_playing()) {
+            // if we have higher priority or not already playing sound at all
+            // do audio engine stuff
+            if (this.is_playing()) {
+                console.log('we have priority! stop other audio!');
+                this.stop();
+            }
+            this.last_trigger = ach;
+            this.last_audio = ach.sounds[index];
+            // play
+            var playPromise = ach.sounds[index].play();
+            window.last_audio = ach.sounds[index];
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    // we gucci, already playing
+                }).catch(function(error) {
+                    console.log(error);
+                    notify('Audio file not found - 404! ' +  window.last_audio.src, 'is-danger');
+                });
+            }
+        }
+        else {
+            console.log('Audio for ',ach.id,' not played - too low priority');
+        }
+    }
+}
+
 function render_all_achievement_cards() {
     // gen achi list
     list = document.getElementById('achievments_list');
@@ -24,7 +74,15 @@ function get_achievment_index (ach_id) {
 function render_achievement_card(a) {
     friendly_name = encodeURI(a.id);
     card_footer_markup = '<div class="field is-grouped is-grouped-multiline">';
-    
+    // check to see if we have custom audio
+    let has_custom = '';
+    for (let [index, val] of a.soundfiles.entries()) {
+        config_volume = a.volumes[index];
+        if (val.startsWith('http')) {
+            has_custom = ' has_custom ';
+            break;
+        }
+    }
     for (let [index, val] of a.soundfiles.entries()) {
         config_volume = a.volumes[index];
         if (val.startsWith('http')) {
@@ -48,7 +106,7 @@ function render_achievement_card(a) {
         else {
             // built in audio
             card_footer_entry = `
-                <div class="control">
+                <div class="control ${has_custom}">
                     <div class="tags has-addons">
                         <span title="Built In Audio" class="tag is-light">${val}</span>
                         <a data-id='${a.id}' data-index='${index}' class="tag iss-light authorized_only is-primary show_volume">
@@ -116,7 +174,7 @@ function render_achievement_card(a) {
                 <label class='audio_upload_label' for="inputfile_${friendly_name}" ><i class="fas fa-cloud-upload-alt"></i> Upload file</label>
                 <input id="inputfile_${friendly_name}" class='inputfile' type="file" name="audiofile">
             </form>
-            <!--<button title="Add Custom Audio File" style='margin:1em' class='authorized_only add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>-->
+            <button title="Add Custom Audio File" style='margin:1em' class='authorized_only myian_only add_audio button is-small iss-light is-success'><i class="fas fa-plus"></i></button>
         </footer>
     </div>
     `;
@@ -159,10 +217,13 @@ Achievement.prototype.play = function(index=false) {
     if (!this.sounds[index].hasOwnProperty('config_volume') || !this.sounds[index].config_volume) {
         this.sounds[index].config_volume=100;
     }
-    console.log('glogal: ',glogal_volume);
-    console.log('config_volume',this.sounds[index].config_volume);
+    //console.log('glogal: ',glogal_volume);
+    //console.log('config_volume',this.sounds[index].config_volume);
     this.sounds[index].volume = (glogal_volume/100) * (this.sounds[index].config_volume/100) ;
-    var playPromise = this.sounds[index].play();
+
+    audio_engine.priority_play(this, index);
+
+    /* var playPromise = this.sounds[index].play();
     window.last_audio = this.sounds[index];
     if (playPromise !== undefined) {
         playPromise.then(function() {
@@ -171,7 +232,7 @@ Achievement.prototype.play = function(index=false) {
             console.log(error);
             notify('Audio file not found - 404! ' +  window.last_audio.src, 'is-danger');
         });
-    }
+    } */
 }
 
 Achievement.prototype.trigger = function(notification_only) {
@@ -182,7 +243,8 @@ Achievement.prototype.trigger = function(notification_only) {
     has_external = false;
     if (!notification_only) {
         for (n=0; n<this.sounds.length; n++) {
-            if (!this.sounds[n].src.includes('bobmitch.com')) {
+            //if (!this.sounds[n].src.includes('bobmitch.com')) {
+            if (this.soundfiles[n].includes('https')) {
                 has_external=true;
             }
         }
@@ -200,7 +262,8 @@ Achievement.prototype.trigger = function(notification_only) {
         else {
             // pick random until external found
             random_sound_index = Math.floor(Math.random() * this.sounds.length);
-            while (this.sounds[random_sound_index].src.includes('bobmitch.com')) {
+            //while (this.sounds[random_sound_index].src.includes('bobmitch.com')) {
+            while (!this.soundfiles[random_sound_index].includes('https')) {
                 random_sound_index = Math.floor(Math.random() * this.sounds.length);
             }
             /* this.sounds[random_sound_index].volume = (volume/100) * (this.sounds[random_sound_index].config_volume/100) ;
@@ -310,6 +373,25 @@ var topgun = new Achievement('topgun','Top Gun!','Destroyed an ESF with an ESF!'
     return false;
 },['congrats_top_gun.mp3','im_a_pilot.mp3','planes_no_place_for_boys.mp3'],4);
 
+var airfarmed = new Achievement('airfarmed','Airfarmed!','Killed by an ESF!', function (event) {
+    if (event.payload.event_name=='Death') {
+        if (is_player(event.payload.character_id) && !is_player(event.payload.attacker_character_id)) {
+            // killed by a vehicle, not your own
+            if (event.is_tk) {
+                // tks don't count
+                return false;
+            }
+            if (is_esf(event.payload.attacker_vehicle_id)) {
+                // killed by an esf
+                if (event.payload.vehicle_id=="0") {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+},['im_a_pilot.mp3'],18);
+
 
 var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who left almost straight away!', function (event) {
     if (event.payload.event_name=="PlayerLogout") {
@@ -408,7 +490,7 @@ var streakend = new Achievement('streakend','Oh.','Your impressive streak came t
         return (true);
     }
     return false;
-},['oh-no.mp3','sad_crowd.mp3','crowd-scream-no_M1xhZ_Nd_NWM.mp3','this-is-it-this-is-how-it-ends-this-is-how-shake-and-bake-ends.mp3'],5); 
+},['oh-no.mp3','sad_crowd.mp3','crowd-scream-no_M1xhZ_Nd_NWM.mp3','this-is-it-this-is-how-it-ends-this-is-how-shake-and-bake-ends.mp3'],1); 
 
 var doublekill = new Achievement('doublekill','Double Kill!','2 kills in quick succession!', function (event) {
     //console.log('checking for double kill - current multikills = ',multikills);
@@ -488,7 +570,7 @@ var sneaker_kill = new Achievement('sneaker','Sneaker!','You killed an invisible
         }
     }
     return false;
-},['Low Profile.ogg'],20);
+},['Low Profile.ogg'],19);
 
 var sneaker_death = new Achievement('sneakerdeath','Long Range Wanker!','You were killed by an invisible bastard!', function (event) {
     if (event.is_death && !event.is_tk) {
@@ -550,6 +632,17 @@ var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harass
     return false;
 },['VOLUME_Dude wheres my car.wav'],20);
 
+var pizzadelivery = new Achievement('pizzadelivery',"Pizza Delivery",'Killed a vehicle with tank mine!', function (event) {
+    if (event.payload.event_name=='VehicleDestroy') {
+        if (is_player(event.payload.attacker_character_id) && !event.is_tk) {
+            if (event.payload.weapon_id=='650'||event.payload.weapon_id=='6005962'||event.payload.weapon_id=='6005961') {
+                return true;
+            }
+        }
+    }
+    return false;
+},['pizza.mp3'],5);
+
 var norobots = new Achievement('norobots',"Kill The Toasters!",'You killed a spitfire turret!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
         if (is_player(event.payload.attacker_character_id)) {
@@ -584,7 +677,7 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
 
-var grenade_kill = new Achievement('kobe','Kobe!','You tossed up a winner!', function (event) {
+var grenade_kill = new Achievement('kobe','Kobe!','Pinpoint throw - got a grenade kill!', function (event) {
     
     if (event.is_kill && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=="0") {
@@ -604,6 +697,25 @@ var grenade_kill = new Achievement('kobe','Kobe!','You tossed up a winner!', fun
     return false;
 },['kobe.mp3']);
 
+
+
+// {
+var c4mess = new Achievement('c4mess','C-4 Galore!','Got 3+ kills with single C-4!', function (event) {
+    if (event.is_kill && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=="0") {
+            return false;
+        }
+        if (event.payload.attacker_weapon_id=='432'||event.payload.attacker_weapon_id=='800623') {
+            if (window.c4counter.hasOwnProperty(event.payload.timestamp)) {
+                if (window.c4counter[event.payload.timestamp]>2) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+},['bigboom.mp3'],3);
+
 var mozzie = new Achievement('mozzie','Blood Sucker!','You got killed by a Mosquito Banshee!', function (event) {
     if (!event.is_kill && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=="0") {
@@ -622,7 +734,7 @@ var mozzie = new Achievement('mozzie','Blood Sucker!','You got killed by a Mosqu
     return false;
 },['rudeness.mp3','bus-driver-crap.mp3']);
 
-var shotgun_shogun = new Achievement('shotgun_shogun','Shotgun Shogun!','4 shotgun kills in a row, within 5 seconds of each other!', function (event) {
+var shotgun_shogun = new Achievement('shotgun_shogun','Shotgun Shogun!','3 shotgun kills in a row, within 5 seconds of each other!', function (event) {
     if (event.is_tk) {
         return false;
     }
@@ -634,7 +746,7 @@ var shotgun_shogun = new Achievement('shotgun_shogun','Shotgun Shogun!','4 shotg
         if (weapon) {
             type = get_weapon_type (weapon.item_category_id);
             if (type=="Shotgun") {
-                if (shotgun_killstreak%4==0 && shotgun_killstreak>0) {
+                if (shotgun_killstreak%3==0 && shotgun_killstreak>0) {
                     return true;
                 }
             }
@@ -683,7 +795,29 @@ var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfuc
         }
     }
     return false;
-},['cutcutcut.mp3','stabbing_motion.mp3','do-knife-thing.mp3']);
+},['stabbing_motion.mp3','do-knife-thing.mp3']);
+
+var knife3 = new Achievement('knife3','Knife Killstreak!','3 Knife Kills Without Dying!', function (event) {
+    
+    if (!event.is_kill && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=="0") {
+            return false;
+        }
+        weapon = weapons[event.payload.attacker_weapon_id];
+        if (weapon) {
+            type = get_weapon_type (weapon.item_category_id);
+            if (type=="Knife") {
+                if (window.knife_killstreak==3) {
+                    return true;
+                }
+            }
+        }
+        else {
+            console.log('unknown weapon for event',event);
+        }
+    }
+    return false;
+},['cutcutcut.mp3']);
 
 
 var badspam = new Achievement('badspam',"I Don't Like Spam!",'You got killed by a Lasher!', function (event) {
@@ -735,7 +869,7 @@ var badres = new Achievement('badres','Bad Rez!','That was a bad rez!', function
     return false;
 },['risky.mp3'],5);
 
-var nobeacon = new Achievement('nobeacon','Light The Beacons!','You killed the fight!', function (event) {
+var nobeacon = new Achievement('nobeacon','Light The Beacons!','You killed a beacon - just leave the sundies alone!', function (event) {
     if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
         // 7 = revive, 57 = squad revive
         if (event.payload.experience_id=='270') {
@@ -820,7 +954,7 @@ var spraypray = new Achievement('spraypray','Spray & Pray!','You killed 5 people
         }
     }
     return false;
-},["that's-not-entirely-accurate.mp3"],5);
+},["that's-not-entirely-accurate.mp3"],15);
 
 var assister = new Achievement('helper','Santas Little Helper!','You assisted killing someone 5 times in a row without killing anybody yourself!', function (event) {
     if (event.payload.event_name=="GainExperience") {
@@ -918,7 +1052,7 @@ var shitter = new Achievement('shitter','Shitter Dunk!','You killed someone with
         }
     }
     return false;
-},['Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],5);
+},['Just Pout.ogg','PAM - yeehhh, sploosh.ogg'],7);
 
 var mutual = new Achievement('mutual','Mutually Assured Destruction!','You killed another player at the same time as he killed you!', function (event) {
     if (event.payload.event_name=="Death") {
@@ -995,3 +1129,35 @@ new_achievements.forEach(achievement => {
         }
     }
 });
+
+var normalkill = new Achievement('normalkill','Vanilla Kill!','Just a good old fashioned kill!', function (event) {
+    // latest event is current
+    var l = window.allevents.length;
+    if (event.is_kill) {
+        if (!event.is_tk) {
+            return true;
+        }
+    }
+    return false;
+},[],20);
+normalkill.enabled=false;
+
+var sixdeaths = new Achievement('sixdeaths','Six Deaths!','6 deaths in a row!', function (event) {
+    if (event.is_death) {
+        if (deathstreak==6) {
+            insert_row (event, "6 Deaths In A Row!");
+            return (true);
+        }
+    }
+    return false;
+},['mr-mackey-umkay.mp3'],15);
+
+var sevendeaths = new Achievement('sevendeaths','Seven Or More Deaths!','7 or more deaths in a row!', function (event) {
+    if (event.is_death) {
+        if (deathstreak>6) {
+            insert_row (event, deathstreak.toString() + " Deaths In A Row!");
+            return (true);
+        }
+    }
+    return false;
+},['oh-no.mp3'],15);
