@@ -57,13 +57,13 @@ obs_config.pop.world = 1; // default connery for picard
 obs_config.pop.top = 348;
 obs_config.pop.left = 0;
 obs_config.pop.scale = 1.0;
-obs_config.pop.enabled = false;
+obs_config.pop.enabled = true;
 obs_config.stats.hidden_stats = [];
 obs_config.stats.scale = 1.0;
 obs_config.events.scale = 1.0;
 obs_config.notifications.scale = 1.0;
 obs_config.stats.top = 48;
-obs_config.stats.left = 530;
+obs_config.stats.left = 130;
 obs_config.stats.enabled = true;
 obs_config.events.top = 145;
 obs_config.events.left = 630;
@@ -86,6 +86,39 @@ else {
 }
 
 set_world(obs_config.pop.world);
+
+function reset_obs() {
+    obs_config={};
+
+    obs_config.stats={}; obs_config.events={}; obs_config.notifications={}; obs_config.pop={};
+
+    obs_config.pop.world = 1; // default connery for picard
+    obs_config.pop.top = 348;
+    obs_config.pop.left = 0;
+    obs_config.pop.scale = 1.0;
+    obs_config.pop.enabled = true;
+    obs_config.stats.hidden_stats = [];
+    obs_config.stats.scale = 1.0;
+    obs_config.events.scale = 1.0;
+    obs_config.notifications.scale = 1.0;
+    obs_config.stats.top = 48;
+    obs_config.stats.left = 30;
+    obs_config.stats.enabled = true;
+    obs_config.events.top = 145;
+    obs_config.events.left = 430;
+    obs_config.events.enabled = true;
+    obs_config.notifications.top = -50;
+    obs_config.notifications.left = 440;
+    obs_config.notifications.enabled = true;
+
+    set_obs_values('stats');
+    set_obs_values('events');
+    set_obs_values('notifications');
+    set_obs_values('pop');
+
+    localStorage.obs_config = JSON.stringify(obs_config);
+
+}
 
 function set_obs_values(el_id) {
     el = document.getElementById(el_id);
@@ -151,19 +184,21 @@ function set_world(id) {
 
 // stats visibility handlers
 document.getElementById('stats').addEventListener('click',function(e){
-    c = e.target.closest('.control');
-    if (c) {
-        stat_id = c.id;
-        if (c.classList.contains('hide_obs')) {
-            // unhide
-            obs_config.stats.hidden_stats = obs_config.stats.hidden_stats.filter(e => e !== stat_id); 
+    if (document.body.classList.contains('obs')) {
+        c = e.target.closest('.control');
+        if (c) {
+            stat_id = c.id;
+            if (c.classList.contains('hide_obs')) {
+                // unhide
+                obs_config.stats.hidden_stats = obs_config.stats.hidden_stats.filter(e => e !== stat_id); 
+            }
+            else {
+                // hide
+                obs_config.stats.hidden_stats.push(stat_id);
+            }
+            c.classList.toggle('hide_obs');
+            localStorage.obs_config = JSON.stringify(obs_config); // save obs config
         }
-        else {
-            // hide
-            obs_config.stats.hidden_stats.push(stat_id);
-        }
-        c.classList.toggle('hide_obs');
-        localStorage.obs_config = JSON.stringify(obs_config); // save obs config
     }
 });
 
@@ -1477,7 +1512,7 @@ document.getElementById('custom_image_form').addEventListener('submit',function(
     ach.custom_image = url;
     console.log('updating image for:',ach);
     document.getElementById('edit_image_modal').classList.toggle('is-active');
-    render_all_achievement_cards(); // redraw all
+    //render_all_achievement_cards(); // redraw all
     save_config();
     return false;
 });
@@ -2079,6 +2114,11 @@ document.querySelector('body').addEventListener('submit',function(e){
 });
 
 document.querySelector('body').addEventListener('click',function(e){
+
+    // reset obs // obs_reset
+    if (e.target.id=='obs_reset') {
+        reset_obs();
+    }
 
     // reset password / change password
     if (e.target.id=='change_password') {

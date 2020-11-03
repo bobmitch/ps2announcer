@@ -804,6 +804,23 @@ table#events::before {
     width: 100%;
 }
 
+#obs_reset {
+    display:none;
+}
+.obs:hover #obs_reset {
+    display:block;
+    font-size:2rem;
+    position:absolute;
+    top:2rem;
+    left:2rem;
+    background:rgba(255,255,255,0.8);
+    color:black;
+    z-index:9999;
+}
+.obs:hover #obs_reset:hover {
+    cursor:pointer;
+}
+
 
   .hide_obs {
     display:none;

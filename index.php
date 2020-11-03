@@ -450,6 +450,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				
 			</table>
 
+			
+
 			<div id='pop' class="moveable">
 				<h5 class='label'>POPULATION</h5>
 				<!-- <select id='world' name='world'>
@@ -776,6 +778,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<h5 class='label'>IMAGES</h5>
 		</section>
 
+		<button id='obs_reset'>RESET OBS POSITIONS</button>
+
 		<?php include_once('animations.php'); ?>
 
 		<script>
@@ -825,5 +829,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<script src="<?php echo $root; ?>item_categories.js"></script>
 		<script src='<?php echo $root; ?>script.js'></script>
 		
+			
+
 	</body>
 </html>
