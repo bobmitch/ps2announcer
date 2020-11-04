@@ -782,8 +782,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 		<section id='notifications' class='moveable'>
 		<h5 class='label'>IMAGES</h5>
-		<div class='obs_example notification is-light'>
-			<img class='' src='https://i.imgur.com/QONVIyz.gif'>
+		<div class='obs_example notification notify is-light'>
+			<img class='custom_image_notification' src='https://i.imgur.com/QONVIyz.gif'>
 		</div>
 		</section>
 

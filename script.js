@@ -78,7 +78,7 @@ function set_notifcation_time(seconds) {
     // seconds is string number -eg. "5"
     // animation: 10s ease 0s 1 normal forwards running hide;
     //changeRule('.obs .hideme','animation', seconds +'s ease 0s 1 normal forwards running hide');
-    changeRule('.notification.notify','animation', seconds +'s ease 0s 1 normal forwards running hide');
+    changeRule('.notification.notify','animation-duration', seconds +'s');
     ps2_showimagetime = seconds;
     localStorage.ps2_showimagetime = seconds;
 }
