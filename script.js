@@ -43,6 +43,46 @@ else {
     document.getElementsByTagName('body')[0].classList.add('testobs');
 }
 
+// other funct
+
+var changeRule = function(selector, property, value) {
+    var styles = document.styleSheets, n, sheet, rules, m, done = false;
+    selector = selector.toLowerCase();
+    for(n = 0; n < styles.length; n++) {
+        if (styles[n].href !== null) {
+            if (!styles[n].href.includes('bobmitch')) {
+                continue;
+            }
+        }
+        console.log('got bobmitch stylesheet... checking...');
+        sheet = styles[n];   
+        rules = sheet.cssRules; // sheet.rules is deprecated IE8 only
+        for(m = 0; m < rules.length; m++) {
+            //console.log('checking rule ', rules[m]);
+            if (rules[m].selectorText) {
+                if (rules[m].selectorText.toLowerCase() === selector) {
+                    done = true;
+                    rules[m].style[property] = value;
+                    console.log(rules[m].style);
+                    break;
+                }
+            }
+        }
+        if (done) {
+            break;
+        }
+    }
+};
+
+function set_notifcation_time(seconds) {
+    // seconds is string number -eg. "5"
+    // animation: 10s ease 0s 1 normal forwards running hide;
+    //changeRule('.obs .hideme','animation', seconds +'s ease 0s 1 normal forwards running hide');
+    changeRule('.notification.notify','animation', seconds +'s ease 0s 1 normal forwards running hide');
+    ps2_showimagetime = seconds;
+    localStorage.ps2_showimagetime = seconds;
+}
+
 // load options
 
 var count_one = new Audio();
@@ -226,6 +266,15 @@ if (ps2_extraaudio===null) {
 // if no players are tracked, show reminder for potentially new users!
 if (playerlist.length==0) {
     document.getElementById('noplayers_modal').classList.add('is-active');
+}
+
+var ps2_showimagetime = localStorage.ps2_showimagetime;
+if (!ps2_showimagetime) {
+    ps2_showimagetime = "5";
+}
+else {
+    document.getElementById('image_display_time').value = ps2_showimagetime.toString();
+    set_notifcation_time(ps2_showimagetime);
 }
 
 test_audio = new Audio('audio/ting.mp3');
@@ -1792,6 +1841,8 @@ function delete_me_el (thing) {
 
 window.notification_counter = 0;
 
+
+
 function notify(msg, classtext='is-primary') {
     window.notification_counter++;
     notification_id = "notification_" + window.notification_counter.toString();
@@ -1804,7 +1855,7 @@ function notify(msg, classtext='is-primary') {
     notification.appendChild(button);
     setTimeout(function(e){
         delete_me(e);
-    },10100,notification_id);
+    }, parseInt(ps2_showimagetime) * 1001, notification_id);
     notifications = document.getElementById('notifications');
     notifications.appendChild(notification);
 }
@@ -2094,6 +2145,10 @@ function upload_audio_form(form) {
         request.open(form.method, "/ps2/" + window.user);
         request.send(data);
 }
+
+document.getElementById('image_display_time').addEventListener('change',function(e){
+    set_notifcation_time(e.target.value);
+});
 
 document.querySelector('body').addEventListener('change',function(e){
     console.log(e.target);

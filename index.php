@@ -757,6 +757,12 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<div>
 							<input type="range" id="volume" name="volume" value="100" min="0" max="100"/> 
 						</div>
+					</div>  
+					<div class='control flex'>
+						<label  for='volume'>OBS Image Display Time (seconds): </label>
+						<div>
+							<input type="number" id="image_display_time" name="image_display_time" value="5" min="1" max="10"/> 
+						</div>
 					</div>
 					<div class='control flex'>
 						<label class='checkbox' for='countkills'>Say Killcount
