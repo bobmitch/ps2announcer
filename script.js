@@ -950,6 +950,7 @@ function process_event(event) {
             window.multikills_was = window.multikills;
             window.multikills = 0;
             window.killstreak=0;
+            window.revive_count_streak=0;
             window.spamstreak=0;
             window.assist_streak=0; // end assist streak
             multikills=0;
@@ -980,6 +981,7 @@ function process_event(event) {
         else {
             if (!is_tk(event)) {
                 // genuine kill
+                window.revive_count_streak=0;
                 weapon = get_local_weapon (event.payload.attacker_weapon_id);
                 if (weapon) {
                     type = get_weapon_type (weapon.item_category_id);

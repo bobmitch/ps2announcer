@@ -844,12 +844,14 @@ var goodspam = new Achievement('goodspam','Good Spam!','You spammed 5 people to 
     return false;
 },['goodspam.mp3']);
 
-var reviver = new Achievement('revive','Revive!','You revived someone!', function (event) {
+var reviver = new Achievement('revive','Reviver!','You revived three times in a row!', function (event) {
     if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
         // 7 = revive, 57 = squad revive
         if (event.payload.experience_id=='7' || event.payload.experience_id=='53' ) {
-            window.revive_count_streak++;
-            return true;
+            //window.revive_count_streak++;
+            if (window.revive_count_streak>0 && window.revive_count_streak%3==0) {
+                return true;
+            }
         }
     }
     return false;
