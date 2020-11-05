@@ -1618,7 +1618,6 @@ document.getElementById('custom_trigger_form').addEventListener('submit',functio
         console.log('Added new custom weapon trigger: ',foo);
     }
     document.getElementById('custom_trigger_modal').classList.toggle('is-active');
-    render_all_achievement_cards(); // redraw all
     save_config();
     return false;
 });
@@ -1627,6 +1626,7 @@ document.getElementById('custom_trigger_form').addEventListener('submit',functio
 
 
 function save_config() {
+    document.getElementById('ajax').classList.add('active');
     // strip name/desc and jsonify into localstorage
     ach_json = JSON.stringify(new_achievements);
     window.temp_config = JSON.parse(ach_json);
@@ -1657,7 +1657,6 @@ function save_config() {
             notify('Config saved!','is-success');
             document.body.classList.add('claimed','authorized');
             load_config();
-            //render_all_achievement_cards();
         }
         else {
             notify(response.msg,'is-warning');
@@ -1665,6 +1664,9 @@ function save_config() {
             if (temp!=''&&temp!==null) {
                 window.claim_code = temp;
                 save_config();
+            }
+            else {
+                document.getElementById('ajax').classList.remove('active');
             }
             /* document.body.classList.add('claimed');
             document.body.classList.remove('authorized'); */
@@ -1703,7 +1705,8 @@ document.getElementById('paste_config').addEventListener('click',function(e){
 function load_config() {
     // todo - move loading into promise 
     // window.user set in index.php
-    fetch(window.root + 'userconfigs/' + window.user + "_config.json")
+    document.getElementById('ajax').classList.add('active');
+    fetch(window.root + 'userconfigs/' + window.user + "_config.json?nocache=" + (new Date()).getTime())
     .then(response => response.json())
     .then(
         function(config){
@@ -1814,6 +1817,7 @@ function load_config() {
                 render_all_achievement_cards();
                 notify('Loaded "'+window.user+'" soundpack!','is-success');
             }
+            document.getElementById('ajax').classList.remove('active');
         }
     );
 
@@ -2388,7 +2392,7 @@ document.querySelector('body').addEventListener('click',function(e){
                     s = new Audio(url);
                     s.crossOrigin = 'anonymous';
                     ach.sounds.push(s);
-                    save_config();
+                    
                     index = ach.sounds.length-1;
                     id = ach.id;
                     filename = url.split('/').pop();
@@ -2420,6 +2424,8 @@ document.querySelector('body').addEventListener('click',function(e){
                     html = card.querySelector('.is-grouped').innerHTML;
                     html += card_footer_entry;
                     card.querySelector('.is-grouped').innerHTML = html;
+
+                    save_config();
                 }
             }
         }

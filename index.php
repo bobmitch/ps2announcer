@@ -1,4 +1,7 @@
 <?php 
+/* ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL); */
 
 $root = "/ps2/"; // change to appropriate sub-folder - eg. ps2 when live
 
@@ -19,6 +22,19 @@ $request = $_SERVER['REQUEST_URI'];
 $to_remove = $root;
 $request = str_ireplace($to_remove, "", $request);
 $segments = preg_split('@/@', parse_url($request, PHP_URL_PATH), NULL, PREG_SPLIT_NO_EMPTY);
+
+// multilanguage
+
+$lang="en";
+if (isset($_GET['lang'])) {
+	$lang = $_GET['lang'];
+}
+if (in_array($lang,['en','ru'])) {
+	include_once('lang_' . $lang . ".php");
+}
+else {
+	include_once('lang_en.php');
+}
 
 // get user
 $user = false;
@@ -304,12 +320,17 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		</script>
 
 	</head>
+
 	<body class='loading <?php if ($server_claim_code) {echo " claimed ";}?> <?php if (!$server_claim_code) {echo " unclaimed ";}?> <?php if (!$user) {echo " vanilla ";} else { echo " " . $user . " ";}?>'>
+		<div id='ajax' class=''>
+			<div id='ajax_spinner' class='spinner'></div>
+		</div>
+	
 		<div id='splash' class=' loading'>
 			<div class='contain'>
 				<h1 class='splashtitle'>Planetside 2 Announcer</h1>
 				<div id='spinner' class='loadingonly spinner'></div>
-				<button id='start_button' onclick='document.querySelector("#splash").classList.add("hide");allow_voicepack();' class='loaded button btn is-warning is-large'>Enable Audio / Start</button>
+				<button id='start_button' onclick='document.querySelector("#splash").classList.add("hide");allow_voicepack();' class='loaded button btn is-warning is-large'><?php echo lang('START_BUTTON');?></button>
 				<p class='splashabout'>By [BAX] BobMitch</p>
 			</div>
 		</div>
@@ -367,13 +388,13 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 						
 					  <a id='show_player_modal' class="button is-primary">
-							<strong><i class="fas fa-users"></i> Manage Players</strong>
+							<strong><i class="fas fa-users"></i> <?php echo lang('MANAGE_PLAYERS');?></strong>
 						  </a>
 						  <a id='show_settings_modal' class="button is-primary">
-							<strong><i class="fas fa-cog"></i> Global Settings</strong>
+							<strong><i class="fas fa-cog"></i> <?php echo lang('GLOBAL_SETTINGS');?></strong>
 						  </a>
 						  <a id='show_achievements_modal' class="button is-primary">
-							<strong><i class="fas fa-file-audio"></i> Edit Voicepack</strong>
+							<strong><i class="fas fa-file-audio"></i> <?php echo lang('EDIT_VOICEPACK');?></strong>
 						  </a>
 						  
 						  
