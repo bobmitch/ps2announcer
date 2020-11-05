@@ -1768,7 +1768,7 @@ function load_config() {
                             
                             window[config[i].id].onkill=config[i].onkill;
                             ach=window[config[i].id];
-                            console.log('Added custom trigger ',foo);
+                            console.log('Added custom trigger',config[i].id);
                         }
                     }
                     if (ach) {
