@@ -544,7 +544,7 @@ function print_character(character_id, event) {
                 char+='<span class="outfit">'+characters[character_id].character_list[0].outfit.alias+'</span>&nbsp;';
             }
             char+= character.name.first+'</span> ';
-            char+='<span class="br">BR:'+character.battle_rank.value+'</span> ';
+            char+='<span class="br">BR: '+character.battle_rank.value+'</span> ';
             //char+='</span>';
 
             stats_history = character.stats.stat_history;
@@ -756,6 +756,25 @@ function display_event(data) {
             var row=events_table.insertRow();
             row.classList.add('hideme');
             row.classList.add('killboard_entry');
+
+            let attacker_faction = "unknown";
+            if (data.payload.hasOwnProperty('attacker_character_id')) {
+                let fac = get_faction (data.payload.attacker_character_id);
+                if (fac) {
+                    attacker_faction = fac;
+                }
+            }
+            row.classList.add('attacker_faction_' + attacker_faction);
+
+            let character_faction = "unknown";
+            if (data.payload.hasOwnProperty('character_id')) {
+                let fac = get_faction (data.payload.character_id);
+                if (fac) {
+                    character_faction = fac;
+                }
+            }
+            row.classList.add('character_faction_' + character_faction);
+
             row.className += cls;
             var time = row.insertCell();
             time.classList.add('timestamp');
@@ -1725,7 +1744,7 @@ function load_config() {
                         if (config[i].custom_weapon_trigger) {
                             console.log('Found custom weapon trigger: ',config[i]);
                             // create new custom achievement object based on config
-                            foo = new Achievement(config[i].id, config[i].name, config[i].description, function (event) {
+                            window[config[i].id] = new Achievement(config[i].id, config[i].name, config[i].description, function (event) {
                                 if (event.payload.event_name=='Death') {
                                     //console.log ('checking ',event,' for trigger: ',this);
                                     if (is_kill(event) && this.onkill=="1") {
@@ -1745,10 +1764,10 @@ function load_config() {
                                 } 
                                 return false;
                             },[],15);
-                            foo.custom_weapon_trigger = config[i].custom_weapon_trigger;
+                            window[config[i].id].custom_weapon_trigger = config[i].custom_weapon_trigger;
                             
-                            foo.onkill=config[i].onkill;
-                            ach=foo;
+                            window[config[i].id].onkill=config[i].onkill;
+                            ach=window[config[i].id];
                             console.log('Added custom trigger ',foo);
                         }
                     }

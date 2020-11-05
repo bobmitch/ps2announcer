@@ -71,6 +71,15 @@ function get_achievment_index (ach_id) {
     return false;
 }
 
+function js_translate(ach, prop) {
+    if (ach.hasOwnProperty(prop + '_' + lang)) {
+        return ach[prop+'_'+lang];
+    }
+    else {
+        return ach[prop];
+    }
+}
+
 function render_achievement_card(a) {
     friendly_name = encodeURI(a.id);
     card_footer_markup = '<div class="field is-grouped is-grouped-multiline">';
@@ -137,11 +146,13 @@ function render_achievement_card(a) {
         custom_weapon_trigger_label = '<span class="info"><button class="button is-small edit_custom">edit custom</button>&nbsp&nbsp&nbsp&nbsp<button class="authorized_only button is-small is-danger is-light delete_custom">delete</button></span> ';
     }
     
+    let title = js_translate(a,'name');
+
     markup = `
     <div class="${no_checked} card ${custom_weapon_trigger_class}" data-id="${a.id}">
         <header class="card-header">
             <p class="card-header-title">
-            ${a.name} ${custom_weapon_trigger_label}
+            ${title} ${custom_weapon_trigger_label}
             </p>
             <div class='control>
                 <a class='image_preview_wrap' href='#'>
@@ -312,6 +323,7 @@ var roadkill = new Achievement('roadkill','Roadkill!','Squished someone with a g
     }
     return false;
 },['roadkill.mp3'],3);
+roadkill.name_ru = "дорожное убийство";
 
 var revenge = new Achievement('revenge','Revenge!','Killed someone who killed you before!', function (event) {
     // latest event is current
