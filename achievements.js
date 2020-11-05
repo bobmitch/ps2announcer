@@ -690,7 +690,9 @@ var killed_by_shotgun = new Achievement('redmist','Red Mist!','You got killed by
 },['rudeness.mp3','bus-driver-crap.mp3'],9);
 
 var grenade_kill = new Achievement('kobe','Kobe!','Pinpoint throw - got a grenade kill!', function (event) {
-    
+    if (event.is_tk) {
+        return false;
+    }
     if (event.is_kill && event.payload.event_name=="Death") {
         if (event.payload.attacker_weapon_id=="0") {
             return false;

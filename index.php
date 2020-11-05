@@ -96,6 +96,11 @@ $config_json_path = false;
 if (file_exists('userconfigs/' . $user . '_config.json')) {
 	$config_json_path = $root . 'userconfigs/' . $user . '_config.json';
 }
+else {
+	// user has no config yet, make one based on bobmitch default
+	copy('userconfigs/bobmitch_config.json', 'userconfigs/' . $user . '_config.json' );
+	$config_json_path = $root . 'userconfigs/' . $user . '_config.json';
+}
 $server_claim_code = false;
 if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 	$server_claim_code = file_get_contents('userconfigs/' . $user . '_claim.txt');
