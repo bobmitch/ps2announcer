@@ -510,7 +510,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Manage Players</p>
+				<p class="modal-card-title"><?php echo lang('MANAGE_PLAYERS');?></p>
 				<button class="delete" aria-label="close"></button>
 			  </header>
 			  <section class="modal-card-body">
@@ -541,7 +541,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class="modal-card">
 			  <header class="modal-card-head">
 				<p class="modal-card-title">
-				Manage Triggers <i id='unlock' title='URL already claimed' class="claimedonly fas fa-lock"></i> <span class='claimedonly info'>(click to unlock)</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<?php echo lang('EDIT_VOICEPACK');?> <i id='unlock' title='URL already claimed' class="claimedonly fas fa-lock"></i> <span class='claimedonly info'>(click to unlock)</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<button id='copy_config' class='button claimed_only btn is-small is-primary'>Copy Soundpack</button>
 				<button id='paste_config' class='button authorized_only btn is-small is-warning'>Paste Soundpack</button>
 				<button id='add_custom_trigger' class='button authorized_only btn is-small is-primary'>Add Custom Weapon Trigger</button>
@@ -768,7 +768,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<div class="modal-background"></div>
 			<div class="modal-card">
 			  <header class="modal-card-head">
-				<p class="modal-card-title">Global Settings!</p>
+				<p class="modal-card-title"><?php echo lang('GLOBAL_SETTINGS');?></p>
 				<button class="delete" aria-label="close"></button>
 				
 			  </header>
