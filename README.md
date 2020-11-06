@@ -23,7 +23,7 @@ Of course! Just go to the site and add **/soundpackname** (change to whatever yo
 
 Go ahead and click on 'Manage Audio' - when you make any changes to the triggers you will be prompted to enter a password/passphrase to 'claim' this URL as your own (if it has not already been claimed). You can now add custom weapon triggers, or change images/audio files for any existing triggers - and to share your soundpack, simply send interested parties to your new URL.
 
-Note - all sounds (and images) must be loaded from an HTTPS source, with CORS enabled. Dropbox works well for images/audio. Imgur works great for images.
+Imgur works great as a host for images.
 
 ## Can I Use This With OBS?
 
@@ -35,9 +35,9 @@ Sure - just add the site as a browser source!  If OBS is detected, the site will
 
 Always. :) Either add issues here on github, or join myself and all the testers/users at [my Discord server](https://discord.gg/m9cm26).
 
-## Why Can't I Upload My Sounds/Images To Your Server?
+## Why Can't I Upload My Images To Your Server?
 
-I didn't want people to have to register/give up their anonymity in order to use this site, and in fact the early versions stored all of the user configuration data in localStorage to further maximize this goal. The OBS feature and ease of sharing soundpacks made some server-side shenanigans somewhat necessary.
+Images (animated gifs especially) are typically much larger than short audio clips, and images are not the primary focus of this app, which is making stupid noises. 
+Imgur is great for hosting images, and I use their links for the default gifs.
 
-I also didn't want to have to deal with any copyright issues that may arise other than removing links if required.
 
