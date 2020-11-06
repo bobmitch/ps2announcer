@@ -225,6 +225,8 @@ Achievement.prototype.play = function(index=false) {
     if (!index) {
         index = Math.floor(Math.random() * this.sounds.length);
     }
+    
+    //if (!this.sounds[index].hasOwnProperty('config_volume') || !this.sounds[index].config_volume) {
     if (!this.sounds[index].hasOwnProperty('config_volume') || !this.sounds[index].config_volume) {
         this.sounds[index].config_volume=100;
     }
@@ -1177,3 +1179,13 @@ var sevendeaths = new Achievement('sevendeaths','Seven Or More Deaths!','7 or mo
     }
     return false;
 },['oh-no.mp3'],15);
+
+var suicidebomber = new Achievement('suicidebomber','Sacrificial Lamb!','You sacrificed yourself for the greater good, killing a vehicle while dying!', function (event) {
+    if (last_death_timestamp==last_vehicle_kill_timestamp) {
+        if (event.payload.timestamp==last_death_timestamp) {
+            // you killed enemy vehicle and died at same time
+            return (true);
+        }
+    }
+    return false;
+},[],2);

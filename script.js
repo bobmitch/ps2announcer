@@ -313,6 +313,8 @@ var synth = window.speechSynthesis;
 var shotgun_killstreak = 0; // reset by death and non-shotgun kill
 var shotgun_killstreak_timestamp = 0;
 var last_res_timestamp = 0;
+var last_death_timestamp  = 0;
+var last_vehicle_kill_timestamp = 0;
 
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
 
@@ -944,6 +946,14 @@ function process_event(event) {
             set_player_offline(event.payload.character_id);
         }
     }
+
+    if (event.payload.event_name=="VehicleDestroy") {
+        if (!event.is_tk) {
+            // set last vehicle kill timestamp for sacrificial lamb trigger (or others!)
+            window.last_vehicle_kill_timestamp = event.payload.timestamp;
+        }
+    }
+
     // update global values based on event
     if (event.payload.event_name=='Death') {
 
@@ -974,6 +984,7 @@ function process_event(event) {
             window.assist_streak=0; // end assist streak
             multikills=0;
             window.deaths++;
+            window.last_death_timestamp = event.payload.timestamp;
             update_kd();
             if (!is_player(event.payload.attacker_character_id)) {
                 // not suicide
