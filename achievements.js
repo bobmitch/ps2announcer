@@ -1187,6 +1187,8 @@ var suicidebomber = new Achievement('suicidebomber','Sacrificial Lamb!','You sac
     if (last_death_timestamp==last_vehicle_kill_timestamp) {
         if (event.payload.timestamp==last_death_timestamp) {
             // you killed enemy vehicle and died at same time
+            // reset timestamps to prevent multiple triggers
+            last_vehicle_kill_timestamp = 0;
             return (true);
         }
     }
