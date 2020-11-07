@@ -634,6 +634,9 @@ accuracy.text_in_killboard = true;
 
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
     if (event.payload.event_name=='VehicleDestroy') {
+        if (event.is_tk) {
+            return false;
+        }
         if (is_player(event.payload.attacker_character_id)) {
             vh = get_local_vehicle(event.payload.vehicle_id);
             if (vh) {
