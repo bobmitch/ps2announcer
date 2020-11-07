@@ -366,6 +366,7 @@ function insert_row (data, msg) {
         }
 
         special.innerHTML = pills;
+        row.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
     }
 }
 
@@ -805,6 +806,7 @@ function display_event(data) {
             });
 
             special.innerHTML = pills;
+            row.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
         }
 
     });
