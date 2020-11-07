@@ -796,9 +796,12 @@ function display_event(data) {
 
             cur_achievements.forEach(achievement_on_stack => {
                 //console.log('putting pill for achievement ', achievement_on_stack);
-                pills += `
-                <span class='tag is-dark'>${achievement_on_stack.name}</span>
-                `;
+                if (achievement_on_stack.id!=='normalkill') {
+                    // skip vanilla kill pill
+                    pills += `
+                    <span class='tag is-dark'>${achievement_on_stack.name}</span>
+                    `;
+                }
             });
 
             special.innerHTML = pills;
@@ -1077,10 +1080,14 @@ function process_event(event) {
                     char.deathstreak=0;
                     if (char.hasOwnProperty('killcount')) {
                         char.killcount++;
-                        char.killstreak++;
                     }
                     else {
                         char.killcount=1;
+                    }
+                    if (char.hasOwnProperty('killstreak')) {
+                        char.killstreak++;
+                    }
+                    else {
                         char.killstreak=1;
                     }
                 }
