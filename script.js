@@ -246,12 +246,19 @@ document.getElementById('stats').addEventListener('click',function(e){
 
 var countkills = false;
 var fullscreenanimations = false;
+var darkmode = false;
 
 countkills = JSON.parse(localStorage.getItem('ps2_countkills'));
 document.getElementById('countkills').checked = countkills;
 
 fullscreenanimations = JSON.parse(localStorage.getItem('ps2_fullscreenanimations'));
 document.getElementById('fullscreenanimations').checked = fullscreenanimations;
+
+darkmode = JSON.parse(localStorage.getItem('ps2_darkmode'));
+document.getElementById('darkmode').checked = darkmode;
+if (darkmode) {
+    document.body.classList.add('darkmode');
+}
 
 var stored_playerlist = JSON.parse(localStorage.getItem('ps2_players'));
 if (stored_playerlist) {
@@ -1913,6 +1920,12 @@ document.getElementById('countkills').addEventListener('change',function(e) {
 document.getElementById('fullscreenanimations').addEventListener('change',function(e) {
     window.fullscreenanimations = e.target.checked;
     localStorage.setItem('ps2_fullscreenanimations',window.fullscreenanimations);
+});
+
+document.getElementById('darkmode').addEventListener('change',function(e) {
+    window.darkmode = e.target.checked;
+    document.body.classList.toggle('darkmode');
+    localStorage.setItem('ps2_darkmode',window.darkmode);
 });
 
 

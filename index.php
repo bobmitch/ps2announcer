@@ -802,6 +802,11 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 							<input type='checkbox' id='fullscreenanimations'/>
 						</label>
 					</div>
+					<div class='control flex'>
+						<label class='checkbox' for='darkmode'>Enable Dark Mode
+							<input type='checkbox' id='darkmode'/>
+						</label>
+					</div>
 			  </section>
 			  
 			</div>

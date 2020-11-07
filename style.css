@@ -1012,7 +1012,81 @@ body:not(.loading) #spinner {
       box-shadow: 0em -2.6em 0em 0em rgba(255, 255, 255, 0.2), 1.8em -1.8em 0 0em rgba(255, 255, 255, 0.2), 2.5em 0em 0 0em rgba(255, 255, 255, 0.2), 1.75em 1.75em 0 0em rgba(255, 255, 255, 0.2), 0em 2.5em 0 0em rgba(255, 255, 255, 0.2), -1.8em 1.8em 0 0em rgba(255, 255, 255, 0.5), -2.6em 0em 0 0em rgba(255, 255, 255, 0.7), -1.8em -1.8em 0 0em #ffffff;
     }
   }
-  
+
+/* darkmode */
+
+:root {
+    --darkbg: #000;
+    --txt: #ddd;
+  }
+
+body:not(.obs).darkmode {
+    background:var(--darkbg);
+}
+body.darkmode .navbar {
+    background:var(--darkbg);
+}
+body.darkmode .title {
+    color:var(--txt);
+}
+body.darkmode .table {
+    background:none;
+    color:var(--txt);
+}
+body.darkmode .navbar-item.has-dropdown:hover {
+    background:var(--darkbg);
+}
+body.darkmode .navbar-item.has-dropdown:hover a {
+    background:var(--darkbg);
+}
+
+body.darkmode .table td, body.darkmode .table th {
+    border-color:var(--darkbg) !important;
+}
+body.darkmode .navbar-item, body.darkmode .navbar-link {
+    color:var(--txt);
+}
+body.darkmode .navbar-dropdown {
+    border-top:2px solid var(--darkbg);
+    background:var(--darkbg);
+}
+body.darkmode .navbar-item.has-dropdown:hover a:hover {
+    color:white;
+    background:rgba(255,255,255,0.2);
+}
+body.darkmode .modal-card-body, body.darkmode .modal-card-foot {
+    background-color: #222;
+    color:var(--txt);
+    border-color:var(--darkbg);
+}
+body.darkmode .input, body.darkmode .textarea, body.darkmode .select select {
+    background-color:var(--darkbg);
+    color:var(--txt);
+}
+body.darkmode hr {
+    background-color:var(--darkbg);
+}
+
+body.darkmode .card {
+    background:#000;
+    color:#aaa;
+}
+body.darkmode .card-header {
+    background:#333 !important;
+}
+body.darkmode .card-header-title {
+    color:var(--txt);
+}
+body.darkmode .tag:not(body):not(.play_sound) {
+    background:#555;
+    color:var(--txt);
+}
+body.darkmode .card-footer {
+    border-top: 1px solid #222;
+}
+.darkmode .button, .darkmode #playername, .darkmode span.charname {
+    filter:brightness(0.8);
+}
 
 /* animations */
 body:not(.bobmitch) #animations {
