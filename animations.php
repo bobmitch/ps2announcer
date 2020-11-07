@@ -20,6 +20,9 @@
 			<div class='animation' id='animation_spitty'>
 				<img src='/ps2/images/turret.png' id='spitty_image'></img>
 			</div>
+			<div class='animation' id='animation_suicidebomber'>
+				<img src='/ps2/images/suicide.png' id='suicide_image'></img>
+			</div>
 			<div class='animation' id='animation_decakill'>
 				<img src='/ps2/images/ten.png' id='ten_image'></img>
 			</div>
