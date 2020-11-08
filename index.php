@@ -387,6 +387,9 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 							  <a id='toggle_view' class="navbar-item">
 								OBS View (space to revert)
 							  </a>
+							<a id='show_debug_modal' class="navbar-item">
+							  Debug
+							</a>
 						</div>
 					</div>
 					<div class="navbar-item">
@@ -765,6 +768,22 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			  </header>
 			  <section class="modal-card-body">
 					<p>This thing does nothing if you're not tracking at least one player - so don't forget to click 'manage players', find your player(s), and add them to the list!</p>
+			  </section>
+			  
+			</div>
+		  </div>
+
+		  <div id='debug_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Debug</p>
+				<button class="delete" aria-label="close"></button>
+				
+			  </header>
+			  <section class="modal-card-body">
+					<pre id='debug_content'>
+					</pre>
 			  </section>
 			  
 			</div>

@@ -1183,12 +1183,13 @@ var sevendeaths = new Achievement('sevendeaths','Seven Or More Deaths!','7 or mo
     return false;
 },['oh-no.mp3'],15);
 
+// 38:53 clutch vod 11/7 for debug
 var suicidebomber = new Achievement('suicidebomber','Sacrificial Lamb!','You sacrificed yourself for the greater good, killing a vehicle while dying!', function (event) {
-    if (last_death_timestamp==last_vehicle_kill_timestamp) {
-        if (event.payload.timestamp==last_death_timestamp) {
+    if (last_suicide_death_timestamp==last_vehicle_kill_timestamp) {
+        if (event.payload.timestamp==last_suicide_death_timestamp) {
             // you killed enemy vehicle and died at same time
             // reset timestamps to prevent multiple triggers
-            last_vehicle_kill_timestamp = 0;
+            last_vehicle_kill_timestamp = -999;
             return (true);
         }
     }

@@ -320,8 +320,8 @@ var synth = window.speechSynthesis;
 var shotgun_killstreak = 0; // reset by death and non-shotgun kill
 var shotgun_killstreak_timestamp = 0;
 var last_res_timestamp = 0;
-var last_death_timestamp  = 0;
-var last_vehicle_kill_timestamp = 0;
+var last_suicide_death_timestamp  = 0;
+var last_vehicle_kill_timestamp = 1;
 
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
 
@@ -996,7 +996,9 @@ function process_event(event) {
             window.assist_streak=0; // end assist streak
             multikills=0;
             window.deaths++;
-            window.last_death_timestamp = event.payload.timestamp;
+            if (is_player(event.payload.attacker_character_id)) {
+                window.last_suicide_death_timestamp = event.payload.timestamp;
+            }
             update_kd();
             if (!is_player(event.payload.attacker_character_id)) {
                 // not suicide
@@ -1525,6 +1527,15 @@ document.querySelector('#playername').addEventListener('click',function(e){
 document.querySelector('#show_settings_modal').addEventListener('click',function(e){
     e.preventDefault();
     document.querySelector('#settings_modal').classList.toggle('is-active');
+});
+
+document.querySelector('#show_debug_modal').addEventListener('click',function(e){
+    e.preventDefault();
+    // update debug content
+    let last_five_events = allevents.slice(Math.max(allevents.length - 5, 0));
+    let last_five_events_json = JSON.stringify(last_five_events, null, 4);
+    document.getElementById('debug_content').innerHTML = last_five_events_json;
+    document.querySelector('#debug_modal').classList.toggle('is-active');
 });
 
 document.querySelector('#show_about_modal').addEventListener('click',function(e){
