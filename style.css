@@ -1066,6 +1066,9 @@ body.darkmode .input, body.darkmode .textarea, body.darkmode .select select {
 body.darkmode hr {
     background-color:var(--darkbg);
 }
+body.darkmode .label {
+    color:var(--txt);
+}
 
 body.darkmode .card {
     background:#000;

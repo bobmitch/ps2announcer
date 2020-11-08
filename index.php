@@ -682,6 +682,14 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 							  </label>
 							</div>
 						  </div>
+
+						  <div class='field'>
+						  	<div class='control'>
+							  <label class="label">Group Kill Trigger Value</label>
+							  <input id='group_kill_trigger_value' name='description' class="input" value="1" type="number" min="1" max="999" placeholder="1">
+							  <p class="help">Number of simultaneous kills required to trigger (if trigger on kill selected).</p>
+							</div>
+						  </div>
 						  
 						  <div class="field is-grouped">
 							<div class="control">

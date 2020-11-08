@@ -943,6 +943,7 @@ function process_event(event) {
     event.is_kill = is_kill(event);
     event.is_death = is_death(event);
     event.is_tk = is_tk(event);
+    update_group_num_killed(event);
     
     if (event.payload.event_name=="PlayerLogin") {
         c = get_local_character(event.payload.character_id);
@@ -1634,6 +1635,7 @@ document.getElementById('custom_trigger_form').addEventListener('submit',functio
     id = label.toLowerCase().replace(/\s/g, '');
     description = document.getElementById('custom_trigger_description').value;
     onkill = document.querySelector('input[name="onkill"]:checked').value;
+    group_kill_trigger_value = document.getElementById('group_kill_trigger_value').value;
     weapon_id = document.getElementById('custom_trigger_weapon_id').value;
     ach_with_same_id = get_achievement(id);
     edit_ach = get_achievement(edit_custom_trigger_id);
@@ -1645,6 +1647,7 @@ document.getElementById('custom_trigger_form').addEventListener('submit',functio
             edit_ach.name = label;
             edit_ach.onkill = onkill;
             edit_ach.custom_weapon_trigger = weapon_id;
+            edit_ach.group_kill_trigger_value = group_kill_trigger_value;
         }
     }
     else {
@@ -1671,6 +1674,7 @@ document.getElementById('custom_trigger_form').addEventListener('submit',functio
         },[],15);
         foo.custom_weapon_trigger = weapon_id;
         foo.onkill=onkill;
+        foo.group_kill_trigger_value = group_kill_trigger_value;
         //new_achievements.push(foo); // not needed, new object adds itself to new_achievement object
         console.log('Added new custom weapon trigger: ',foo);
     }
@@ -1788,7 +1792,16 @@ function load_config() {
                                     if (is_kill(event) && this.onkill=="1") {
                                         if (!is_tk(event)) {
                                             if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
-                                                return true;
+                                                // check group kill value
+                                                if (config[i].hasOwnProperty('group_kill_trigger_value')) {
+                                                    // should always have this property after adding default value during initial config load
+                                                    if (event.group_num_killed == parseInt(config[i].group_kill_trigger_value)) {
+                                                        return true;
+                                                    }
+                                                }
+                                                else {
+                                                    return true;
+                                                }
                                             }
                                         }
                                     }
@@ -1805,6 +1818,12 @@ function load_config() {
                             window[config[i].id].custom_weapon_trigger = config[i].custom_weapon_trigger;
                             
                             window[config[i].id].onkill=config[i].onkill;
+                            if (config[i].hasOwnProperty('group_kill_trigger_value')) {
+                                window[config[i].id].group_kill_trigger_value = config[i].group_kill_trigger_value;
+                            }
+                            else {
+                                window[config[i].id].group_kill_trigger_value = 1;
+                            }
                             ach=window[config[i].id];
                             console.log('Added custom trigger',config[i].id);
                         }
@@ -2338,6 +2357,7 @@ document.querySelector('body').addEventListener('click',function(e){
             document.getElementById('custom_trigger_name').value = ach.name;
             document.getElementById('custom_trigger_description').value = ach.description;
             document.getElementById('custom_trigger_weapon_id').value = ach.custom_weapon_trigger;
+            document.getElementById('group_kill_trigger_value').value = ach.group_kill_trigger_value;
             if (ach.onkill=='1') {
                 document.getElementById('onkill').checked = true;
             }

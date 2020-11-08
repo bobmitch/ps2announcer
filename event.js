@@ -52,3 +52,22 @@ function is_kill(event) {
     return (false);
 }
 
+function update_group_num_killed(event) {
+    // checks to see if kill is part of group of kills
+    cur_event_time = parseInt(event.payload.timestamp);
+    event.group_num_killed = 0;
+    for (var i = allevents.length - 2; i >= 0; i--) {
+        // start at -2, don't include self
+        proc_event_time = parseInt(allevents[i].payload.timestamp);
+        if (proc_event_time==cur_event_time) {
+            if (allevents[i].is_kill && !allevents[i].is_tk) {
+                event.group_num_killed++;
+            }
+        }
+        else {
+            // next event working backwards is not for same timestamp, exit loop
+            break;
+        }
+    }
+}
+
