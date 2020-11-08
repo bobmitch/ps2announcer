@@ -99,7 +99,11 @@ function unsubscribe_from_character (id) {
     "action":"clearSubscribe",
 		"characters":[id],
 		"eventNames":[
-			"PlayerLogout"
+            "Death",
+            "VehicleDestroy",
+            "PlayerLogin",
+            "PlayerLogout",
+            "GainExperience"
         ]
     };
     window.socket.send (JSON.stringify(subscription_data));
