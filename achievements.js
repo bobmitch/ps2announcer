@@ -751,7 +751,7 @@ var mozzie = new Achievement('mozzie','Blood Sucker!','You got killed by a Mosqu
         }
     }
     return false;
-},['rudeness.mp3','bus-driver-crap.mp3']);
+},['rudeness.mp3','bus-driver-crap.mp3'],4);
 
 var shotgun_shogun = new Achievement('shotgun_shogun','Shotgun Shogun!','3 shotgun kills in a row, within 5 seconds of each other!', function (event) {
     if (event.is_tk) {
