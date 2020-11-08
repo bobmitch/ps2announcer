@@ -1358,6 +1358,13 @@ window.onload = function() {
 
     jQuery('#player_list_wrap').on('click','.is-delete', function(e){
         var delete_char_id = jQuery(this).data('char_id');
+        var char_name = this.parentElement.querySelector('.is-link').innerText;
+        console.log(char_name);
+        if (document.getElementById('playername').innerText==char_name) {
+            document.getElementById('playername').innerText = "Player Offline";
+            document.getElementById('playername').classList.add('offline');
+            document.getElementById('playername').classList.remove('online');
+        }
         console.log('removing:');
         console.log(delete_char_id);
         jQuery(this).closest('div.tags').remove(); 
@@ -1365,7 +1372,7 @@ window.onload = function() {
             if (playerlist[i].char_id == delete_char_id.toString()) {
                 // todo: unsubscribe
                 unsubscribe_from_character(delete_char_id.toString());
-                playerlist.splice(i, 1);
+                playerlist.splice(i, 1); 
             }
         }
         localStorage.setItem('ps2_players',JSON.stringify(playerlist));
