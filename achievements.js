@@ -792,7 +792,7 @@ var rocketman = new Achievement('rocketman','Rocket Man!','You killed someone wi
         }
     }
     return false;
-},['rocket-man.mp3']);
+},['rocket-man.mp3'],4);
 
 
 var knifey = new Achievement('knifey','Knifey Spooney!','You stabbed a motherfucker!', function (event) {
