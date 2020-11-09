@@ -629,7 +629,7 @@ var accuracy = new Achievement('accuracy','Accuracy!','5 headshots in a row!', f
         }
     }
     return false;
-},['pew.mp3'],6);
+},['betweeneyes.mp3'],6);
 accuracy.text_in_killboard = true;
 
 var nocar = new Achievement('nocar',"Dude, where's my car?",'You killed a harasser!', function (event) {
