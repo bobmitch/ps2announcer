@@ -814,22 +814,30 @@ table#events::before {
     width: 100%;
 }
 
-#obs_reset {
+
+body.obs:hover .obs_hover_only {
+    display:block;
+}
+
+body:not(.obs) .obs_hover_only {
     display:none;
 }
-.obs:hover #obs_reset {
-    display:block;
-    font-size:2rem;
-    position:absolute;
-    top:2rem;
-    left:2rem;
-    background:rgba(255,255,255,0.8);
-    color:black;
-    z-index:9999;
+
+
+
+#obs_buttons {
+    display:none;
+    flex-direction:column;
+    width:40ch;
+    margin:2rem;
 }
-.obs:hover #obs_reset:hover {
-    cursor:pointer;
+body.obs:hover #obs_buttons {
+    display:flex;
 }
+#obs_buttons button {
+    margin-bottom:2rem;
+}
+
 
 
   .hide_obs {

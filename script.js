@@ -1193,6 +1193,10 @@ function process_event(event) {
     update_stats();
 }
 
+document.getElementById('desktop_view').addEventListener('click',function(e){
+    document.getElementsByTagName('body')[0].classList.remove('obs');
+    document.getElementsByTagName('html')[0].classList.remove('isobs');
+});
 document.getElementsByTagName('body')[0].addEventListener('keyup',function(e){
     // toggle obs view if space pressed in obs view
     var code = e.which;

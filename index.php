@@ -385,7 +385,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 								Export/Import Soundpack
 							  </a> -->
 							  <a id='toggle_view' class="navbar-item">
-								OBS View (space to revert)
+								OBS View
 							  </a>
 							<a id='show_debug_modal' class="navbar-item">
 							  Debug
@@ -846,7 +846,10 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		</div>
 		</section>
 
-		<button id='obs_reset'>RESET OBS POSITIONS</button>
+		<div class='obs_hover_only' id='obs_buttons'>
+			<button class='button is-primary' id='desktop_view'>DESKTOP VIEW</button>
+			<button class='button is-warning' id='obs_reset'>RESET OBS POSITIONS</button>
+		</div>
 
 		<?php include_once('animations.php'); ?>
 
