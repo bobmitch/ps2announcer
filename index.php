@@ -162,6 +162,77 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			exit(0);
 		}
 	}
+	elseif ($action=="copy_and_create") {
+		$pack_name = get_post('new_packname');
+		$new_password = get_post('newpack_password');
+		$new_config = get_post('new_config');
+		if ($pack_name) {
+			$clean_packname = filter_filename (urldecode($pack_name),false);
+			if ($pack_name==$clean_packname) {
+				// ok packname
+				if (file_exists('userconfigs/' . $pack_name . '_claim.txt')) {
+					echo '{"success":0,"msg":"Soundpack already exists!"}';
+					exit(0);
+				}
+				if (!$new_password) {
+					echo '{"success":0,"msg":"You must provide a password!"}';
+					exit(0);
+				}
+				$valid_json = json_decode($new_config);
+				if (!$valid_json) {
+					echo '{"success":0,"msg":"Invalid config"}';
+					exit(0);
+				}
+				// got here, have password and user is good to create
+				$hash = password_hash ($new_password, PASSWORD_DEFAULT);
+				file_put_contents ('userconfigs/' . $pack_name . '_claim.txt', $hash);
+				// copy files from source folder to destination 
+				if (!is_dir('./useraudio/' . $pack_name)) {
+					mkdir('./useraudio/' . $pack_name);
+				}
+				foreach($valid_json as $trigger) {
+					foreach ($trigger->soundfiles as &$url) {
+						if (strpos($url,"bobmitch.com")) {
+							// uploaded 
+							if (strpos($url,"useraudio")) {
+								// really not a default
+								$parts1 = explode("useraudio",$url); 
+								$parts2 = explode('/',$parts1[1]);
+								$source_user = $parts2[1];
+								$filename = $parts2[2];
+								$src = __DIR__ . "/useraudio/" . $source_user . "/" . $filename;
+								$dest = __DIR__ . "/useraudio/" . $pack_name . "/" . $filename;
+								if ($user!==$source_user) {
+									// copy file from original user audio folder to your audio folder and change config
+									copy($src, $dest);
+									$new_url = "https://bobmitch.com/ps2/useraudio/" . $pack_name . "/" . $filename;
+									$url = $new_url;
+								}
+							}
+						}
+					}
+				}
+				$converted_json = json_encode($valid_json, JSON_UNESCAPED_SLASHES );
+				if ($converted_json) {
+					file_put_contents('userconfigs/' . $pack_name . '_config.json',$converted_json);
+					echo '{"success":1,"msg":"New pack created"}';
+					exit(0);
+				}
+				else {
+					echo '{"success":0,"msg":"Invalid config"}';
+					exit(0);
+				}
+			}
+			else {
+				echo '{"success":0,"msg":"Bad soundpack name"}';
+				exit(0);
+			}
+		}
+		else {
+			echo '{"success":0,"msg":"No soundpack name"}';
+			exit(0);
+		}
+	}
 	elseif ($action=='upload_audio') {
 		if (!$submitted_claim_code) {
 			echo '{"success":0,"msg":"Invalid request"}';
@@ -552,6 +623,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				<p class="modal-card-title">
 				<?php echo lang('EDIT_VOICEPACK');?> <i id='unlock' title='URL already claimed' class="claimedonly fas fa-lock"></i> <span class='claimedonly info'>(click to unlock)</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<button id='copy_config' class='button claimed_only btn is-small is-primary'>Copy Soundpack</button>
+				<button id='copy_and_create_config' class='button claimed_only btn is-small is-warning'>Copy And Create New</button>
 				<button id='paste_config' class='button authorized_only btn is-small is-warning'>Paste Soundpack</button>
 				<button id='add_custom_trigger' class='button authorized_only btn is-small is-primary'>Add Custom Weapon Trigger</button>
 				<button id='change_password' class='pull-right is-pulled-right button authorized_only btn is-small is-danger'>Change Password</button></p>
@@ -623,6 +695,41 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			  	<p>OBS - <a href="https://docs.google.com/document/d/1x0GS700wFmZqSRidfKzLpTQ5AhIdwTP2_XxK_7ozA5U/edit?usp=sharing">Quick guide</a></p>
 				<hr>
 				<p><strong>Any custom sounds added to built-in triggers will prevent default sounds from playing!</strong></p>
+			  </section>
+			  
+			</div>
+		  </div>
+
+		  <div id='copy_and_create_modal' class="modal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+			  <header class="modal-card-head">
+				<p class="modal-card-title">Copy and Create New Soundpack</p>
+				<button class="delete" aria-label="close"></button>
+				
+			  </header>
+			  <section class="modal-card-body">
+			  	<form method="POST" id='copy_and_create_form' onsubmit="return  copy_and_create();">
+				 		 <div class="field">
+							<label class="label">Soundpack Name</label>
+							<div class="control">
+							  <input required id='copy_and_create_name' name='description' class="input" type="text" placeholder="Soundpack Name/URL">
+							</div>
+						  </div>
+						  <p class='help'>This is the text added to the end of the URL - eg. https://bobmitch.com/ps2/soundpackname</p>
+						  <div class="field">
+							<label class="label">Password/Passphrase</label>
+							<div class="control">
+							  <input required id='copy_and_create_password' name='description' class="input" type="password" placeholder="Password">
+							</div>
+						  </div>
+						  <p class='help'>The password you will use to unlock your soundpack to make changes. Keep this safe!</p>
+						  <div class="field is-grouped">
+							<div class="control">
+							  <button type='submit' id='submit_copy_and_create' class="button is-link is-success">Create New</button>
+							</div>
+						  </div>
+				</form>
 			  </section>
 			  
 			</div>

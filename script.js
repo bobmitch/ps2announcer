@@ -1758,6 +1758,40 @@ document.getElementById('copy_config').addEventListener('click',function(e){
     }
 });
 
+document.getElementById('copy_and_create_config').addEventListener('click',function(e){
+    document.getElementById('copy_and_create_modal').classList.add('is-active');
+    config_string = JSON.stringify(new_achievements);
+    if (config_string) {
+        localStorage.setItem('ps2_soundpack_copy', config_string);
+        //notify('Sound Pack Copied - Ready to paste into your own claimed URL!');
+    }
+    else {
+        notify('Error copying Sound Pack!','is-warning');
+    }
+});
+
+function copy_and_create() {
+    // already copied when modal shown by click event for #copy_and_create_config
+    new_packname = document.getElementById('copy_and_create_name').value;
+    newpack_password = document.getElementById('copy_and_create_password').value;
+    new_config = JSON.stringify(new_achievements);
+    // action = copy_and_create
+    postAjax('', {"action":"copy_and_create","new_packname":new_packname,"newpack_password":newpack_password,"new_config":new_config}, function(data) { 
+        var response = JSON.parse(data);
+        console.log(response);
+        if (response.success==1) {
+            notify('New soundpack created - redirecting!','is-success');
+            setTimeout(function(){
+                window.location = "https://bobmitch.com/ps2/" + new_packname;
+            },2000,new_packname);
+        }
+        else {
+            notify(response.msg,'is-warning');
+        }
+    });
+    return false;
+}
+
 document.getElementById('paste_config').addEventListener('click',function(e){
     sure = confirm('Are you sure - this will overwrite your current config?');
     if (sure) {
