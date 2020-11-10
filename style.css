@@ -556,7 +556,7 @@ html.isobs {
     position:relative;
     display:flex;
 }
-#notifications img {
+#notifications img, #notifications video {
     display: inline-block;
     min-width: 30rem;
     /* height: 20rem; */

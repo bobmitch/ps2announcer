@@ -148,6 +148,17 @@ function render_achievement_card(a) {
     
     let title = js_translate(a,'name');
 
+    if (a.custom_image.includes('.mp4')) {
+        image_or_video_markup = `
+        <video class='image_preview' src='${a.custom_image}'/>
+        `;
+    }
+    else {
+        image_or_video_markup = `
+        <img class='image_preview' src='${a.custom_image}'/>
+        `;
+    }
+
     markup = `
     <div class="${no_checked} card ${custom_weapon_trigger_class}" data-id="${a.id}">
         <header class="card-header">
@@ -156,7 +167,7 @@ function render_achievement_card(a) {
             </p>
             <div class='control>
                 <a class='image_preview_wrap' href='#'>
-                    <img class='image_preview' src='${a.custom_image}'/>
+                    ${image_or_video_markup}
                 </a>
             </div>
             <div class="control authorized_only">
@@ -292,7 +303,12 @@ Achievement.prototype.trigger = function(notification_only) {
                 return false; // make true for testing with noimage image
             }
             else {
-                notify('<img src="' + this.custom_image + '">','custom_image_notification');
+                if (this.custom_image.includes('.mp4')) {
+                    notify('<video loop autoplay><source type="video/mp4"  src="' + this.custom_image + '"></video>','custom_image_notification');
+                }
+                else {
+                    notify('<img src="' + this.custom_image + '">','custom_image_notification');
+                }
                 return false; // make true for testing with noimage image
             }
         }

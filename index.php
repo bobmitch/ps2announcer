@@ -821,11 +821,11 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					<form id='custom_image_form'>
 						<input hidden name='edit_image_achievement_id' id='edit_image_achievement_id' value=''/>
 						<div class="field">
-							<label class="label">Image URL</label>
+							<label class="label">Image/MP4 URL</label>
 							<div class="control">
 							  <input id='custom_image_url' name='custom_image_url' class="input" type="text" placeholder="Image URL">
 							</div>
-							<p class="help">Must be hosted on HTTPS site, and have CORS enabled</p>
+							<p class="help">Image/MP4 video Must be hosted on HTTPS site, and have CORS enabled (such as <a href='https://imgur.com' target='_blank'>imgur.com</a>)</p>
 						  </div>
 						  
 						  <div class="field is-grouped">
