@@ -343,7 +343,7 @@ function insert_row (data, msg) {
     }
 
     if (msg) {
-        var row=events_table.insertRow();
+        var row=events_table.insertRow(0);
         row.classList.add('hideme','message_row');
         row.className += cls;
         var time = row.insertCell();
@@ -366,7 +366,7 @@ function insert_row (data, msg) {
         }
 
         special.innerHTML = pills;
-        row.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+        //row.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
     }
 }
 
@@ -763,7 +763,7 @@ function display_event(data) {
             
         }
         if (msg) {
-            var row=events_table.insertRow();
+            var row=events_table.insertRow(0);
             row.classList.add('hideme');
             row.classList.add('killboard_entry');
 
@@ -806,7 +806,7 @@ function display_event(data) {
             });
 
             special.innerHTML = pills;
-            row.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+            //row.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
         }
 
     });
