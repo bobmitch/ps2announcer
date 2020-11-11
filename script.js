@@ -613,7 +613,7 @@ function display_event(data) {
         
         if (data.payload.event_name=="GainExperience") {
             // do messages for none-displayed achievements
-            if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.character_id)) {
+            if ( (data.payload.experience_id=='7' || data.payload.experience_id=='53') && is_player(data.payload.character_id)) {
                 msg+='<span class="event_type you_revived">You revived </span>';
                 console.log(msg);
                 cls+=' revive info ';
@@ -623,7 +623,7 @@ function display_event(data) {
             else if (data.payload.experience_id=='2' && is_player(data.payload.character_id)) {
                 assist_streak++;
             }
-            else if ( (data.payload.experience_id=='7' || data.payload.experience_id=='57') && is_player(data.payload.other_id)) {
+            else if ( (data.payload.experience_id=='7' || data.payload.experience_id=='53') && is_player(data.payload.other_id)) {
                 msg+='<span class="event_type you_revived">You were revived by </span>';
                 console.log(msg);
                 cls+=' revive info ';
@@ -992,7 +992,7 @@ function process_event(event) {
             window.multikills_was = window.multikills;
             window.multikills = 0;
             window.killstreak=0;
-            window.revive_count_streak=0;
+            //window.revive_count_streak=0;
             window.spamstreak=0;
             window.assist_streak=0; // end assist streak
             multikills=0;
