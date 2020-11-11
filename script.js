@@ -332,7 +332,7 @@ var ragequit_watchlist = {};
 
 
 function insert_row (data, msg) {         
-    var events_table = document.getElementById('events');
+    var events_table = document.getElementById('events_body'); 
     var cls='';
     var pills='';
 
