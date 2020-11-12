@@ -997,7 +997,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		</script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-		<script src="<?php echo $root; ?>achievements.js"></script>
+		<script src="<?php echo $root; ?>achievements.js?v=111120"></script>
 		<script src="<?php echo $root; ?>character.js"></script>
 		<script src="<?php echo $root; ?>event.js"></script>
 		<script src="<?php echo $root; ?>profiles.js"></script>
@@ -1005,7 +1005,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<script src="<?php echo $root; ?>weapons.js"></script>
 		<script src="<?php echo $root; ?>loadouts.js"></script>
 		<script src="<?php echo $root; ?>item_categories.js"></script>
-		<script src='<?php echo $root; ?>script.js'></script>
+		<script src='<?php echo $root; ?>script.js?v=111120'></script>
 		
 			
 
