@@ -304,7 +304,7 @@ Achievement.prototype.trigger = function(notification_only) {
             }
             else {
                 if (this.custom_image.includes('.mp4')) {
-                    notify('<video loop autoplay><source type="video/mp4"  src="' + this.custom_image + '"></video>','custom_image_notification');
+                    notify('<video loop muted autoplay><source type="video/mp4"  src="' + this.custom_image + '"></video>','custom_image_notification');
                 }
                 else {
                     notify('<img src="' + this.custom_image + '">','custom_image_notification');
