@@ -1228,3 +1228,25 @@ var suicidebomber = new Achievement('suicidebomber','Sacrificial Lamb!','You sac
     }
     return false;
 },[],2);
+
+var basecap = new Achievement('basecap','Nice Cap!','You helped to capture a base!', function (event) {
+    if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
+        if (event.payload.experience_id=='19' ) {
+            insert_row (event, "You captured a base!");
+            return true;
+        }
+    }
+    return false;
+},[],20);
+basecap.enabled=false;
+
+var contcap = new Achievement('contcap','Conqueror!','You helped to capture the entire continent!', function (event) {
+    if (event.payload.event_name=="GainExperience" && is_player(event.payload.character_id)) {
+        if (event.payload.experience_id=='598' ) {
+            insert_row (event, "You capped the whole continent!");
+            return true;
+        }
+    }
+    return false;
+},[],19);
+contcap.enabled=false;
