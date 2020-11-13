@@ -319,6 +319,7 @@ var characters={};
 var synth = window.speechSynthesis;
 var shotgun_killstreak = 0; // reset by death and non-shotgun kill
 var shotgun_killstreak_timestamp = 0;
+var orbital_killstreak = 0;
 var last_res_timestamp = 0;
 var last_suicide_death_timestamp  = 0;
 var last_vehicle_kill_timestamp = 1;
@@ -408,6 +409,7 @@ function reset_stats() {
     window.synth = window.speechSynthesis;
     window.shotgun_killstreak = 0; // reset by death and non-shotgun kill
     window.shotgun_killstreak_timestamp = 0;
+    window.orbital_killstreak=0;
 
     window.cur_achievements = []; // per event stack of triggered achievements - sorted by 
 
@@ -1021,6 +1023,8 @@ function process_event(event) {
                 else {
                     console.log('Local character not available for attacker in event: ',event);
                 }
+                // orbital killstreak ends with death, but not suicide :)
+                window.orbital_killstreak=0;
             }
         }
         else {
@@ -1049,6 +1053,16 @@ function process_event(event) {
                         }
                         else {
                             window.c4counter[event.payload.timestamp]=1;
+                        }
+                    }
+
+                    if (event.payload.attacker_weapon_id=='70057') {
+                        window.orbital_killstreak++;
+                    }
+                    else {
+                        if (!event.payload.attacker_weapon_id!='0') {
+                            // got kill with another weapon
+                            window.orbital_killstreak=0;
                         }
                     }
                 }

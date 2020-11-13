@@ -790,6 +790,23 @@ var shotgun_shogun = new Achievement('shotgun_shogun','Shotgun Shogun!','3 shotg
     return false;
 },['shotgun.mp3']);
 
+var deathstar = new Achievement('deathstar','Deathstar!','10 direct kills with orbital strike!', function (event) {
+    if (event.is_tk) {
+        return false;
+    }
+    if (event.is_kill && event.payload.event_name=="Death") {
+        if (event.payload.attacker_weapon_id=="0") {
+            return false;
+        }
+        if (event.payload.attacker_weapon_id=='70057') {
+            if (orbital_killstreak%10==0 && orbital_killstreak>0) {
+                return true;
+            }
+        }
+    }
+    return false;
+},[],1);
+
 var rocketman = new Achievement('rocketman','Rocket Man!','You killed someone with a rocket!', function (event) {
     
     if (event.is_kill) {
