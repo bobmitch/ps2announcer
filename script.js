@@ -1852,13 +1852,7 @@ function load_config() {
                                         if (!is_tk(event)) {
                                             if (event.payload.attacker_weapon_id==this.custom_weapon_trigger) {
                                                 // check group kill value
-                                                if (config[i].hasOwnProperty('group_kill_trigger_value')) {
-                                                    // should always have this property after adding default value during initial config load
-                                                    if (event.group_num_killed == parseInt(config[i].group_kill_trigger_value)) {
-                                                        return true;
-                                                    }
-                                                }
-                                                else {
+                                                if (event.group_num_killed == parseInt(window[this.id].group_kill_trigger_value)) {
                                                     return true;
                                                 }
                                             }
