@@ -635,7 +635,7 @@ var headshot_ach = new Achievement('headshot','Headshot!','You got a headshot ki
         }
     }
     return false;
-},['pew.mp3'],10);
+},['pew.mp3'],15);
 headshot_ach.custom_image = 'images/headshot.png'; // example image
 
 var accuracy = new Achievement('accuracy','Accuracy!','5 headshots in a row!', function (event) {
@@ -1250,3 +1250,15 @@ var contcap = new Achievement('contcap','Conqueror!','You helped to capture the 
     return false;
 },[],19);
 contcap.enabled=false;
+
+var mash = new Achievement('mash','Deadic!','You killed an enemy medic!', function (event) {
+    if (event.is_kill && !event.is_tk) {
+        if (event.payload.character_loadout_id=='4' || event.payload.character_loadout_id=='11' || event.payload.character_loadout_id=='18') {
+            // 1,8.15,190 = infil loadouts - 190 = ns - could be 15+7
+            // see http://www.planetside-universe.com/api/census.php?q=json%2Fget%2Fps2%2Floadout%3Fc%3Alimit%3D20&decode=true
+            return true;
+        }
+    }
+    return false;
+},[],14);
+mash.enabled=false;

@@ -1558,7 +1558,8 @@ document.querySelector('#show_settings_modal').addEventListener('click',function
 document.querySelector('#show_debug_modal').addEventListener('click',function(e){
     e.preventDefault();
     // update debug content
-    let last_five_events = allevents.slice(Math.max(allevents.length - 5, 0));
+    //let last_five_events = allevents.slice(Math.max(allevents.length - 5, 0));
+    let last_five_events = gainexperienceevents.slice(Math.max(allevents.length - 5, 0));
     let last_five_events_json = JSON.stringify(last_five_events, null, 4);
     document.getElementById('debug_content').innerHTML = last_five_events_json;
     document.querySelector('#debug_modal').classList.toggle('is-active');
