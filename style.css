@@ -519,6 +519,11 @@ html.isobs {
     overflow-y:hidden !important;
 }
 
+span.info {
+    font-size: 70%;
+    opacity: 0.5;
+    padding-left: 1em;
+}
 
 @keyframes notify {
     0%   {opacity: 1;  max-height:12rem; padding: 1.25em 2.5em 1.25em 1.5em;}

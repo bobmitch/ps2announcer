@@ -41,7 +41,7 @@ window.audio_engine = {
                     // we gucci, already playing
                 }).catch(function(error) {
                     console.log(error);
-                    notify('Audio file not found - 404! ' +  window.last_audio.src, 'is-danger');
+                    notify('Error playing audio file: ' +  window.last_audio.src, 'is-danger');
                 });
             }
         }

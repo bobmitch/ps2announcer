@@ -1570,6 +1570,7 @@ document.querySelector('#show_about_modal').addEventListener('click',function(e)
     document.querySelector('#about_modal').classList.toggle('is-active');
 });
 
+
 document.querySelector('#show_help_modal').addEventListener('click',function(e){
     e.preventDefault();
     document.querySelector('#help_modal').classList.toggle('is-active');

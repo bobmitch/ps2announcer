@@ -424,10 +424,25 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 					  	<span title='Tracked Player' data-char_id="0" id='playername' class='tag offline'>Player Offline</span>
 				  </div>
 
+				  <div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link">
+							Voicepack: <?php if ($user) {echo $user;} else {echo 'BobMitch';}?>
+						  </a>
 				  
-				  <div class='navbar-item' id="soundpack">
-					  	<span title='Currently loaded soundpack' data-char_id="0" id='soundpackname' class='tag is-white is-light'><strong>Voicepack:</strong>&nbsp;&nbsp; <?php if ($user) {echo $user;} else {echo 'BobMitch';}?></span>
-				  </div>
+						  <div class="navbar-dropdown">
+						  	<a  href="/ps2/bobmitch" class="navbar-item">BobMitch <span class='info'>(default)</span></a>
+							  <a  href="/ps2/Imperium" class="navbar-item">ClutchTastic <span class='info'>[CdrClutch]</span></a>
+							  <a  href="/ps2/gordonramsey" class="navbar-item">Gordon Ramsey <span class='info'>[BobMitch]</span></a>
+							  <a  href="/ps2/Imperium" class="navbar-item">Imperium <span class='info'>[CdrClutch]</span></a>
+							  <a  href="/ps2/kaamelott" class="navbar-item">Kaamelott <span class='info'>(FR)</span></a>
+							<a  href="/ps2/mm" class="navbar-item">MM Outfit <span class='info'>(RUS)</span></a>
+							<a  href="/ps2/myian" class="navbar-item">Myian</a>
+							<a  href="/ps2/rus" class="navbar-item">Russian <span class='info'>(RUS)</span></a>
+							<a  href="/ps2/wh40k" class="navbar-item">WH40K</a>		
+						</div>
+					</div>
+				  
+				  
 			  
 				  <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
 					<span aria-hidden="true"></span>
