@@ -1500,6 +1500,22 @@ window.onload = function() {
         if (data.hasOwnProperty('payload')) {
             console.log('World event:');
             console.log('data');
+            if (parseInt(data.payload.world_id) ==_worldId ) {
+                // cont locked on my server
+                if (data.payload.zone_id == zone_id) {
+                    // ... on the continent I am active on
+                    if (window.hasOwnProperty('player')) {
+                        char_id = player.char_id;
+                        char = get_local_character(char_id);
+                        if (char.faction_id==data.payload.triggering_faction) {
+                            // ... you WON the alert :)
+                            if (contcap.enabled) {
+                                contcap.trigger();
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     
