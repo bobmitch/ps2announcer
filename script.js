@@ -1,6 +1,7 @@
 
 // fisu stats
 window._worldId = 1; // connery 1
+window.zone_id = null;
 window._environment=0;
 
 window.addEventListener('load', function () {
@@ -1435,8 +1436,9 @@ window.onload = function() {
         //console.log(json);
     }
 
-    window.socket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax');
-    window.logoutsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax');
+    window.worldsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax'); // cont lock
+    window.socket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax'); // player stats
+    window.logoutsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax'); // ragequit
     window.ws = new WebSocket("wss://ps2.fisu.pw:36211/"); // stats from fisu
     ws.onmessage = function(evt) {
         var json = JSON.parse(evt.data);
@@ -1485,6 +1487,21 @@ window.onload = function() {
 
 
     // handle dom changes and monitor unprocessed variables
+
+    worldsocket.onopen = function(event) {
+        var sub_data = {"service":"event","action":"subscribe","eventNames":["ContinentLock"],"worlds":["1","9","10","11","13","17","18","19","25"]};
+        worldsocket.send(JSON.stringify(sub_data));
+    }
+    worldsocket.onerror = function(evt) {
+        console.log('Error with world websocket');
+        console.log(evt);
+    }
+    worldsocket.onmessage = function(data) {
+        if (data.hasOwnProperty('payload')) {
+            console.log('World event:');
+            console.log('data');
+        }
+    }
     
     
     // Handle socket opening
@@ -1520,6 +1537,10 @@ window.onload = function() {
                 set_player_online (data.payload.character_id);
                 set_world(data.payload.world_id);
             }
+            if (data.payload.event_name=="Death"||data.payload.event_name=="VehicleDestroy"||data.payload.event_name=="GainExperience") {
+                // set current continent based on event
+                window.zone_id = data.payload.zone_id;
+            }
             //messagesList.innerHTML += '<hr>';
             //messagesList.innerHTML += '<li class="received"><span>Received:</span>' + message + '</li>';
             if (data.payload.event_name!="GainExperience") {
@@ -1528,7 +1549,7 @@ window.onload = function() {
             }
             else {
                 // push experience
-                //window.gainexperienceevents.push(data); // remove when live to limit mem use
+                window.gainexperienceevents.push(data); // remove when live to limit mem use
             }
             // display event nice, get english names first
             display_event(data);

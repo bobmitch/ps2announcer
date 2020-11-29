@@ -1018,6 +1018,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<script src="<?php echo $root; ?>profiles.js?v=111320"></script>
 		<script src="<?php echo $root; ?>vehicles.js?v=111320"></script>
 		<script src="<?php echo $root; ?>weapons.js?v=111320"></script>
+		<script src="<?php echo $root; ?>zones.js?v=111320"></script>
+		<script src="<?php echo $root; ?>worlds.js?v=111320"></script>
 		<script src="<?php echo $root; ?>loadouts.js?v=111320"></script>
 		<script src="<?php echo $root; ?>item_categories.js?v=111320"></script>
 		<script src='<?php echo $root; ?>script.js?v=111320'></script>
