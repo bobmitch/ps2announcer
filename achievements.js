@@ -435,6 +435,11 @@ var ragequit = new Achievement('ragequit','Ragequit!','You killed someone who le
                 delete ragequit_watchlist[event.payload.character_id];
             }
             else {
+                rager = get_local_character(event.payload.character_id);
+                if (rager) {
+                    var msg = rager.name.first + " just ragequit!";
+                    insert_row (event, msg);
+                }
                 return true;
             }
         }

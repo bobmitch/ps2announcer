@@ -1475,10 +1475,11 @@ window.onload = function() {
 
 
     logoutsocket.onmessage = function(data) {
-        if (data.data.hasOwnProperty('payload')) {
-            if (data.payload.event_name!="PlayerLogout") {
+        data = JSON.parse(data.data);
+        if (data.hasOwnProperty('payload')) {
+            if (data.payload.event_name=="PlayerLogout") {
                 // do ragequit tests/checks etc
-                console.log('Logout event');
+                console.log('Logoutsocket event - Potential ragequit... checking');
                 console.log(data);
                 display_event(data);
             }
@@ -1497,22 +1498,26 @@ window.onload = function() {
         console.log(evt);
     }
     worldsocket.onmessage = function(data) {
-        if (data.hasOwnProperty('data')) {
-            if (data.data.hasOwnProperty('payload')) {
-                console.log('World event has payload:');
-                console.log(data.payload);
-                if (parseInt(data.payload.world_id) ==_worldId ) {
-                    // cont locked on my server
-                    if (data.payload.zone_id == zone_id) {
-                        // ... on the continent I am active on
-                        if (window.hasOwnProperty('player')) {
-                            char_id = player.char_id;
-                            char = get_local_character(char_id);
-                            if (char.faction_id==data.payload.triggering_faction) {
-                                // ... you WON the alert :)
-                                if (contcap.enabled) {
-                                    contcap.trigger();
-                                }
+        
+        var world_event = JSON.parse(data.data);
+        if (world_event.type=="heartbeat") {
+            // skip heartbeats
+            return true;
+        }
+        console.log('non heartbeat worldsocket message received:');
+        console.log(world_event);
+        if (world_event.hasOwnProperty('payload')) {
+            if (parseInt(world_event.payload.world_id) ==_worldId ) {
+                // cont locked on my server
+                if (world_event.payload.zone_id == zone_id) {
+                    // ... on the continent I am active on
+                    if (window.hasOwnProperty('player')) {
+                        char_id = player.char_id;
+                        char = get_local_character(char_id);
+                        if (char.faction_id==world_event.payload.triggering_faction) {
+                            // ... you WON the alert :)
+                            if (contcap.enabled) {
+                                contcap.trigger();
                             }
                         }
                     }
