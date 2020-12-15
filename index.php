@@ -438,7 +438,8 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 							<a  href="/ps2/mm" class="navbar-item">Cyka Blyat <span class='info'>[MM](RUS)</span></a>
 							<a  href="/ps2/myian" class="navbar-item">Myian</a>
 							<a  href="/ps2/rus" class="navbar-item">Russian <span class='info'>(RUS)</span></a>
-							<a  href="/ps2/wh40k" class="navbar-item">WH40K <span class='info'>[Lolka]</span></a>		
+							<a  href="/ps2/wh40k" class="navbar-item">WH40K <span class='info'>[Lollka]</span></a>		
+							<a  href="/ps2/bloodforthebloodgod" class="navbar-item">Blood For The Blood God<span class='info'>[Lollka]</span></a>	
 						</div>
 					</div>
 				  
