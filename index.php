@@ -355,7 +355,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 
 <html>
 	<head>
-		<title>Planetside Announcer</title>
+		<title>Planetside 2 Announcer</title>
 		<meta charset="UTF-8">
 		<meta name="description" content="Planetside 2 Announcer">
 		<meta name="keywords" content="planetside, announcer, funny">
@@ -416,7 +416,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 			<nav id='nav' class="navbar" role="navigation" aria-label="main navigation">
 				<div class="navbar-brand">
 				  <a class="navbar-item" href="https://bobmitch.com/ps2">
-					<h3 class='title is-3'>Planetside Announcer</h3>
+					<h3 class='title is-3'>Planetside 2 Announcer</h3>
 				  </a>
 
 				  <div class='navbar-item' id="playerstatus">

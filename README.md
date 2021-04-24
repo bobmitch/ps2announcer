@@ -1,6 +1,6 @@
 
 
-# Planetside Announcer
+# Planetside 2 Announcer
 Welcome, and thanks for checking out my little webapp. :)  What does it do? Basically, 2 things:
 
  - Reacts to events that happen to your tracked player(s) in Planetside
