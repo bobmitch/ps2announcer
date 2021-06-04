@@ -831,13 +831,23 @@ function get_player(char_id) {
 function set_player_online (char_id, name="Unknown Player") {
     console.log('setting ',char_id,' online');
     player = get_player(char_id);
+    faction = "0";
+    console.log('player online: ', player);
     if (player) {
         playername=player.name;
+        if (player.hasOwnProperty('faction_id')) {
+            faction = player.faction_id;
+        }
+        else {
+            faction = "0";
+        }
     }
     else {
         playername=name;
     }
     playername_el = document.getElementById('playername');
+    document.body.dataset.playername = playername;
+    document.body.dataset.faction = faction;
     console.log('setting player online:');
     console.log(playername);
     say ('tracking ' + playername );
@@ -848,6 +858,8 @@ function set_player_online (char_id, name="Unknown Player") {
 
 function set_player_offline (char_id) {
     player = get_player(char_id);
+    document.body.dataset.playername = "";
+    document.body.dataset.faction = "";
     playername_el = document.getElementById('playername');
     if (player) {
         playername_el.innerText = "Player Offline";
@@ -889,7 +901,7 @@ function player_search(){
     jQuery('#playersearchresults').html('<p>Searching...</p>');
     jQuery.getJSON(url,function(json){
         var search = json;
-        console.log(search);
+        console.log("Search: ",search);
         if (search.character_list.length==0) {
             alert('No matching players found');
         }
@@ -901,7 +913,7 @@ function player_search(){
             else {
                 cls=' online ';
             }
-            html+='<li><a class="'+cls+'" data-character_id="' +search.character_list[n].character_id + '" href="#' + search.character_list[n].character_id + '">' +search.character_list[n].name.first + '</a></li>';
+            html+='<li><a class="'+cls+'" data-faction_id="'+search.character_list[n].faction_id+'" data-character_id="' +search.character_list[n].character_id + '" href="#' + search.character_list[n].character_id + '">' +search.character_list[n].name.first + '</a></li>';
         }
         if (search.character_list.length==0) {
             jQuery('#playersearchresults').html('<p>No matching players found</p>');
@@ -1401,6 +1413,7 @@ window.onload = function() {
         e.preventDefault();
         var char_id = jQuery(this).data('character_id');
         var name = jQuery(this).text();
+        var faction_id = jQuery(this).data('faction_id');
         var player = {'char_id':char_id, 'name':name};
         if (is_player(char_id)) {
             alert('Player already being tracked!');
@@ -1410,7 +1423,7 @@ window.onload = function() {
         subscribe_to_character(char_id);
         get_player_online_state(char_id);
         // save in localstorage
-        found_char = {'char_id':char_id,'name':name}
+        found_char = {'char_id':char_id,'name':name,'faction_id':faction_id};
         if (!window.playerlist) {
             window.playerlist = [];
         }
