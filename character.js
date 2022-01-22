@@ -14,8 +14,8 @@ function get_character (character_id) {
     else {
         // handle as promise
         var dfd = jQuery.Deferred();
-        //var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/" + character_id + '?c:resolve=outfit&callback=?'; // works, just outfit and basic
-        var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/" + character_id + '?c:resolve=outfit,stat_history&callback=?';
+        //var url = "https://census.daybreakgames.com/s:BAX/json/get/ps2:v2/character/" + character_id + '?c:resolve=outfit&callback=?'; // works, just outfit and basic
+        var url = "https://census.daybreakgames.com/s:BAX/json/get/ps2:v2/character/" + character_id + '?c:resolve=outfit,stat_history&callback=?';
         //&stat_name=kills,deaths
         //console.log('Getting char info from census for ' + character_id);
         jQuery.getJSON(url,function(json){

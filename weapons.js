@@ -57,8 +57,8 @@ function get_weapon (weapon_id) {
         console.log('no local weapon: ',weapon_id);
         var dfd = jQuery.Deferred();
         //https://census.daybreakgames.com/get/ps2:v2/item?c:lang=en&c:join=item_to_weapon(weapon)&c:limit=1&weapon_id=1
-        var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/item?c:lang=en&c:join=item_to_weapon(weapon)&c:limit=1&item_id=" + weapon_id + '&callback=?';
-        //var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/item?c:lang=en&c:join=item_category&c:join=item_to_weapon(weapon)&c:limit=1&item_id=" + weapon_id + '&callback=?';
+        var url = "https://census.daybreakgames.com/s:BAX/json/get/ps2:v2/item?c:lang=en&c:join=item_to_weapon(weapon)&c:limit=1&item_id=" + weapon_id + '&callback=?';
+        //var url = "https://census.daybreakgames.com/s:BAX/json/get/ps2:v2/item?c:lang=en&c:join=item_category&c:join=item_to_weapon(weapon)&c:limit=1&item_id=" + weapon_id + '&callback=?';
         //console.log('Getting char info from census for ' + character_id);
         jQuery.getJSON(url,function(json){
             var weapon = json;

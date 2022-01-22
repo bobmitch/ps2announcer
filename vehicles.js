@@ -23,7 +23,7 @@ function get_vehicle (vehicle_id) {
         console.log('no local vehicle: ',vehicle_id);
         var dfd = jQuery.Deferred();
         //https://census.daybreakgames.com/get/ps2:v2/item?c:lang=en&c:join=item_to_weapon(weapon)&c:limit=1&weapon_id=1
-        var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/vehicle?c:limit=1&vehicle_id=" + vehicle_id + '&callback=?';
+        var url = "https://census.daybreakgames.com/s:BAX/json/get/ps2:v2/vehicle?c:limit=1&vehicle_id=" + vehicle_id + '&callback=?';
         //console.log('Getting char info from census for ' + character_id);
         jQuery.getJSON(url,function(json){
             var vehicle_returned = json;

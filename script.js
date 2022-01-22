@@ -869,7 +869,7 @@ function set_player_offline (char_id) {
 }
 
 function get_player_online_state(char_id) {
-    var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:resolve=world,online_status&character_id="+char_id+"&c:limit=1&callback=?";
+    var url = "https://census.daybreakgames.com/s:BAX/json/get/ps2:v2/character/?c:resolve=world,online_status&character_id="+char_id+"&c:limit=1&callback=?";
     jQuery.getJSON(url,function(json){
         var search = json;
         if (search.hasOwnProperty('errorCode')) {
@@ -896,8 +896,8 @@ function get_player_online_state(char_id) {
 function player_search(){
     var playername=jQuery('#playersearch').val();
     playername = playername.toLowerCase();
-    //var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:join=characters_online_status&name.first_lower=%5E" + playername + "&c:limit=10&c:sort=name.first_lower&callback=?";
-    var url = "https://census.daybreakgames.com/s:bax/json/get/ps2:v2/character/?c:resolve=online_status&name.first_lower=%5E" + playername + "&c:limit=10&c:sort=name.first_lower&callback=?";
+    //var url = "https://census.daybreakgames.com/s:BAX/json/get/ps2:v2/character/?c:join=characters_online_status&name.first_lower=%5E" + playername + "&c:limit=10&c:sort=name.first_lower&callback=?";
+    var url = "https://census.daybreakgames.com/s:BAX/json/get/ps2:v2/character/?c:resolve=online_status&name.first_lower=%5E" + playername + "&c:limit=10&c:sort=name.first_lower&callback=?";
     jQuery('#playersearchresults').html('<p>Searching...</p>');
     jQuery.getJSON(url,function(json){
         var search = json;
@@ -1449,9 +1449,9 @@ window.onload = function() {
         //console.log(json);
     }
 
-    window.worldsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax'); // cont lock
-    window.socket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax'); // player stats
-    window.logoutsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:bax'); // ragequit
+    window.worldsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:BAX'); // cont lock
+    window.socket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:BAX'); // player stats
+    window.logoutsocket = new WebSocket('wss://push.planetside2.com/streaming?environment=ps2&service-id=s:BAX'); // ragequit
     window.ws = new WebSocket("wss://ps2.fisu.pw:36211/"); // stats from fisu
     ws.onmessage = function(evt) {
         var json = JSON.parse(evt.data);
