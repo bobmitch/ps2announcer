@@ -966,7 +966,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 							<input type='checkbox' id='countkills'/>
 						</label>
 					</div>
-					<p class='info'>TTS says killcount in absence of any other audio triggers. <em>TTS does not work inside OBS browser source</em></p>
+					<p class='info'>TTS says killcount in absence of any other audio triggers. <em>If TTS is disabled, this will not work</em></p>
 					<div class='control flex'>
 						<label class='checkbox' for='fullscreenanimations'>OBS Fullscreen Animations
 							<input type='checkbox' id='fullscreenanimations'/>
