@@ -2,6 +2,19 @@
 /* ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL); */
+$input = file_get_contents('php://input');
+if ($input) {
+	$input_obj = json_decode($input);
+	$playername = $input_obj->playername;
+	header('Content-Type: application/json; charset=utf-8');
+	$parent_dir = dirname(__DIR__, 1);
+	file_put_contents("players.txt" , "$playername\n", FILE_APPEND | LOCK_EX);
+	$response = new stdClass();
+	$response->success=true;
+	$response->msg = "Saved player name";
+	echo json_encode($response);
+	exit();
+}
 
 $root = "/ps2/"; // change to appropriate sub-folder - eg. ps2 when live
 
@@ -39,7 +52,8 @@ else {
 // get user
 $user = false;
 $passed_player_id = false;
-$passed_player_name = false;
+$passed_player_name = $_GET['playername'] ?? false;
+$passed_player_id = $_GET['playerid'] ?? false;
 
 function filter_filename($filename, $beautify=true) {
     // sanitize filename
@@ -78,7 +92,7 @@ if (sizeof($segments)>0) {
 			$user = $segments[0];
 		}
 	} */
-	if (sizeof($segments)>1) {
+	/* if (sizeof($segments)>1) {
 		// got player id too
 		if (ctype_digit($segments[1])) {
 			$passed_player_id = $segments[1];
@@ -89,7 +103,7 @@ if (sizeof($segments)>0) {
 		if (ctype_alnum($segments[2])) {
 			$passed_player_name = $segments[2];
 		}
-	}
+	} */
 }
 
 $config_json_path = false;
@@ -941,6 +955,11 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 						<div>
 							<input type="number" id="image_display_time" name="image_display_time" value="5" min="1" max="10"/> 
 						</div>
+					</div>
+					<div class='control flex'>
+						<label class='checkbox' for='ttsenabled'>TTS Enabled
+							<input checked type='checkbox' id='ttsenabled'/>
+						</label>
 					</div>
 					<div class='control flex'>
 						<label class='checkbox' for='countkills'>Say Killcount

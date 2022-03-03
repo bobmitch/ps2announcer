@@ -248,9 +248,15 @@ document.getElementById('stats').addEventListener('click',function(e){
 var countkills = false;
 var fullscreenanimations = false;
 var darkmode = false;
+var ttsenabled = true;
 
 countkills = JSON.parse(localStorage.getItem('ps2_countkills'));
 document.getElementById('countkills').checked = countkills;
+
+if (localStorage.getItem('ttsenabled')) {
+    window.tts_enabled = JSON.parse(localStorage.getItem('ttsenabled')) ;
+    document.getElementById('ttsenabled').checked = window.tts_enabled;
+}
 
 fullscreenanimations = JSON.parse(localStorage.getItem('ps2_fullscreenanimations'));
 document.getElementById('fullscreenanimations').checked = fullscreenanimations;
@@ -324,6 +330,7 @@ var orbital_killstreak = 0;
 var last_res_timestamp = 0;
 var last_suicide_death_timestamp  = 0;
 var last_vehicle_kill_timestamp = 1;
+var tts_disabled = false;
 
 var cur_achievements = []; // per event stack of triggered achievements - sorted by 
 
@@ -485,10 +492,12 @@ function allow_voicepack() {
 
 
 function say(txt) {
-    var utterThis = new SpeechSynthesisUtterance(txt);
-    volume = document.querySelector('#volume').value;
-    utterThis.volume = volume/100.0;
-    window.synth.speak(utterThis);
+    if (window.tts_enabled) {
+        var utterThis = new SpeechSynthesisUtterance(txt);
+        volume = document.querySelector('#volume').value;
+        utterThis.volume = volume/100.0;
+        window.synth.speak(utterThis);
+    }
 }
 
 function nice_date(timestamp) {
@@ -854,6 +863,14 @@ function set_player_online (char_id, name="Unknown Player") {
     playername_el.innerText = playername;
     playername_el.classList.remove('offline');
     playername_el.dataset.char_id = char_id;
+    // store name on server
+    fetch("index.php", {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({"playername":playername})
+    }).then(res => {
+        console.log("Name saved: ", res);
+    });
 }
 
 function set_player_offline (char_id) {
@@ -2065,6 +2082,11 @@ function get_achievement(id) {
 document.getElementById('countkills').addEventListener('change',function(e) {
     window.countkills = e.target.checked;
     localStorage.setItem('ps2_countkills',window.countkills);
+});
+
+document.getElementById('ttsenabled').addEventListener('change',function(e) {
+    window.ttsenabled = e.target.checked;
+    localStorage.setItem('ttsenabled',JSON.stringify(window.ttsenabled));
 });
 
 document.getElementById('fullscreenanimations').addEventListener('change',function(e) {
