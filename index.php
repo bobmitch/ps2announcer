@@ -8,7 +8,7 @@ if ($input) {
 	$playername = $input_obj->playername;
 	header('Content-Type: application/json; charset=utf-8');
 	$parent_dir = dirname(__DIR__, 1);
-	file_put_contents("players.txt" , "$playername\n", FILE_APPEND | LOCK_EX);
+	file_put_contents("../players.txt" , "$playername\n", FILE_APPEND | LOCK_EX);
 	$response = new stdClass();
 	$response->success=true;
 	$response->msg = "Saved player name";
@@ -436,6 +436,14 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 				  <div class='navbar-item' id="playerstatus">
 				  		<i class="fas fa-user"></i>&nbsp;
 					  	<span title='Tracked Player' data-char_id="0" id='playername' class='tag offline'>Player Offline</span>
+						<div class="select is-small nsonly">
+							<select id='manualfaction'>
+								<option value='4'>If NSO:</option>
+								<option value='1'>Vanu</option>
+								<option value='2'>NC</option>
+								<option value='2'>TR</option>
+							</select>
+						</div>
 				  </div>
 
 				  <div class="navbar-item has-dropdown is-hoverable">

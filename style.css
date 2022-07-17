@@ -1523,4 +1523,11 @@ body:not(.bobmitch) #animations {
     }
 }
 
+body .nsonly {
+    display:none;
+}
+body[data-faction="4"] .nsonly  {
+    display:block;
+}
+
 /* end animations */

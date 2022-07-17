@@ -1,7 +1,31 @@
 function is_tk(event) {
     if (event.payload.event_name=='VehicleDestroy') {
+        let manualfaction = document.getElementById('manualfaction').value ;
         attacker = get_local_character(event.payload.attacker_character_id);
         if (attacker) {
+            if (player.faction_id==4 && attacker.faction_id!=4) {
+                // assume good player :)
+                return false;
+            }
+            if (attacker.faction_id==4) {
+                // assume good bot too :)
+                return false;
+            }
+            if (player.faction_id==4) {
+                // if player is nso
+                if (event.payload.attacker_character_id==player.character_id)
+                // and is attacker
+                    if (event.payload.faction_id.toString() == manualfaction ) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    return false;
+                }
+            }
             if (event.payload.faction_id == attacker.faction_id ) {
                 return true;
             }
@@ -24,11 +48,39 @@ function is_tk(event) {
             // can't determine tk
             return false;
         }
-        if (attacker_loadout.faction_id == victim_loadout.faction_id) {
-            return true;
+        if (player.faction_id==4) {
+            let manualfaction = document.getElementById('manualfaction').value ;
+            console.log('Manual faction required: ',manualfaction);
+            if (manualfaction=='4') {
+                alert('Please select NSO faction manually!!!');
+            }
+            else {
+                if (is_kill(event)) {
+                    if (victim_loadout.faction_id.toString() == manualfaction) {
+                        return true;
+                    }
+                    else {
+                        // could be bot, assume no tk :)
+                        return false;
+                    }
+                }
+                else {
+                    if (attacker_loadout.faction_id.toString() == manualfaction) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
         }
         else {
-            return false;
+            if (attacker_loadout.faction_id == victim_loadout.faction_id) {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
     return false;
