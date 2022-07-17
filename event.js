@@ -13,7 +13,7 @@ function is_tk(event) {
             }
             if (player.faction_id==4) {
                 // if player is nso
-                if (event.payload.attacker_character_id==player.character_id)
+                if (event.payload.attacker_character_id==player.character_id) {
                 // and is attacker
                     if (event.payload.faction_id.toString() == manualfaction ) {
                         return true;
