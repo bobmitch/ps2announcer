@@ -52,7 +52,7 @@ function is_tk(event) {
             let manualfaction = document.getElementById('manualfaction').value ;
             console.log('Manual faction required: ',manualfaction);
             if (manualfaction=='4') {
-                alert('Please select NSO faction manually!!!');
+                notify('Please select NSO Faction next to player name!!!','is-warning');
             }
             else {
                 if (is_kill(event)) {

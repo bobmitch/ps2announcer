@@ -246,7 +246,7 @@ body:not(.claimed) .claimedonly {
     font-weight:900;
     font-size:8vmax;
     line-height:0.8;
-    margin-bottom:0.5em;
+    margin-bottom:0.3em;
     color:#222;
     text-shadow:0 0 20px white;
     padding:1em;
@@ -955,6 +955,13 @@ body:not(.loading) #spinner {
     width:100vw;
     height:100vh;
     opacity:1;
+}
+
+h2 {
+    font-size: 3vmin;
+    color: white;
+    margin-bottom: 1em;
+    text-shadow: 0 0 1em black;
 }
 
 .spinner {

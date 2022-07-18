@@ -420,6 +420,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 		<div id='splash' class=' loading'>
 			<div class='contain'>
 				<h1 class='splashtitle'>Planetside 2 Announcer</h1>
+				<h2>Now With NSO Support!</h2>
 				<div id='spinner' class='loadingonly spinner'></div>
 				<button id='start_button' onclick='document.querySelector("#splash").classList.add("hide");allow_voicepack();' class='loaded button btn is-warning is-large'><?php echo lang('START_BUTTON');?></button>
 				<p class='splashabout'>By BobMitch</p>
