@@ -442,7 +442,7 @@ if (file_exists('userconfigs/' . $user . '_claim.txt')) {
 								<option value='4'>If NSO:</option>
 								<option value='1'>Vanu</option>
 								<option value='2'>NC</option>
-								<option value='2'>TR</option>
+								<option value='3'>TR</option>
 							</select>
 						</div>
 				  </div>
